@@ -1,0 +1,84 @@
+/* Contenedor principal que ocupa toda la altura */
+.main-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Hace que el contenedor ocupe el 100% de la altura de la ventana */
+}
+
+/* El área del contenido ocupará el espacio restante */
+.content-area {
+    flex-grow: 1; /* Esto hace que el contenido ocupe el espacio restante */
+    overflow: hidden; /* Evita el desbordamiento */
+}
+
+//header
+
+header {
+    background-color: #111015;
+    color: white;
+    text-align: center;
+    padding-left: 6rem;
+}
+
+//Sidebar
+
+/* Clase que desplaza visualmente el contenido */
+.shifted {
+    margin-left: 250px;
+    /* Ajuste visual cuando el sidebar se abre */
+    transition: margin-left 0.3s ease;
+}
+
+/* Botón para abrir/cerrar el sidebar */
+.sidebar-toggle {
+    background-color: transparent;
+    border: none;
+    width: 40px; /* Ajusta el tamaño del botón */
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    display: none; /* Ocultar por defecto */
+}
+
+/* Icono en formato de cuadrícula */
+.grid-icon {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas */
+    grid-template-rows: repeat(3, 1fr); /* 3 filas */
+    gap: 4px; /* Menos espacio entre los círculos */
+    width: 24px; /* Ajusta el tamaño del ícono */
+    height: 24px;
+}
+
+/* Círculos dentro del ícono */
+.grid-icon div {
+    width: 6px;  /* Ajusta el tamaño de los círculos */
+    height: 6px; /* Ajusta el tamaño de los círculos */
+    background-color: white;
+    border-radius: 50%;
+}
+
+/* Ajustes del footer */
+.bottom-footer {
+    background-color: #171719;
+    color: white;
+    text-align: center;
+}
+
+.logo {
+    max-width: 3vh;
+    height: auto;
+}
+
+/* Media query para dispositivos móviles */
+@media (max-width: 768px) {
+    .sidebar-toggle {
+        display: flex; /* Mostrar el botón en dispositivos móviles */
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+}

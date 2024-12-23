@@ -1,0 +1,174 @@
+.d-flex {
+    display: flex;
+    flex-direction: column;
+}
+
+.d-flexmp {
+    background-image: url('../../../assets/images/main-background.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.page {
+    min-height: 93vh;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.custom-page {
+    background-color: #111015;
+}
+
+.header {
+    background-color: rgba(0, 0, 0, 0);
+    text-align: center;
+    z-index: 10;
+}
+
+.title {
+    padding-left: 8rem;
+    padding-top: 2rem;
+}
+
+.body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    text-align: center;
+    //margin-left: 6rem;
+}
+
+.main-content {
+    margin-left: 14rem;
+    text-align: start;
+}
+
+.btn-quote {
+    background-color: #f1c36b;
+    color: white;
+    border: none;
+    border-radius: 15px;
+}
+
+.btn-quote:hover {
+    background-color: #c4963e;
+}
+
+.footer {
+    background-color: #111015;
+    text-align: center;
+    color: white;
+    border-bottom-width: 2px;
+    border-bottom-color: #191a1f;
+    border-bottom-style: solid;
+}
+
+.white-icon {
+    color: white;
+    float: left;
+}
+
+.custom-border {
+    border-width: 2px;
+    border-color: #191a1f;
+    border-style: solid;
+}
+
+.custom-border-right {
+    border-right-width: 2px;
+    border-right-color: #191a1f;
+    border-right-style: solid;
+}
+
+.wrapper .card {
+    width: 200px;
+    height: 300px;
+    margin: 10px;
+    cursor: pointer;
+    background-size: cover;
+    background-position: center center;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.225)
+}
+
+.wrapper:hover :not(.card:hover) {
+    opacity: 0.4;
+}
+
+.gallery {
+    display: flex;
+    justify-content: space-between;
+    min-height: 100vh;
+}
+
+.gallery-item {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+.gallery-item img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.5);
+    transition: filter 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.gallery-caption {
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.gallery-item:hover img {
+    filter: brightness(1);
+    transform: scale(1.1);
+}
+
+.gallery:hover .gallery-item img:not(:hover) {
+    filter: brightness(0.3);
+}
+
+.gallery-item:hover img {
+    filter: brightness(1);
+}
+
+.form-control {
+    background-color: #2a2a2a;
+    color: #fff;
+    border: none;
+    border-radius: 0;
+}
+
+.form-control:focus {
+    background-color: #2a2a2a;
+    color: #fff;
+    box-shadow: none;
+    border: solid #d4af37;
+}
+
+.btn-send {
+    background-color: #f1c36b;
+    color: white;
+    border: none;
+}
+
+.btn-send:hover {
+    background-color: #c4963e;
+}
+
+::placeholder {
+    color: #484546;
+}

@@ -1,0 +1,55 @@
+<div class="main-wrapper">
+
+    <app-sidebar [isOpen]="isSidebarOpen"></app-sidebar>
+
+    <header class="container-fluid text-white py-2">
+        <div class="row d-flex align-items-center">
+            <div class="d-flex align-items-center">
+                <img src="images/EPC_PNG_Original1.png" alt="" class="logo">
+                <h2 class="text-start title ms-3 mb-0">EPC Development</h2>
+            </div>
+
+            <div>
+                <button class="sidebar-toggle" (click)="toggleSidebar()">
+                    <div class="grid-icon">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Área donde se carga el contenido -->
+    <main class="content-area">
+        <router-outlet></router-outlet>
+    </main>
+
+    <!-- Footer -->
+    <footer class="container-fluid bottom-footer">
+        <div class="row justify-content-center">
+            <div class="col-4 col-md-4 py-5">
+                <img src="images/EPC_PNG_Original1.png" alt="" class="logo">
+            </div>
+            <div class="col-4 col-md-4 py-5">
+            </div>
+            <div class="col-4 col-md-4 py-5">
+                <div class="row">
+                    <div class="col-4 col-md-4">Site map</div>
+                    <div class="col-4 col-md-4">Terms of service</div>
+                    <div class="col-4 col-md-4">Privacy Policy</div>
+                </div>
+                <div class="row">
+                    Developed by el padre del elías
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
