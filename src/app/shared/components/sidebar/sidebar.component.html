@@ -1,6 +1,18 @@
-<!-- Sidebar Component -->
+<button class="sidebar-toggle" (click)="toggleSidebar()">
+    <div class="grid-icon">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</button>
 <div class="sidebar" [class.sidebar-open]="isOpen">
-    <ul class="sidebar-menu">
+    <ul class="sidebar-menu no-bullets">
         <li><a href="#floor-plan">Floor Plan</a></li>
         <li><a href="/quotes">Quotes</a></li>
         <li><a href="#services">Services</a></li>

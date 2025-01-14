@@ -1,29 +1,35 @@
-<div class="d-flex">
+<div class="d-flex flex-column flex-grow-1">
     <!-- Página 1 -->
     <div class="d-flexmp" [class.shifted]="isSidebarOpen">
-        <div class="page">
-            <main class="container-fluid body">
-                <div class="main-content">
-                    <h1 class="text-light">CORE HOME</h1>
-                    <h1 class="text-light">TO LUXURY</h1>
-                    <button type="button" class="btn btn-primary btn-quote">Free
-                        quote</button>
+        <div class="d-flex flex-column flex-grow-1">
+            <main class="container-fluid body flex-grow-1">
+                <div class="main-content w-100">
+                    <div class="row">
+                        <div class="col-12 col-md-10 col-lg-11">
+                            <h1 class="text-light slogan-title">CORE HOME</h1>
+                            <h1 class="text-light slogan-title">TO LUXURY</h1>
+                            <button type="button" class="btn btn-primary btn-quote" routerLink="/quotes">Free quote</button>
+                        </div>
+                    </div>
                 </div>
             </main>
             <footer class="container-fluid footer text-white">
-                <div class="row justify-content-end py-3">
-                    <div class="col-2 col-md-2">
-                        <mat-icon
-                            class="white-icon float-left">location_on</mat-icon>
-                        <p>San Antonio, Texas</p>
-                    </div>
-                    <div class="col-2 col-md-2">
-                        <mat-icon class="white-icon">call</mat-icon>
-                        <p>652-341-333</p>
-                    </div>
-                    <div class="col-2 col-md-2">
-                        <mat-icon class="white-icon">alternate_email</mat-icon>
-                        <p>obamagmail.com</p>
+                <div class="row pb-4 pt-4">
+                    <div class="col-12">
+                        <div class="contact-row">
+                            <div class="contact-item">
+                                <mat-icon class="white-icon">location_on</mat-icon>
+                                <p class="mb-0">San Antonio, Texas</p>
+                            </div>
+                            <div class="contact-item">
+                                <mat-icon class="white-icon">call</mat-icon>
+                                <p class="mb-0">652-341-333</p>
+                            </div>
+                            <div class="contact-item">
+                                <mat-icon class="white-icon">alternate_email</mat-icon>
+                                <p class="mb-0">epcdevelopments&#64;gmail.com</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </footer>
@@ -33,72 +39,45 @@
     <!-- Página 2 -->
     <div class="custom-page" [class.shifted]="isSidebarOpen">
         <main class="container-fluid">
-            <div class="row justify-content-end">
-                <div class="col-1 col-md-1 custom-border-right"></div>
-                <div class="col-11 col-md-11">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-1 custom-border-right"></div>
+                <div class="col-12 col-md-11">
                     <div class="row py-5">
-                        <div class="col-6 col-md-6 text-start">
-                            <h1>ABOUT US</h1>
-                            <p class="text-light">Welcome to EPC Developments, a
-                                premier custom home construction company founded
-                                12 years ago with a vision to bring your dream
-                                home to life. Combining expertise in
-                                construction, innovative design, and
-                                personalized service, we specialize in creating
-                                custom-built homes that reflect your unique
-                                style, preferences, and budget.</p>
+                        <div class="col-12 col-md-6 text-start">
+                            <div class="duplicated-text" data-text="ABOUT US">
+                                ABOUT US
+                            </div>
+                            <p class="text-light">Welcome to EPC Developments, a premier custom home construction company founded 12 years ago with a vision to bring your dream home to life. Combining expertise in construction, innovative design, and personalized service, we specialize in creating custom-built homes that reflect your unique style, preferences, and budget.</p>
 
                             <p class="text-light">
-                                At the core of our success is our leadership
-                                team, composed of a seasoned physicist and a
-                                master’s degree architect. This powerful
-                                combination of scientific precision and creative
-                                design allows us to approach every project with
-                                an exceptional level of detail, ensuring both
-                                structural integrity and aesthetic excellence.
-                                Our founder’s background in physics brings a
-                                deep understanding of materials, sustainability,
-                                and energy efficiency, while our architect’s
-                                expertise ensures that each home is not only
-                                functional but also a work of art.
+                                At the core of our success is our leadership team, composed of a seasoned physicist and a master’s degree architect. This powerful combination of scientific precision and creative design allows us to approach every project with an exceptional level of detail, ensuring both structural integrity and aesthetic excellence. Our founder’s background in physics brings a deep understanding of materials, sustainability, and energy efficiency, while our architect’s expertise ensures that each home is not only functional but also a work of art.
                             </p>
                             <p class="text-light">
-                                We pride ourselves on our ability to offer
-                                unparalleled flexibility and transparency in
-                                pricing. Our goal is to provide high-quality
-                                craftsmanship that exceeds expectations without
-                                compromising on value. Whether you’re looking
-                                for a modern, eco-friendly home, or a more
-                                traditional design, we work closely with you to
-                                bring your vision to life while keeping costs
-                                manageable and clear from start to finish.
+                                We pride ourselves on our ability to offer unparalleled flexibility and transparency in pricing. Our goal is to provide high-quality craftsmanship that exceeds expectations without compromising on value. Whether you’re looking for a modern, eco-friendly home, or a more traditional design, we work closely with you to bring your vision to life while keeping costs manageable and clear from start to finish.
                             </p>
                             <p class="text-light">
-                                Thank you for considering EPC Developments for
-                                your custom home construction needs. We look
-                                forward to building your dream home
-                                together!
+                                Thank you for considering EPC Developments for your custom home construction needs. We look forward to building your dream home together!
                             </p>
                         </div>
-                        <div class="col-6 col-md-6">
-                            <img src="images/house.jpg" alt="About us"
-                                class="img-fluid">
+
+                        <div class="col-12 col-md-6">
+                            <img src="images/house.jpg" alt="About us" class="img-fluid">
                         </div>
                     </div>
                 </div>
             </div>
         </main>
-        <footer class="container-fluid footer custom-border">
-            <div class="row justify-content-center">
-                <div class="col-3 col-md-3 custom-border-right py-5">
+        <footer class="container-fluid custom-border text-light">
+            <div class="row justify-content-center text-center">
+                <div class="col-4 col-md-4 contact-item custom-border-right py-5 justify-content-center">
                     <mat-icon class="white-icon">sentiment_satisfied</mat-icon>
                     <h3>San Antonio to Austin area</h3>
                 </div>
-                <div class="col-3 col-md-3 custom-border-right py-5">
+                <div class="col-4 col-md-4 contact-item custom-border-right py-5 justify-content-center">
                     <mat-icon class="white-icon">apartment</mat-icon>
                     <h3>Custom floor plans</h3>
                 </div>
-                <div class="col-3 col-md-3 py-5">
+                <div class="col-4 col-md-4 contact-item custom-border-right py-5 justify-content-center">
                     <h3>High Ceiling Luxury Accents</h3>
                 </div>
             </div>
@@ -106,37 +85,41 @@
     </div>
 
     <!-- Página 3 -->
-    <div class="page custom-page" [class.shifted]="isSidebarOpen">
-        <header class="container-fluid header text-white">
-            <div class="row">
-                <div class="col-1 col-md-1 custom-border-right">
-
-                </div>
-                <div class="col-10 col-md-10 custom-border-right py-5">
-                    <h2>PROJECTS</h2>
-                </div>
-                <div class="col-1 col-md-1">
-
-                </div>
+    <div class="custom-page d-flex flex-column min-vh-100">
+        <header class="header">
+            <div class="container-fluid d-flex justify-content-center align-items-center py-5">
+                <h1 class="duplicated-text" data-text="PROJECTS">PROJECTS</h1>
             </div>
         </header>
-        <main class="container-fluid gx-0">
-            <div class="gallery">
+        <main class="body">
+            <div class="gallery flex-grow-1">
+                <!-- Item 1 -->
                 <div class="gallery-item">
                     <img src="images/house1.jpg" alt="Image 1">
-                    <div class="gallery-caption">01<br>Square Project</div>
+                    <div class="gallery-caption">
+                        01<br>Square Project
+                    </div>
                 </div>
+                <!-- Item 2 -->
                 <div class="gallery-item">
                     <img src="images/house2.jpg" alt="Image 2">
-                    <div class="gallery-caption">02<br>Square Project</div>
+                    <div class="gallery-caption">
+                        02<br>Square Project
+                    </div>
                 </div>
+                <!-- Item 3 -->
                 <div class="gallery-item">
                     <img src="images/house3.jpg" alt="Image 3">
-                    <div class="gallery-caption">03<br>Square Project</div>
+                    <div class="gallery-caption">
+                        03<br>Square Project
+                    </div>
                 </div>
+                <!-- Item 4 -->
                 <div class="gallery-item">
                     <img src="images/house4.jpeg" alt="Image 4">
-                    <div class="gallery-caption">04<br>Square Project</div>
+                    <div class="gallery-caption">
+                        04<br>Square Project
+                    </div>
                 </div>
             </div>
         </main>
@@ -150,8 +133,10 @@
 
                 </div>
                 <div class="col-11 col-md-11 py-5">
-                    <h1>CONTACTS</h1>
-                    <div class="row">
+                    <div class="duplicated-text" data-text="CONTACTS">
+                        CONTACTS
+                    </div>
+                    <div class="row pt-5">
                         <div class="col-6 col-md-6">
                             <form>
                                 <div class="row">
@@ -188,29 +173,25 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="col-6 col-md-6 ps-5">
-                            <div class="row">
-                                <mat-icon class="white-icon">call</mat-icon>
-                                <p>00000 hasta que se te canse el dedo</p>
+                        <div class="col-6 col-md-6">
+                            <div class="row d-flex flex-row flex-nowrap">
+                                <mat-icon class="white-icon ps-3 pe-4">call</mat-icon>
+                                <p class="text-light">652-341-333</p>
                             </div>
-                            <div class="row">
-                                <div class="col-12 col-md-12">
-                                    <i
-                                        class="fa-brands fa-facebook-f white-icon me-3"></i>
-                                    <i
-                                        class="fa-solid fa-x white-icon me-3"></i>
-                                    <i
-                                        class="fa-brands fa-instagram white-icon me-3"></i>
-                                    <i
-                                        class="fa-solid fa-at white-icon me-3"></i>
-                                </div>
+                            <div class="row d-flex flex-row flex-nowrap mb-3 ms-1">
+                                <i
+                                    class="fa-brands fa-facebook-f text-light ps-1 pe-1"></i>
+                                <i
+                                    class="fa-solid fa-x text-light p-0"></i>
+                                <i
+                                    class="fa-brands fa-instagram text-light p-0"></i>
+                                <i
+                                    class="fa-solid fa-at text-light p-0"></i>
                             </div>
-                            <div class="row">
-                                <div class="col-12 col-md-12">
-                                    <mat-icon
-                                        class="white-icon float-left">location_on</mat-icon>
-                                    <p class="text-light">San Antonio, Texas</p>
-                                </div>
+                            <div class="row d-flex flex-row flex-nowrap">
+                                <mat-icon
+                                    class="text-light ps-3 pe-4">location_on</mat-icon>
+                                <p class="text-light">San Antonio, Texas</p>
                             </div>
                         </div>
                     </div>

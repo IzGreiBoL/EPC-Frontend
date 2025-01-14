@@ -4,8 +4,12 @@ html, body {
     font-optical-sizing: auto !important;
     font-weight: 300 !important;
     font-style: normal !important;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
-body {
-    margin: 0
+@media (max-width: 544px) {
+    html, body {
+        font-size: .90rem !important;
+    }
 }

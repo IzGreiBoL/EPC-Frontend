@@ -1,0 +1,83 @@
+.container-fluid {
+    padding: 0;
+    background-color: #111015;
+}
+
+.nav {
+    padding: 0;
+}
+
+.nav .nav-item .nav-link {
+    color: white;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+}
+
+.nav .nav-item .nav-link:hover {
+    color: #f1c36b;
+}
+
+.logo {
+    max-width: 3vh;
+    height: auto;
+}
+
+.header {
+    background-color: #111015;
+    color: white;
+    text-align: center;
+    padding-left: 6rem;
+}
+
+.transparent-header {
+    background-color: rgba(0, 0, 0, 0) !important;
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+}
+
+.sidebar-toggle {
+    background-color: transparent;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    z-index: 1100;
+    border-radius: 5px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: absolute; 
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+.sidebar-toggle:hover {
+    background-color: #555;
+}
+
+.grid-icon {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 4px;
+    width: 24px;
+    height: 24px;
+}
+
+.grid-icon div {
+    width: 6px;
+    height: 6px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+@media (max-width: 1023px) {
+    .nav {
+        display: none;
+    }
+
+    .sidebar-toggle {
+        display: flex;
+    }
+}
