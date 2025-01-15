@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MaterialModule } from '../../shared/material/material.module';
+import { RouterModule } from '@angular/router';
 
 declare const Email: {
   send: (options: {
@@ -15,7 +16,7 @@ declare const Email: {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MaterialModule, NgbModule],
+  imports: [MaterialModule, NgbModule, RouterModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

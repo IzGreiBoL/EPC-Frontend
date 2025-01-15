@@ -1,21 +1,21 @@
-import { NgFor } from '@angular/common';
-import { Component } from '@angular/core';
-
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { QuotesService } from '../../core/services/quotes.service';
+import { Quote } from '../../core/models/quote.model';
 @Component({
   selector: 'app-quotes',
-  standalone: true,
-  imports: [NgFor],
   templateUrl: './quotes.component.html',
-  styleUrl: './quotes.component.scss'
+  styleUrls: ['./quotes.component.scss'],
+  standalone: true,
+  imports: [CommonModule, RouterModule]
 })
-export class QuotesComponent {
+export class QuotesComponent implements OnInit {
+  items: Quote[] = [];
 
-  items = [
-    { image: 'images/house.jpg', text: '7400 FT SQ' },
-    { image: 'images/house1.jpg', text: '3200 FT SQ' },
-    { image: 'images/house2.jpg', text: '7800 FT SQ' },
-    { image: 'images/house3.jpg', text: '2230 FT SQ' },
-    { image: 'images/house4.jpeg', text: '4444 FT SQ' },
-  ];
+  constructor(private quotesService: QuotesService) {}
 
+  ngOnInit(): void {
+    this.items = this.quotesService.getItems();
+  }
 }
