@@ -17,6 +17,21 @@
     color: #f1c36b;
 }
 
+.nav .dropdown-menu {
+    background-color: #333;
+    border: none;
+}
+
+.nav .dropdown-item {
+    color: white;
+    padding: 0.5rem 1rem;
+}
+
+.nav .dropdown-item:hover {
+    background-color: #4a4f57;
+    color: #f1c36b;
+}
+
 .logo {
     max-width: 3vh;
     height: auto;

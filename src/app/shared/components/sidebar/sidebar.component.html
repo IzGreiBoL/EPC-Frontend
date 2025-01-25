@@ -15,7 +15,18 @@
     <ul class="sidebar-menu no-bullets">
         <li><a href="#floor-plan">Floor Plan</a></li>
         <li><a href="/quotes">Quotes</a></li>
-        <li><a href="#services">Services</a></li>
+        <li class="d-flex align-items-center no-margin">
+            <a href="/services" class="flex-grow-1">Services</a>
+            <button class="submenu-toggle ms-2" (click)="toggleSubmenu($event)">&#9660;</button>
+        </li>
+        <ul [ngClass]="{'submenu': true, 'submenu-open': isSubmenuOpen}" class="no-bullets">
+            <li><a href="#custom-home-design">Custom Home Design</a></li>
+            <li><a href="#site-analysis">Site Analysis and Preparation</a></li>
+            <li><a href="#construction-management">Construction Management</a></li>
+            <li><a href="#interior-design">Interior Design and Custom Finishes</a></li>
+            <li><a href="#pricing-budgeting">Transparent Pricing and Budgeting</a></li>
+            <li><a href="#post-construction-support">Post-Construction Support</a></li>
+        </ul>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#contact-us">Contact Us</a></li>
     </ul>
