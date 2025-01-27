@@ -1,0 +1,12 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4" *ngFor="let service of services">
+            <div class="card mb-4">
+                <h4 class="text-center">{{ service.title }}</h4>
+                <a [routerLink]="['/services', service.slug]">
+                    <img [src]="service.image" alt="{{ service.title }}" class="img-fluid card-img-bottom">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

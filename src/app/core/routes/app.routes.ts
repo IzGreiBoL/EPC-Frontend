@@ -13,6 +13,10 @@ export const routes: Routes = [
       {
         path: 'quotes',
         loadChildren: () => import('../../pages/quotes/quotes.module').then(m => m.QuotesModule)
+      },
+      {
+        path: 'services',
+        loadChildren: () => import('../../pages/services/services.module').then(m => m.ServicesModule)
       }
     ]
   },
