@@ -1,36 +1,78 @@
 <header class="container-fluid text-white py-2">
     <div class="row d-flex align-items-center mx-auto">
-        <div class="d-flex align-items-center col-6 col-md-6 col-lg-6 ps-5 py-2">
-            <img src="images/EPC_PNG_Original1.png" alt="" class="logo ms-3">
-            <h4 class="text-start ms-3 mb-0">EPC Development</h4>
-        </div>
-        <div class="col-6 col-md-6 col-lg-6 d-flex justify-content-end align-items-center position-relative">
-            <ul class="nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#floor-plan">Floor Plan</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="/quotes">Quotes</a>
-                </li>
-                <li class="nav-item dropdown" ngbDropdown>
-                    <a class="nav-link text-white dropdown-toggle" ngbDropdownToggle id="servicesDropdown" role="button" aria-expanded="false">
-                        Services
-                    </a>
-                    <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="servicesDropdown">
-                        <li><a class="dropdown-item" href="#custom-home-design">Custom Home Design</a></li>
-                        <li><a class="dropdown-item" href="#site-analysis">Site Analysis and Preparation</a></li>
-                        <li><a class="dropdown-item" href="#construction-management">Construction Management</a></li>
-                        <li><a class="dropdown-item" href="#interior-design">Interior Design and Custom Finishes</a></li>
-                        <li><a class="dropdown-item" href="#pricing-budgeting">Transparent Pricing and Budgeting</a></li>
-                        <li><a class="dropdown-item" href="#post-construction-support">Post-Construction Support</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#projects">Projects</a></li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="#contact-us">Contact Us</a></li>
+      <div class="d-flex align-items-center col-6 col-md-6 col-lg-6 ps-3 py-2">
+        <button
+          class="btn btn-back d-md-none"
+          (click)="goBack()"
+          *ngIf="!isHomePage && isMobile"
+        >
+          <i class="bi bi-arrow-left"></i>
+        </button>
+        <img src="images/EPC_PNG_Original1.png" alt="" class="logo ms-3" />
+        <h4 class="text-start ms-3 mb-0">EPC Development</h4>
+      </div>
+      <div
+        class="col-6 col-md-6 col-lg-6 d-flex justify-content-end align-items-center position-relative"
+      >
+        <ul class="nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/floor-plan">Floor Plan</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/quotes">Quotes</a>
+          </li>
+          <li class="nav-item dropdown" ngbDropdown>
+            <a
+              class="nav-link text-white dropdown-toggle"
+              ngbDropdownToggle
+              id="servicesDropdown"
+              role="button"
+              aria-expanded="false"
+            >
+              Services
+            </a>
+            <ul
+              class="dropdown-menu"
+              ngbDropdownMenu
+              aria-labelledby="servicesDropdown"
+            >
+              <li>
+                <a class="dropdown-item" href="/services/custom-home-design"
+                  >Custom Home Design</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="/services/site-analysis">Site Analysis and Preparation</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/services/construction-management"
+                  >Construction Management</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="/services/interior-design">Interior Design and Custom Finishes</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="/services/pricing-budgeting">Transparent Pricing and Budgeting</a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  href="/services/post-construction-support"
+                  >Post-Construction Support</a
+                >
+              </li>
             </ul>
-            <app-sidebar></app-sidebar>
-        </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/projects">Projects</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/contact-us">Contact Us</a>
+          </li>
+        </ul>
+        <app-sidebar></app-sidebar>
+      </div>
     </div>
-</header>
+  </header>
+  
