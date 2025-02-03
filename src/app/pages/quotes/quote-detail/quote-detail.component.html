@@ -27,7 +27,7 @@
           </ng-container>
           <ng-template #subCategoryTemplate>
             <div class="sub-category">
-              <strong *ngIf="!isString(option)">{{ option.name }}:</strong>
+              <strong class="secondary-text" *ngIf="!isString(option)">{{ option.name }}:</strong>
               <div class="sub-button-group"
                 *ngIf="!isString(option) && option.options">
                 <div class="p-2"

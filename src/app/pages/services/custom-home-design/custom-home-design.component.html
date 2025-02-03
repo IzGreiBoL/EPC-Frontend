@@ -1,0 +1,9 @@
+<div class="container-fluid my-3">
+  <div *ngIf="service" class="mb">
+    <h1>{{ service.title }}</h1>
+    <img [src]="service.image" alt="{{ service.title }}" class="img-fluid mb-3">
+    <div [innerHTML]="service.text"></div>
+    <button class="btn btn-primary">{{ service.quoteButtonText
+      }}</button>
+  </div>
+</div>
