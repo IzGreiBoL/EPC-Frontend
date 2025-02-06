@@ -31,7 +31,14 @@ export class ServicesService {
       slug: 'general-contracting',
       title: 'General Contracting',
       image: 'images/house1.jpg',
-      text: 'Every great home starts with a solid foundation. Our team conducts thorough site evaluations, assessing factors such as terrain, climate, and environmental considerations to ensure your home is perfectly situated for both comfort and efficiency.',
+      text: 'EPC Development is a premier general contracting option specializing in custom home construction and luxury remodeling services across the USA. With a focus on precision, quality, and attention to detail, we manage every aspect of your project—from planning and design to execution and completion—ensuring a seamless and stress-free experience. Our team of skilled professionals combines innovative techniques, high-end materials, and expert craftsmanship to deliver exceptional results tailored to your vision. Whether building a custom home or transforming an existing space, we prioritize transparency, timely delivery, and superior workmanship to bring your dream project to life. Trust EPC Development to handle the complexities of construction while you enjoy the journey to your perfect home.',
+      quoteButtonText: 'Free Quote'
+    },
+    {
+      slug: 'remodeling-and-additions-services',
+      title: 'Remodeling and Additions Services',
+      image: 'images/house1.jpg',
+      text: 'At EPC Developments, we specialize in custom home remodeling and addition services that transform your existing space into something new and exciting. Whether you\'re looking to renovate a single room, add extra living space, or complete a home makeover, our expert team combines innovative design with quality craftsmanship to enhance functionality and aesthetics. We work closely with you to ensure that every detail aligns with your vision, all while maintaining transparency in pricing and delivering results on time and within budget. Let us help you reimagine your home with our tailored remodeling and addition solutions.',
       quoteButtonText: 'Free Quote'
     },
     {
