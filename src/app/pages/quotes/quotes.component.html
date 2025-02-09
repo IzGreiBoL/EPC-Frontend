@@ -3,7 +3,7 @@
     <div class="col-md-4" *ngFor="let item of items">
       <div class="card mb-4">
         <a [routerLink]="['/quotes/detail', item.id]">
-          <img [src]="item.image" class="card-img-top" alt="Image">
+          <img [src]="getFirstImage(item.folder)" class="card-img-top" alt="Image">
         </a>
         <div class="card-body">
           <p class="card-text">{{ item.text }}</p>

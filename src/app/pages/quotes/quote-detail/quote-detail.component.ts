@@ -3,18 +3,21 @@ import { ActivatedRoute } from '@angular/router';
 import { QuotesService } from '../../../core/services/quotes.service';
 import { Quote } from '../../../core/models/quote.model';
 import { CommonModule } from '@angular/common';
+import { GalleryComponent } from '../../../shared/components/gallery/gallery.component';
 
 @Component({
   selector: 'app-quote-detail',
   templateUrl: './quote-detail.component.html',
   styleUrls: ['./quote-detail.component.scss'],
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, GalleryComponent],
 })
 export class QuoteDetailComponent implements OnInit {
   item: Quote | undefined;
   expandedCategories: boolean[] = [];
   completedOptions: boolean[][][] = [];
+  images: string[] = [];
+  galleryItems: { image: string, title: string }[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -40,6 +43,10 @@ export class QuoteDetailComponent implements OnInit {
                 : option.options.map(() => false)  // Para opciones con subopciones
             )
           ) as boolean[][][];  // Asegura que es de tipo boolean[][][]
+
+          // Obtener las imágenes de la carpeta correspondiente
+          this.images = this.quotesService.getImagesFromFolder(this.item.folder);
+          this.galleryItems = this.images.map(image => ({ image: image, title: this.item!.text }));
         }
       }
     });
@@ -73,7 +80,7 @@ export class QuoteDetailComponent implements OnInit {
       setTimeout(() => this.moveToNextCategory(categoryIndex), 0); // Expandir la siguiente categoría
     }
   }
-  
+
   isCategoryCompleted(categoryIndex: number): boolean {
     const category = this.item!.categories[categoryIndex];
 

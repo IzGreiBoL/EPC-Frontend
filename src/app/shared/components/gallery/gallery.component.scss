@@ -1,0 +1,225 @@
+.gallery-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.gallery {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    padding-inline-start: 0;
+    position: relative;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    flex-grow: 1;
+}
+
+.gallery::-webkit-scrollbar {
+    display: none;
+}
+
+.gallery ul {
+    display: flex;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.gallery li {
+    position: relative;
+    overflow: hidden;
+    flex: 0 0 100%;
+    cursor: pointer;
+    transition: flex 0.3s ease-in-out, opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+@media (min-width: 768px) {
+    .gallery li {
+        flex: 0 0 33.33%;
+    }
+}
+
+.gallery li img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.5);
+    transition: filter 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.gallery li,
+.gallery li img,
+.gallery li .content,
+.gallery li .content span {
+    transition: 0.3s;
+}
+
+.gallery h2 {
+    position: absolute;
+    top: 50px;
+    left: 60px;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.gallery li .content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    color: #fff;
+    padding: 15px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 10%, rgba(255, 255, 255, 0) 100%);
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    align-items: flex-start;
+}
+
+.gallery li .content span {
+    position: relative;
+    z-index: 3;
+    right: 20px;
+    top: 20px;
+    transform: translateX(0%);
+    text-align: right;
+}
+
+.gallery li:hover {
+    flex: 0 0 100%;
+    transform: scale(1.1);
+    z-index: 10;
+    transition: flex 0.3s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+@media (min-width: 768px) {
+    .gallery li:hover {
+        flex: 0 0 33.33%;
+    }
+}
+
+.gallery li:hover .content {
+    opacity: 1;
+    visibility: visible;
+}
+
+.gallery li:hover span {
+    transform: translateX(0%);
+    opacity: 1;
+    visibility: visible;
+}
+
+.gallery:hover li img {
+    filter: brightness(0.3);
+}
+
+.gallery li:hover img {
+    filter: brightness(1);
+}
+
+/* Estilos específicos para la página de inicio */
+.projects-page .gallery li img {
+    filter: brightness(0.5);
+}
+
+.projects-page .gallery li:hover {
+    flex: 0 0 100%;
+    transform: scale(1.1);
+    z-index: 10;
+}
+
+.projects-page .gallery li:hover .content {
+    opacity: 1;
+    visibility: visible;
+}
+
+.projects-page .gallery li:hover span {
+    transform: translateX(0%);
+    opacity: 1;
+    visibility: visible;
+}
+
+.projects-page .gallery:hover li img {
+    filter: brightness(0.3);
+}
+
+.projects-page .gallery li:hover img {
+    filter: brightness(1);
+}
+
+/* Carousel Control Styles */
+.carousel-control-prev,
+.carousel-control-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #c4953b;
+    border: none;
+    padding: 3px;
+    cursor: pointer;
+    z-index: 100;
+    font-size: 14px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-control-prev {
+    left: 20px;
+}
+
+.carousel-control-next {
+    right: 20px;
+}
+
+@media (max-width: 767px) {
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        display: none;
+    }
+}
+
+/* Carousel Indicators Styles */
+.carousel-indicators {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-120%);
+    display: flex;
+    gap: 8px;
+    z-index: 101;
+}
+
+.carousel-indicators span {
+    width: 12px;
+    height: 12px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.carousel-indicators span.active {
+    background-color: #c4953b;
+}

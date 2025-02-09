@@ -17,6 +17,5 @@ export class CustomHomeDesignComponent implements OnInit {
 
   ngOnInit(): void {
     this.service = this.servicesService.getServiceBySlug('custom-home-design');
-    console.log (this.service);
   }
 }

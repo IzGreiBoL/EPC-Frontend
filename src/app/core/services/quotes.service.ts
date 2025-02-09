@@ -76,11 +76,11 @@ export class QuotesService {
   ];
 
   private items: Quote[] = [
-    { id: 1, image: 'images/house.jpg', text: '7400 FT SQ', categories: this.categories },
-    { id: 2, image: 'images/house1.jpg', text: '3200 FT SQ', categories: this.categories },
-    { id: 3, image: 'images/house2.jpg', text: '7800 FT SQ', categories: this.categories },
-    { id: 4, image: 'images/house3.jpg', text: '2230 FT SQ', categories: this.categories },
-    { id: 5, image: 'images/house4.jpeg', text: '4444 FT SQ', categories: this.categories }
+    { id: 1, name: 'Avalon', text: '7400 FT SQ', folder: 'avalon', categories: this.categories },
+    { id: 2, name: 'Cascade', text: '3200 FT SQ', folder: 'cascade', categories: this.categories },
+    { id: 3, name: 'Estates', text: '7800 FT SQ', folder: 'estates', categories: this.categories },
+    { id: 4, name: 'Jewel', text: '2230 FT SQ', folder: 'jewel', categories: this.categories },
+    { id: 5, name: 'Pandora', text: '4444 FT SQ', folder: 'pandora', categories: this.categories }
   ];
 
   constructor() { }
@@ -91,5 +91,18 @@ export class QuotesService {
 
   getItemById(id: number): Quote | undefined {
     return this.items.find(item => item.id === id);
+  }
+
+  getImagesFromFolder(folder: string): string[] {
+    return [
+      `images/${folder}/image1.jpg`,
+      `images/${folder}/image2.jpg`,
+      `images/${folder}/image3.jpg`,
+      `images/${folder}/image4.jpg`
+    ];
+  }
+
+  getFirstImageFromFolder(folder: string): string {
+    return `images/${folder}/image1.jpg`;
   }
 }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { QuotesService } from '../../core/services/quotes.service';
 import { Quote } from '../../core/models/quote.model';
+
 @Component({
   selector: 'app-quotes',
   templateUrl: './quotes.component.html',
@@ -17,5 +18,9 @@ export class QuotesComponent implements OnInit {
 
   ngOnInit(): void {
     this.items = this.quotesService.getItems();
+  }
+
+  getFirstImage(folder: string): string {
+    return `images/${folder}/image1.jpg`;
   }
 }

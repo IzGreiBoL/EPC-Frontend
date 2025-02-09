@@ -1,7 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MaterialModule } from '../../shared/material/material.module';
 import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { QuotesService } from '../../core/services/quotes.service';
+import { Quote } from '../../core/models/quote.model';
+import { GalleryComponent } from "../../shared/components/gallery/gallery.component";
 
 declare const Email: {
   send: (options: {
@@ -16,14 +20,29 @@ declare const Email: {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MaterialModule, NgbModule, RouterModule],
+  imports: [CommonModule, MaterialModule, NgbModule, RouterModule, GalleryComponent],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrls: ['./home.component.scss']
 })
-export class HomeComponent {
-
+export class HomeComponent implements OnInit {
   isSidebarOpen = false; // Estado del sidebar
   isTransparent = false;
+
+  quotes: Quote[] = [];
+  galleryItems: { image: string, title: string }[] = [];
+
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: object,
+    private quotesService: QuotesService
+  ) { }
+
+  ngOnInit(): void {
+    this.quotes = this.quotesService.getItems();
+    this.quotes.forEach(quote => {
+      const image = this.quotesService.getFirstImageFromFolder(quote.folder);
+      this.galleryItems.push({ image: image, title: quote.name });
+    });
+  }
 
   toggleSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen;
