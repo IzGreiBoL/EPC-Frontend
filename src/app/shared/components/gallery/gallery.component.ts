@@ -16,6 +16,9 @@ export class GalleryComponent implements AfterViewInit {
   startX = 0;
   endX = 0;
   pages: number[] = [];
+  showPrevButton = false;
+  showNextButton = true;
+
 
   constructor(private cdr: ChangeDetectorRef, @Inject(PLATFORM_ID) private platformId: object) { }
 
@@ -24,6 +27,8 @@ export class GalleryComponent implements AfterViewInit {
       this.updateIndicators();
       this.carousel.nativeElement.addEventListener('touchstart', this.onTouchStart.bind(this));
       this.carousel.nativeElement.addEventListener('touchend', this.onTouchEnd.bind(this));
+      this.activateCurrentItem(); // Activar el primer elemento inicialmente
+      this.updateButtonVisibility();
     }
   }
 
@@ -31,6 +36,7 @@ export class GalleryComponent implements AfterViewInit {
     if (this.currentIndex > 0) {
       this.currentIndex = Math.max(this.currentIndex - this.getItemsPerPage(), 0);
       this.scrollToIndex(this.currentIndex);
+      this.updateButtonVisibility();
     }
   }
 
@@ -39,7 +45,10 @@ export class GalleryComponent implements AfterViewInit {
     if (this.currentIndex < maxIndex) {
       this.currentIndex = Math.min(this.currentIndex + this.getItemsPerPage(), maxIndex);
       this.scrollToIndex(this.currentIndex);
-      setTimeout(() => this.updateIndicators(), 100);
+      setTimeout(() => {
+        this.updateIndicators();
+        this.updateButtonVisibility();
+      }, 100);
     }
   }
 
@@ -49,6 +58,15 @@ export class GalleryComponent implements AfterViewInit {
     carousel.scrollTo({ left: itemWidth * index, behavior: 'smooth' });
     this.currentIndex = index;
     this.updateIndicators();
+    this.activateCurrentItem(); // Activar el elemento actual
+    this.updateButtonVisibility();
+  }
+
+  activateCurrentItem(): void {
+    const items = this.carousel.nativeElement.querySelectorAll('li');
+    items.forEach((item: HTMLElement, index: number) => {
+      item.classList.toggle('active', index === this.currentIndex);
+    });
   }
 
   onTouchStart(event: TouchEvent): void {
@@ -101,5 +119,11 @@ export class GalleryComponent implements AfterViewInit {
       return window.innerWidth >= 768 ? 3 : 1;
     }
     return 1; // Valor predeterminado para el servidor
+  }
+
+  updateButtonVisibility(): void {
+    this.showPrevButton = this.currentIndex > 0;
+    this.showNextButton = this.currentIndex < this.items.length - this.getItemsPerPage();
+    this.cdr.detectChanges();
   }
 }

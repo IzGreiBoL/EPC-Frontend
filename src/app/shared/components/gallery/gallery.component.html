@@ -1,5 +1,6 @@
 <div class="gallery-container flex-grow-1">
-    <button class="carousel-control-prev d-none d-md-block"
+    <button *ngIf="showPrevButton"
+        class="carousel-control-prev d-none d-md-block"
         (click)="scrollLeft()">
         &#10094;
     </button>
@@ -15,7 +16,8 @@
             </li>
         </ul>
     </div>
-    <button class="carousel-control-next d-none d-md-block"
+    <button *ngIf="showNextButton"
+        class="carousel-control-next d-none d-md-block"
         (click)="scrollRight()">
         &#10095;
     </button>

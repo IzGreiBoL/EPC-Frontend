@@ -114,6 +114,24 @@
     }
 }
 
+@media (max-width: 767px) {
+    .gallery li.active {
+        flex: 0 0 100%;
+        transform: scale(1.1);
+        z-index: 10;
+        transition: flex 0.3s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    }
+
+    .gallery li.active .content {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .gallery li.active img {
+        filter: brightness(1);
+    }
+}
+
 .gallery li:hover .content {
     opacity: 1;
     visibility: visible;
