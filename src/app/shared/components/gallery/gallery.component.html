@@ -1,23 +1,39 @@
-<div class="gallery-container flex-grow-1" [ngClass]="routeClass" #galleryContainer>
-    <button *ngIf="showPrevButton" class="carousel-control-prev d-none d-md-block" (click)="scrollLeft()">
-        &#10094;
+<div class="gallery-container flex-grow-1" #galleryContainer>
+    <!-- Botón de navegación anterior -->
+    <button *ngIf="showPrevButton$ | async"
+        class="carousel-control-prev d-none d-md-block"
+        (click)="scrollLeft()"
+        aria-label="Anterior">
+        &#10094; <!-- Icono de flecha izquierda -->
     </button>
+
+    <!-- Contenedor del carrusel -->
     <div class="gallery" #carousel>
         <ul>
-            <li *ngFor="let item of items">
-                <img [src]="item.image" alt="{{ item.title }}" />
+            <li *ngFor="let item of items; let i = index"
+                [class.active]="i === currentIndex">
+                <img [src]="item.image" [alt]="item.title" />
                 <div class="content">
-                    <span>
-                        <h2>{{ item.title }}</h2>
-                    </span>
+                    <span><h2>{{ item.title }}</h2></span>
                 </div>
             </li>
         </ul>
     </div>
-    <button *ngIf="showNextButton" class="carousel-control-next d-none d-md-block" (click)="scrollRight()">
-        &#10095;
+
+    <!-- Botón de navegación siguiente -->
+    <button *ngIf="showNextButton$ | async"
+        class="carousel-control-next d-none d-md-block"
+        (click)="scrollRight()"
+        aria-label="Siguiente">
+        &#10095; <!-- Icono de flecha derecha -->
     </button>
+
+    <!-- Indicadores de página -->
     <div class="carousel-indicators">
-        <span *ngFor="let page of pages; let i = index" [class.active]="i === getCurrentPage()" (click)="scrollToIndex(i * getItemsPerPage())"></span>
+        <span *ngFor="let page of pages; let i = index"
+            [class.active]="i === getCurrentPage()"
+            (click)="scrollToIndex(i)"
+            [attr.aria-label]="'Ir a la página ' + (i + 1)">
+        </span>
     </div>
 </div>
