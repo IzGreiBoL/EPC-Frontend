@@ -1,7 +1,7 @@
 <div class="container-fluid my-2 flex-grow-1 d-flex">
   <div *ngIf="item">
     <h1>{{ item.text }}</h1>
-    <app-gallery [items]="galleryItems" class="flex-grow-1 d-flex w-100 h-50"></app-gallery>
+    <app-gallery [items]="galleryItems" [itemsPerPage]="1" class="flex-grow-1 d-flex w-100 h-50"></app-gallery>
   
     <div *ngFor="let category of item.categories; let i = index" class="mb-4">
       <div class="d-flex justify-content-between align-items-center">

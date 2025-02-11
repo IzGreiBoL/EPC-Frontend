@@ -1,7 +1,5 @@
-<div class="gallery-container flex-grow-1">
-    <button *ngIf="showPrevButton"
-        class="carousel-control-prev d-none d-md-block"
-        (click)="scrollLeft()">
+<div class="gallery-container flex-grow-1" [ngClass]="routeClass" #galleryContainer>
+    <button *ngIf="showPrevButton" class="carousel-control-prev d-none d-md-block" (click)="scrollLeft()">
         &#10094;
     </button>
     <div class="gallery" #carousel>
@@ -16,15 +14,10 @@
             </li>
         </ul>
     </div>
-    <button *ngIf="showNextButton"
-        class="carousel-control-next d-none d-md-block"
-        (click)="scrollRight()">
+    <button *ngIf="showNextButton" class="carousel-control-next d-none d-md-block" (click)="scrollRight()">
         &#10095;
     </button>
     <div class="carousel-indicators">
-        <span *ngFor="let page of pages; let i = index"
-            [class.active]="i === getCurrentPage()"
-            (click)="scrollToIndex(i * getItemsPerPage())">
-        </span>
+        <span *ngFor="let page of pages; let i = index" [class.active]="i === getCurrentPage()" (click)="scrollToIndex(i * getItemsPerPage())"></span>
     </div>
 </div>

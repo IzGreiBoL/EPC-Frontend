@@ -27,7 +27,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // Detecta si estás en la página de inicio
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        console.log(this.router.url);
         // Detectamos si la URL es exactamente "/"
         this.isHomePage = this.router.url === '/' || this.router.url === '';
       }

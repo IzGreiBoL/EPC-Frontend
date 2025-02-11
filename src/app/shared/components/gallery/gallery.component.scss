@@ -5,6 +5,7 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    --items-per-page: 1;
 }
 
 .gallery {
@@ -36,15 +37,9 @@
 .gallery li {
     position: relative;
     overflow: hidden;
-    flex: 0 0 100%;
+    flex: 0 0 calc(100% / var(--items-per-page));
     cursor: pointer;
     transition: flex 0.3s ease-in-out, opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-}
-
-@media (min-width: 768px) {
-    .gallery li {
-        flex: 0 0 33.33%;
-    }
 }
 
 .gallery li img {
@@ -102,34 +97,10 @@
 }
 
 .gallery li:hover {
-    flex: 0 0 100%;
+    flex: 0 0 calc(100% / var(--items-per-page));
     transform: scale(1.1);
     z-index: 10;
     transition: flex 0.3s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-}
-
-@media (min-width: 768px) {
-    .gallery li:hover {
-        flex: 0 0 33.33%;
-    }
-}
-
-@media (max-width: 767px) {
-    .gallery li.active {
-        flex: 0 0 100%;
-        transform: scale(1.1);
-        z-index: 10;
-        transition: flex 0.3s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-    }
-
-    .gallery li.active .content {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .gallery li.active img {
-        filter: brightness(1);
-    }
 }
 
 .gallery li:hover .content {
@@ -148,36 +119,6 @@
 }
 
 .gallery li:hover img {
-    filter: brightness(1);
-}
-
-/* Estilos específicos para la página de inicio */
-.projects-page .gallery li img {
-    filter: brightness(0.5);
-}
-
-.projects-page .gallery li:hover {
-    flex: 0 0 100%;
-    transform: scale(1.1);
-    z-index: 10;
-}
-
-.projects-page .gallery li:hover .content {
-    opacity: 1;
-    visibility: visible;
-}
-
-.projects-page .gallery li:hover span {
-    transform: translateX(0%);
-    opacity: 1;
-    visibility: visible;
-}
-
-.projects-page .gallery:hover li img {
-    filter: brightness(0.3);
-}
-
-.projects-page .gallery li:hover img {
     filter: brightness(1);
 }
 
@@ -211,7 +152,6 @@
 }
 
 @media (max-width: 767px) {
-
     .carousel-control-prev,
     .carousel-control-next {
         display: none;

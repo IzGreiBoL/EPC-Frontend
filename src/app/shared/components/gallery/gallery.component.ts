@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild, ChangeDetectorRef, Inject, PLATFORM_ID, OnInit, Renderer2, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-gallery',
@@ -9,26 +10,50 @@ import { isPlatformBrowser } from '@angular/common';
   templateUrl: './gallery.component.html',
   styleUrls: ['./gallery.component.scss']
 })
-export class GalleryComponent implements AfterViewInit {
+export class GalleryComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() items: { image: string, title: string }[] = [];
+  @Input() itemsPerPage: number = 1;
   @ViewChild('carousel', { static: false }) carousel!: ElementRef;
+  @ViewChild('galleryContainer', { static: false }) galleryContainer!: ElementRef;
   currentIndex = 0;
-  startX = 0;
-  endX = 0;
   pages: number[] = [];
   showPrevButton = false;
   showNextButton = true;
+  routeClass = '';
+  private startX = 0;
+  private endX = 0;
 
+  constructor(
+    private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: object,
+    private route: ActivatedRoute,
+    private router: Router,
+    private renderer: Renderer2
+  ) { }
 
-  constructor(private cdr: ChangeDetectorRef, @Inject(PLATFORM_ID) private platformId: object) { }
+  ngOnInit(): void {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['itemsPerPage']) {
+      setTimeout(() => this.setItemsPerPageCSSVariable(), 0);
+    }
+  }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.updateIndicators();
       this.carousel.nativeElement.addEventListener('touchstart', this.onTouchStart.bind(this));
       this.carousel.nativeElement.addEventListener('touchend', this.onTouchEnd.bind(this));
-      this.activateCurrentItem(); // Activar el primer elemento inicialmente
+      this.activateCurrentItem();
       this.updateButtonVisibility();
+      setTimeout(() => this.setItemsPerPageCSSVariable(), 0);
+    }
+  }
+
+  setItemsPerPageCSSVariable(): void {
+    if (this.galleryContainer?.nativeElement) {
+      this.renderer.setStyle(this.galleryContainer.nativeElement, '--items-per-page', this.itemsPerPage.toString());
     }
   }
 
@@ -58,7 +83,7 @@ export class GalleryComponent implements AfterViewInit {
     carousel.scrollTo({ left: itemWidth * index, behavior: 'smooth' });
     this.currentIndex = index;
     this.updateIndicators();
-    this.activateCurrentItem(); // Activar el elemento actual
+    this.activateCurrentItem();
     this.updateButtonVisibility();
   }
 
@@ -79,9 +104,8 @@ export class GalleryComponent implements AfterViewInit {
   }
 
   handleSwipe(): void {
-    const threshold = 50; // Minimum distance for a swipe to be detected
+    const threshold = 50;
     const deltaX = this.endX - this.startX;
-
     if (Math.abs(deltaX) > threshold) {
       if (deltaX > 0) {
         this.scrollLeft();
@@ -103,11 +127,7 @@ export class GalleryComponent implements AfterViewInit {
   updateIndicators(): void {
     const totalPages = Math.ceil(this.items.length / this.getItemsPerPage());
     this.pages = Array.from({ length: totalPages }, (_, i) => i);
-    this.cdr.detectChanges(); // Forzar la detección de cambios
-    const indicators = document.querySelectorAll('.carousel-indicators span');
-    indicators.forEach((indicator, index) => {
-      indicator.classList.toggle('active', index === this.getCurrentPage());
-    });
+    this.cdr.detectChanges();
   }
 
   getCurrentPage(): number {
@@ -115,10 +135,7 @@ export class GalleryComponent implements AfterViewInit {
   }
 
   getItemsPerPage(): number {
-    if (isPlatformBrowser(this.platformId)) {
-      return window.innerWidth >= 768 ? 3 : 1;
-    }
-    return 1; // Valor predeterminado para el servidor
+    return this.itemsPerPage;
   }
 
   updateButtonVisibility(): void {
