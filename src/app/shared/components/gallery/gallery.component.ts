@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild, ChangeDetectorRef, Inject, PLATFORM_ID, OnInit, Renderer2, OnChanges, SimpleChanges, OnDestroy, HostListener, ChangeDetectionStrategy, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-gallery',
@@ -24,13 +25,17 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
   private swipeData = { startX: 0, endX: 0, startTime: 0, endTime: 0 };
   private resizeListener!: () => void;
   private isBrowser: boolean = false;
+  public isHomeRoute = false;
 
   constructor(
     private cdr: ChangeDetectorRef,
-    private zone: NgZone, // Usando NgZone para optimizar fuera del ciclo de Angular
+    private zone: NgZone,
     @Inject(PLATFORM_ID) private platformId: object,
-    private renderer: Renderer2
-  ) { }
+    private renderer: Renderer2,
+    private router: Router
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId); // Asegurar que se evalúa correctamente
+  }
 
   // Ciclo de vida de Angular
 
@@ -38,12 +43,13 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
    * ngOnInit: Se ejecuta cuando el componente es inicializado, se verifica si está en un navegador y se establece el listener para el cambio de tamaño.
    */
   ngOnInit(): void {
-    this.isBrowser = isPlatformBrowser(this.platformId);  // Solo ejecuta la lógica de navegador
     if (this.isBrowser) {
       this.resizeListener = this.renderer.listen(window, 'resize', () => this.setItemsPerPageCSSVariable());
+      this.updateIndicators();  // Calcula los indicadores al inicio
     }
 
-    this.updateIndicators();  // Calcula los indicadores al inicio
+    this.checkIfHomeRoute(); // Verificar si estamos en home
+    this.router.events.subscribe(() => this.checkIfHomeRoute()); // Detectar cambios de ruta
   }
 
   /**
@@ -72,6 +78,10 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     if (this.isBrowser && this.resizeListener) {
       this.resizeListener();  // Limpia el listener en el destroy
     }
+  }
+
+  private checkIfHomeRoute(): void {
+    this.isHomeRoute = this.router.url === '/';
   }
 
   // Lógica de galería

@@ -4,16 +4,17 @@
         class="carousel-control-prev d-none d-md-block"
         (click)="scrollLeft()"
         aria-label="Anterior">
-        &#10094; <!-- Icono de flecha izquierda -->
+        &#10094;
     </button>
 
     <!-- Contenedor del carrusel -->
     <div class="gallery" #carousel>
         <ul>
             <li *ngFor="let item of items; let i = index"
-                [class.active]="i === currentIndex">
+                [class.active]="i === currentIndex"
+                [class.home-route]="isHomeRoute">
                 <img [src]="item.image" [alt]="item.title" />
-                <div class="content">
+                <div class="content" *ngIf="isHomeRoute">
                     <span><h2>{{ item.title }}</h2></span>
                 </div>
             </li>
@@ -25,7 +26,7 @@
         class="carousel-control-next d-none d-md-block"
         (click)="scrollRight()"
         aria-label="Siguiente">
-        &#10095; <!-- Icono de flecha derecha -->
+        &#10095;
     </button>
 
     <!-- Indicadores de página -->

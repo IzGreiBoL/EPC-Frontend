@@ -50,7 +50,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: brightness(0.5);
     transition: filter 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
@@ -96,14 +95,20 @@
     text-align: right;
 }
 
-.gallery li:hover {
+/* Efecto hover para escritorio en ruta home*/
+.gallery li.home-route img {
+    filter: brightness(0.8);
+    transition: filter 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.gallery li.home-route:hover {
     flex: 0 0 calc(100% / var(--items-per-page));
     transform: scale(1.1);
     z-index: 10;
     transition: flex 0.3s ease-in-out, transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
-.gallery li:hover .content {
+.gallery li.home-route:hover .content {
     opacity: 1;
     visibility: visible;
 }
@@ -114,12 +119,53 @@
     visibility: visible;
 }
 
-.gallery:hover li img {
-    filter: brightness(0.3);
+.gallery:hover li.home-route img {
+    filter: brightness(0.5);
 }
 
-.gallery li:hover img {
-    filter: brightness(1);
+.gallery li.home-route:hover img {
+    filter: brightness(1.1);
+}
+
+/* Estilos para móviles (max-width: 767px) */
+@media (max-width: 767px) {
+    .gallery li {
+        flex: 0 0 calc(100% / var(--items-per-page));
+        transform: scale(1);
+        z-index: 10;
+    }
+
+    .gallery li .content {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .gallery li .content span {
+        transform: translateX(0%);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .gallery li img {
+        filter: brightness(1);
+    }
+
+    /* Desactivar hover en móviles */
+    .gallery li:hover {
+        transform: scale(1); /* Resetear transformación en hover */
+    }
+
+    .gallery li:hover .content {
+        opacity: 1; /* Mantener visible en móviles */
+    }
+
+    .gallery li:hover img {
+        filter: brightness(1); /* Mantener brillo en móviles */
+    }
+
+    .gallery:hover li img {
+        filter: brightness(1);
+    }
 }
 
 /* Carousel Control Styles */
@@ -161,9 +207,8 @@
 /* Carousel Indicators Styles */
 .carousel-indicators {
     position: absolute;
+    place-self: center;
     bottom: 30px;
-    left: 50%;
-    transform: translateX(-120%);
     display: flex;
     gap: 8px;
     z-index: 101;
