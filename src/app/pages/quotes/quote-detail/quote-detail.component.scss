@@ -1,3 +1,40 @@
+.container-fluid {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Estilos para la galería en versión de escritorio */
+@media (min-width: 768px) {
+  .container-fluid {
+    align-items: stretch;
+  }
+
+  .w-md-50 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  app-gallery {
+    align-self: center;
+    flex: 0 0 auto;
+  }
+}
+
+/* Ajustes en la vista móvil */
+@media (max-width: 767px) {
+  .container-fluid {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  app-gallery {
+    flex: 1 0 auto;
+  }
+}
+
 .sub-category {
   overflow-x: auto;
   max-width: 100%;
@@ -37,33 +74,33 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   white-space: nowrap;
+}
 
-  &.selected {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
-  }
+.option-button.selected {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
 
-  &:disabled {
-    background-color: #e0e0e0;
-    cursor: not-allowed;
-  }
+.option-button:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
 
-  &.completed {
-    background-color: #4caf50;
-    color: white;
-    border: none;
+.option-button.completed {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+}
 
-    &:hover {
-      background-color: #45a049;
-    }
-  }
+.option-button.completed:hover {
+  background-color: #45a049;
+}
 
-  &:hover {
-    background-color: #e0e0e0;
-  }
+.option-button:hover {
+  background-color: #e0e0e0;
+}
 
-  &:active {
-    background-color: #d0d0d0;
-  }
+.option-button:active {
+  background-color: #d0d0d0;
 }

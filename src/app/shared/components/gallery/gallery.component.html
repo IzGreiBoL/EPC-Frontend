@@ -1,4 +1,5 @@
-<div class="gallery-container flex-grow-1" #galleryContainer>
+<div class="gallery-container flex-grow-1" #galleryContainer
+    [ngClass]="size ? size : ''">
     <!-- Botón de navegación anterior -->
     <button *ngIf="showPrevButton$ | async"
         class="carousel-control-prev d-none d-md-block"

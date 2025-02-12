@@ -8,6 +8,18 @@
     --items-per-page: 1;
 }
 
+.gallery-container {
+    &.small {
+      min-height: 250px;
+    }
+    &.medium {
+      min-height: 350px;
+    }
+    &.large {
+      min-height: 500px;
+    }
+  }
+
 .gallery {
     width: 100%;
     display: flex;
@@ -82,7 +94,7 @@
     z-index: 1;
     color: #fff;
     padding: 15px;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 60%);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 40%);
     opacity: 0;
     visibility: hidden;
     display: flex;

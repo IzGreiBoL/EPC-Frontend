@@ -14,8 +14,16 @@ import { Router } from '@angular/router';
 export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   @Input() items: { image: string, title: string }[] = [];
   @Input() itemsPerPage = 1;
+  @Input() size?: 'small' | 'medium' | 'large' | string;
+
   @ViewChild('carousel', { static: false }) carousel!: ElementRef;
   @ViewChild('galleryContainer', { static: false }) galleryContainer!: ElementRef;
+
+  private sizeMap: { [key: string]: string } = {
+    small: '200px',
+    medium: '350px',
+    large: '450px'
+  };
 
   currentIndex = 0;
   pages: number[] = [];
@@ -237,5 +245,9 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
   private updateButtonVisibility(): void {
     this.showPrevButton$.next(this.currentIndex > 0);
     this.showNextButton$.next(this.currentIndex < this.items.length - this.getItemsPerPage());
+  }
+
+  get computedHeight(): string | null {
+    return this.size ? this.sizeMap[this.size] || this.size : null;
   }
 }
