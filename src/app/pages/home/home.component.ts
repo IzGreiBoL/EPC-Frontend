@@ -1,7 +1,7 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MaterialModule } from '../../shared/material/material.module';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { QuotesService } from '../../core/services/quotes.service';
 import { Quote } from '../../core/models/quote.model';
@@ -24,7 +24,10 @@ declare const Email: {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
+  @ViewChild('projects') projectsSection!: ElementRef;
+  @ViewChild('contactus') contactUsSection!: ElementRef;
+
   isSidebarOpen = false; // Estado del sidebar
   isTransparent = false;
 
@@ -33,6 +36,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
+    private route: ActivatedRoute,
     private quotesService: QuotesService
   ) { }
 
@@ -44,8 +48,31 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit() {
+    this.route.fragment.subscribe(fragment => {
+      if (fragment === 'projects') {
+        this.scrollToProjects();
+      }
+      if (fragment === 'contact-us') {
+        this.scrollToContactUs();
+      }
+    });
+  }
+
   toggleSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  scrollToProjects() {
+    if (this.projectsSection) {
+      this.projectsSection.nativeElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  scrollToContactUs() {
+    if (this.contactUsSection) {
+      this.contactUsSection.nativeElement.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   sendEmail() {
