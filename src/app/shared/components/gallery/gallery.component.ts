@@ -1,7 +1,11 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild, ChangeDetectorRef, Inject, PLATFORM_ID, OnInit, Renderer2, OnChanges, SimpleChanges, OnDestroy, HostListener, ChangeDetectionStrategy, NgZone } from '@angular/core';
+import {
+  AfterViewInit, Component, ElementRef, Input, ViewChild, ChangeDetectorRef,
+  Inject, PLATFORM_ID, OnInit, Renderer2, OnChanges, SimpleChanges, OnDestroy,
+  HostListener, ChangeDetectionStrategy, NgZone
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { BehaviorSubject } from 'rxjs';
-import { Router } from '@angular/router';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-gallery',
@@ -9,31 +13,46 @@ import { Router } from '@angular/router';
   imports: [CommonModule],
   templateUrl: './gallery.component.html',
   styleUrls: ['./gallery.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush  // Optimiza la detección de cambios
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
+
+  //#region INPUTS Y VARIABLES DE ESTADO
+
+  /** Inputs **/
   @Input() items: { image: string, title: string }[] = [];
   @Input() itemsPerPage = 1;
   @Input() size?: 'small' | 'medium' | 'large' | string;
 
+  /** ViewChilds **/
   @ViewChild('carousel', { static: false }) carousel!: ElementRef;
   @ViewChild('galleryContainer', { static: false }) galleryContainer!: ElementRef;
 
+  /** Variables de estado **/
+  currentIndex = 0;
+  pages: number[] = [];
+  showPrevButton$ = new BehaviorSubject<boolean>(false);
+  showNextButton$ = new BehaviorSubject<boolean>(true);
+  public isHomeRoute = false;
+  private isBrowser: boolean = false;
+
+  /** Mapeo de tamaños **/
   private sizeMap: { [key: string]: string } = {
     small: '200px',
     medium: '350px',
     large: '450px'
   };
 
-  currentIndex = 0;
-  pages: number[] = [];
-  showPrevButton$ = new BehaviorSubject<boolean>(false);
-  showNextButton$ = new BehaviorSubject<boolean>(true);
-
+  /** Datos de deslizamiento **/
   private swipeData = { startX: 0, endX: 0, startTime: 0, endTime: 0 };
+
+  /** Suscripciones y listeners **/
   private resizeListener!: () => void;
-  private isBrowser: boolean = false;
-  public isHomeRoute = false;
+  private routeSubscription!: Subscription;
+
+  //#endregion
+
+  //#region CONSTRUCTOR
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -42,26 +61,32 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     private renderer: Renderer2,
     private router: Router
   ) {
-    this.isBrowser = isPlatformBrowser(this.platformId); // Asegurar que se evalúa correctamente
+    this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
-  // Ciclo de vida de Angular
+  //#endregion
 
-  /**
-   * ngOnInit: Se ejecuta cuando el componente es inicializado, se verifica si está en un navegador y se establece el listener para el cambio de tamaño.
+  //#region CICLO DE VIDA
+
+  /*
+   * Inicializa eventos y suscripciones al iniciar el componente
    */
   ngOnInit(): void {
     if (this.isBrowser) {
       this.resizeListener = this.renderer.listen(window, 'resize', () => this.setItemsPerPageCSSVariable());
-      this.updateIndicators();  // Calcula los indicadores al inicio
+      this.updateIndicators();
     }
-
-    this.checkIfHomeRoute(); // Verificar si estamos en home
-    this.router.events.subscribe(() => this.checkIfHomeRoute()); // Detectar cambios de ruta
+    this.checkIfHomeRoute();
+    this.routeSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        setTimeout(() => this.checkIfHomeRoute(), 0);
+      }
+    });
   }
 
   /**
-   * ngOnChanges: Se ejecuta cuando hay cambios en las entradas del componente, en este caso actualiza el número de elementos por página si es necesario.
+   * Detecta cambios en los inputs del componente.
+   * @param changes - Contiene los cambios en los inputs.
    */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['itemsPerPage'] && this.isBrowser) {
@@ -69,45 +94,55 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     }
   }
 
-  /**
-   * ngAfterViewInit: Se ejecuta después de la inicialización de las vistas del componente, realizando la detección de cambios si estamos en el navegador.
+  /*
+   * Ejecuta lógica después de que la vista ha sido renderizada
    */
   ngAfterViewInit(): void {
     if (this.isBrowser) {
-      this.cdr.detectChanges();  // Fuerza la detección de cambios
+      this.cdr.detectChanges();
       this.setItemsPerPageCSSVariable();
     }
   }
 
-  /**
-   * ngOnDestroy: Limpia el listener cuando el componente se destruye para evitar fugas de memoria.
+  /*
+   * Limpia suscripciones y eventos al destruir el componente
    */
   ngOnDestroy(): void {
     if (this.isBrowser && this.resizeListener) {
-      this.resizeListener();  // Limpia el listener en el destroy
+      this.resizeListener();
     }
+    this.routeSubscription?.unsubscribe();
   }
 
+  //#endregion
+
+  //#region LÓGICA DE LA RUTA, RUTA HOME
+
+  /*
+   * Verifica si la ruta actual es la home y actualiza la variable isHomeRoute
+   */
   private checkIfHomeRoute(): void {
-    this.isHomeRoute = this.router.url === '/';
+    this.isHomeRoute = this.router.url.startsWith('/#') || this.router.url === '/';
+    this.cdr.detectChanges();
   }
 
-  // Lógica de galería
+  //#endregion
+
+  //#region FUNCIONES DE PAGINACIÓN
 
   /**
-   * getItemsPerPage: Devuelve la cantidad de elementos a mostrar por página según el tamaño de la pantalla.
+   * Retorna la cantidad de elementos por página, dependiendo del tamaño de pantalla.
+   * @returns {number} - Número de elementos por página.
    */
   public getItemsPerPage(): number {
-    return window.innerWidth <= 768 ? 1 : this.itemsPerPage;  // Ajusta según el tamaño de pantalla
+    return window.matchMedia('(max-width: 768px)').matches ? 1 : this.itemsPerPage;
   }
 
-  /**
-   * setItemsPerPageCSSVariable: Establece el número de elementos por página en una variable CSS personalizada para ser utilizada en el CSS.
+  /*
+   * Actualiza la variable CSS que define los elementos por página
    */
   private setItemsPerPageCSSVariable(): void {
-    if (!this.isBrowser || !this.galleryContainer?.nativeElement) {
-      return;
-    }
+    if (!this.isBrowser || !this.galleryContainer?.nativeElement) return;
     this.zone.runOutsideAngular(() => {
       requestAnimationFrame(() => {
         this.galleryContainer.nativeElement.style.setProperty('--items-per-page', `${this.getItemsPerPage()}`);
@@ -115,10 +150,36 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     });
   }
 
-  // Funciones de navegación
+  /*
+   * Actualiza la paginación del carrusel
+   */
+  private updateIndicators(): void {
+    this.pages = Array.from({ length: Math.ceil(this.items.length / this.getItemsPerPage()) }, (_, i) => i);
+    this.updateButtonVisibility();
+  }
 
   /**
-   * scrollLeft: Desplaza la galería hacia la izquierda.
+   * Obtiene el número de la página actual.
+   * @returns {number} - Número de la página actual.
+   */
+  getCurrentPage(): number {
+    return Math.floor(this.currentIndex / this.getItemsPerPage());
+  }
+
+  /*
+   * Muestra u oculta los botones de navegación según la posición actual
+   */
+  private updateButtonVisibility(): void {
+    this.showPrevButton$.next(this.currentIndex > 0);
+    this.showNextButton$.next(this.currentIndex < this.items.length - this.getItemsPerPage());
+  }
+
+  //#endregion
+
+  //#region FUNCIONES DE NAVEGACIÓN
+
+  /*
+   * Mueve el carrusel hacia la izquierda
    */
   scrollLeft(): void {
     if (this.currentIndex > 0) {
@@ -127,8 +188,8 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     }
   }
 
-  /**
-   * scrollRight: Desplaza la galería hacia la derecha.
+  /*
+   * Mueve el carrusel hacia la derecha
    */
   scrollRight(): void {
     const maxIndex = this.items.length - 1;
@@ -139,8 +200,8 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
   }
 
   /**
-   * scrollToIndex: Desplaza la galería a un índice específico y actualiza los indicadores.
-   * @param index El índice al que se debe desplazar la galería.
+   * Desplaza el carrusel a un índice específico.
+   * @param index - Índice del elemento al que se quiere desplazar.
    */
   public scrollToIndex(index: number): void {
     const carousel = this.carousel.nativeElement;
@@ -152,8 +213,8 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     this.updateButtonVisibility();
   }
 
-  /**
-   * activateCurrentItem: Activa la clase "active" en el ítem actual de la galería.
+  /*
+   * Agrega la clase `active` al elemento actualmente visible
    */
   private activateCurrentItem(): void {
     const items = this.carousel.nativeElement.querySelectorAll('li');
@@ -162,11 +223,12 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     });
   }
 
-  // Funciones de gestos táctiles (swipe)
+  //#endregion
 
-  /**
-   * onTouchStart: Maneja el inicio del gesto táctil, guardando la posición inicial del toque.
-   * @param event El evento de toque.
+  //#region FUNCIONES DE DESLIZAMIENTO TÁCTIL
+
+  /*
+   * Captura el inicio de un deslizamiento táctil
    */
   @HostListener('touchstart', ['$event'])
   onTouchStart(event: TouchEvent): void {
@@ -176,9 +238,8 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     }
   }
 
-  /**
-   * onTouchEnd: Maneja el final del gesto táctil y calcula la acción correspondiente (desplazamiento).
-   * @param event El evento de toque finalizado.
+  /*
+   * Captura el final de un deslizamiento táctil y lo procesa
    */
   @HostListener('touchend', ['$event'])
   onTouchEnd(event: TouchEvent): void {
@@ -189,16 +250,16 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     }
   }
 
-  /**
-   * handleSwipe: Calcula la dirección y velocidad del deslizamiento y realiza la acción de desplazamiento correspondiente.
+  /*
+   * Procesa el deslizamiento y determina si se mueve el carrusel
    */
   private handleSwipe(): void {
     const deltaX = this.swipeData.endX - this.swipeData.startX;
     const deltaTime = Math.max(1, this.swipeData.endTime - this.swipeData.startTime);
     const velocity = Math.abs(deltaX) / deltaTime;
 
-    const threshold = 50;  // Umbral para el desplazamiento
-    const minVelocity = 0.3;  // Velocidad mínima para considerar swipe
+    const threshold = 50;
+    const minVelocity = 0.3;
 
     if (Math.abs(deltaX) > threshold || velocity > minVelocity) {
       if (deltaX > 0) {
@@ -211,8 +272,8 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     }
   }
 
-  /**
-   * snapToClosest: Ajusta el desplazamiento a la posición más cercana al índice de los elementos.
+  /*
+   * Ajusta el carrusel para que se alinee con el ítem más cercano
    */
   private snapToClosest(): void {
     const carousel = this.carousel.nativeElement;
@@ -221,33 +282,17 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     this.scrollToIndex(newIndex);
   }
 
-  // Funciones de indicadores y botones
+  //#endregion
+
+  //#region FUNCIONES DE ESTILO 
 
   /**
-   * updateIndicators: Actualiza los indicadores de la galería y la visibilidad de los botones de navegación.
+   * Calcula la altura del carrusel según el tamaño especificado.
+   * @returns {string | null} - Altura calculada del carrusel o `null` si no hay tamaño definido.
    */
-  private updateIndicators(): void {
-    this.pages = Array.from({ length: Math.ceil(this.items.length / this.getItemsPerPage()) }, (_, i) => i);
-    this.showPrevButton$.next(this.currentIndex > 0);
-    this.showNextButton$.next(this.currentIndex < this.items.length - this.getItemsPerPage());
-  }
-
-  /**
-   * getCurrentPage: Devuelve la página actual según el índice de los elementos.
-   */
-  getCurrentPage(): number {
-    return Math.floor(this.currentIndex / this.getItemsPerPage());
-  }
-
-  /**
-   * updateButtonVisibility: Actualiza la visibilidad de los botones de navegación (anterior y siguiente).
-   */
-  private updateButtonVisibility(): void {
-    this.showPrevButton$.next(this.currentIndex > 0);
-    this.showNextButton$.next(this.currentIndex < this.items.length - this.getItemsPerPage());
-  }
-
   get computedHeight(): string | null {
     return this.size ? this.sizeMap[this.size] || this.size : null;
   }
+
+  //#endregion
 }
