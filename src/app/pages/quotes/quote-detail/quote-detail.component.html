@@ -1,47 +1,117 @@
-<div class="container-fluid my-2 flex-grow-1 d-flex flex-column flex-md-row">
-  <div *ngIf="item" class="d-flex flex-column flex-md-row w-100">
-    <!-- Contenedor de la imagen y el título -->
-    <div class="w-100 w-md-50 pe-md-3 pb-3 d-flex flex-column justify-content-center">
-      <h3>{{ item.text }}</h3>
-      <app-gallery [items]="galleryItems" [itemsPerPage]="1" size="medium" class="w-100"></app-gallery>
+<div class="quote-detail">
+  <div class="content p-4">
+    <!-- Galería de imágenes -->
+    <div class="mb-5">
+      <app-gallery [items]="galleryItems" [itemsPerPage]="1"
+        size="medium"></app-gallery>
     </div>
 
-    <!-- Contenedor de las categorías -->
-    <div class="w-100 w-md-50 ps-md-3">
-      <div *ngFor="let category of item.categories; let i = index" class="mb-4">
-        <div class="d-flex justify-content-between align-items-center">
-          <h4 class="m-0">{{ category.name }}</h4>
-          <button class="btn btn-sm btn-outline-primary" (click)="toggleCategory(i)" aria-label="Toggle Category">
-            <span *ngIf="expandedCategories[i]">➖</span>
-            <span *ngIf="!expandedCategories[i]">➕</span>
-          </button>
-        </div>
-
-        <div *ngIf="expandedCategories[i]" class="button-group d-flex flex-wrap mt-2">
-          <ng-container *ngFor="let option of category.options; let j = index">
-            <ng-container *ngIf="isString(option); else subCategoryTemplate">
-              <div class="p-2">
-                <button class="option-button" [class.selected]="isOptionCompleted(i, j)" (click)="completeOption(i, j)">
-                  {{ option }}
-                </button>
-              </div>
-            </ng-container>
-            <ng-template #subCategoryTemplate>
-              <div class="sub-category">
-                <strong class="secondary-text" *ngIf="!isString(option)">{{ option.name }}:</strong>
-                <div class="sub-button-group" *ngIf="!isString(option) && option.options">
-                  <div class="p-2" *ngFor="let subOption of option.options; let k = index">
-                    <button class="option-button" [class.selected]="isSubOptionCompleted(i, j, k)"
-                      (click)="completeOption(i, j, k)">
-                      {{ subOption }}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </ng-template>
-          </ng-container>
+    <!-- Barra de progreso -->
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="progress"></div>
+      </div>
+      <div class="icon-steps">
+        <div *ngFor="let step of [].constructor(totalSteps); let i = index"
+          class="step">
+          <div class="icon" [class.active]="i <= currentCategoryIndex"></div>
         </div>
       </div>
+    </div>
+
+    <!-- Contenedor de categorías -->
+    <div class="category-container" *ngIf="currentCategory">
+      <h3> <lucide-angular [img]="getIconByCategory(currentCategory.name)"
+          class="category-icon"></lucide-angular> {{ currentCategory.name
+        }}</h3>
+      <div class="options two-columns">
+        <div
+          *ngFor="let option of currentCategory.options; let subIndex = index">
+          <div class="option-group">
+            <!-- Si es un SubCategory -->
+            <h4 *ngIf="option?.name">{{ option.name }}</h4>
+
+            <div class="button-row">
+              <ng-container
+                *ngIf="option?.options && option.options.length > 0; else simpleOption">
+                <button
+                  *ngFor="let subOption of option.options; let optIndex = index"
+                  [class.selected]="isSelected(subIndex, optIndex)"
+                  (click)="selectOption(subIndex, optIndex)">
+                  {{ subOption.name }}
+                </button>
+              </ng-container>
+
+              <!-- Opción simple para cadenas -->
+              <ng-template #simpleOption>
+                <button
+                  [class.selected]="isSelected(subIndex, 0)"
+                  (click)="selectOption(subIndex, 0)">
+                  {{ option }}
+                </button>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estimado y botones -->
+    <div class="estimate-container p-4">
+      <div>
+        <div class="estimated-total">
+          <h2>Estimated Total</h2>
+          <div class="total-amount">{{ estimatedTotal | currency }}</div>
+        </div>
+        <!-- Secciones organizadas -->
+        <div class="user-selections">
+          <ul>
+            <li *ngFor="let selection of formattedSelections"
+              class="primary-text">
+              <strong><lucide-angular
+                  [img]="getIconByCategory(selection.category)"
+                  class="category-icon"></lucide-angular> {{ selection.category
+                }}</strong>
+              <ul>
+                <li *ngFor="let sub of selection.subcategories">
+                  {{ sub }}
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Botón de Price Breakdown -->
+        <button class="breakdown-button" (click)="toggleBreakdown()">
+          🛠️ Price Breakdown
+        </button>
+
+        <div *ngIf="showBreakdown" class="breakdown-details">
+          <h5>Base Price</h5>
+          <div *ngFor="let item of breakdownItems"
+            class="justify-content-between d-flex text-white text-light">
+            <span class>{{ item.name }}</span>
+            <span class>+{{ item.price | currency }}</span>
+          </div>
+          <div class="breakdown-total">
+            Total: {{ estimatedTotal | currency }}
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <button class="quote-button" (click)="requestQuote()">
+          <lucide-angular [img]="this.mailIcon"></lucide-angular> Request Quote
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Navegación -->
+    <div class="navigation-buttons">
+      <button (click)="previousCategory()"
+        [disabled]="!hasPrevious()">Previous</button>
+      <button (click)="nextCategory()" [disabled]="!hasNext()">Next</button>
     </div>
   </div>
 </div>

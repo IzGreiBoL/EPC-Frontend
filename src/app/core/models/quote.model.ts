@@ -1,18 +1,19 @@
 export interface Quote {
   id: number;
-  name: string; // Nombre del proyecto
-  text: string; // Texto del proyecto
-  folder: string; // Carpeta de imágenes
+  name: string;
+  text: string;
+  folder: string;
   categories: QuoteCategory[];
 }
 
 export interface QuoteCategory {
   id: number;
   name: string;
-  options: (string | { name: string; options: string[] })[];
+  icon: string;
+  options: SubCategory[];
 }
 
 export interface SubCategory {
   name: string;
-  options: string[];
+  options: { name: string; price: number }[];
 }

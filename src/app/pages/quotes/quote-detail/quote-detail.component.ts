@@ -1,118 +1,189 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { QuotesService } from '../../../core/services/quotes.service';
-import { Quote } from '../../../core/models/quote.model';
-import { CommonModule } from '@angular/common';
+import { Quote, SubCategory } from '../../../core/models/quote.model';
+import { NgFor, CurrencyPipe, CommonModule } from '@angular/common';
 import { GalleryComponent } from '../../../shared/components/gallery/gallery.component';
+import { LucideAngularModule, Mail } from 'lucide-angular';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
   selector: 'app-quote-detail',
   templateUrl: './quote-detail.component.html',
   styleUrls: ['./quote-detail.component.scss'],
   standalone: true,
-  imports: [CommonModule, GalleryComponent],
+  imports: [CommonModule, NgFor, CurrencyPipe, GalleryComponent, LucideAngularModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class QuoteDetailComponent implements OnInit {
   item: Quote | undefined;
-  expandedCategories: boolean[] = [];
-  completedOptions: boolean[][][] = [];
-  images: string[] = [];
-  galleryItems: { image: string, title: string }[] = [];
+  galleryItems: { image: string; title: string }[] = [];
+  currentCategoryIndex = 0;
+  userSelections: Record<string, string> = {};
+  estimatedTotal = 415000;
+  basePrice = 400000;
+  showBreakdown = false;
+  formattedSelections: { category: string; subcategories: string[] }[] = [];
+  breakdownItems: { name: string; price: number }[] = [];
+  mailIcon = Mail;
 
-  constructor(
-    private route: ActivatedRoute,
-    private quotesService: QuotesService,
-    private cdr: ChangeDetectorRef
-  ) { }
+  constructor(private route: ActivatedRoute, public quotesService: QuotesService) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      const idParam = params.get('id');
-      if (idParam !== null) {
-        const id = +idParam;
-        this.item = this.quotesService.getItemById(id);
+      const id = +params.get('id')!;
+      this.item = this.quotesService.getItemById(id);
+      if (this.item) {
+        const images = this.quotesService.getImagesFromFolder(this.item.folder);
+        this.galleryItems = images.map((image) => ({ image, title: this.item?.text ?? '' }));
 
-        if (this.item) {
-          this.expandedCategories = new Array(this.item.categories.length).fill(false);
-          this.expandedCategories[0] = true;
+        this.item.categories.forEach((category, index) => {
+          if (category.options) {
+            category.options.forEach((option, subIndex) => {
+              if (this.isSubcategory(option)) {
+                this.userSelections[`${index}_${subIndex}`] = `${option.name}: ${option.options[0]?.name ?? ''}`;
+              } else {
+                this.userSelections[`${index}_${subIndex}`] = `${category.name}: ${option}`;
+              }
+            });
+          }
+        });
 
-          this.completedOptions = this.item.categories.map((category) =>
-            category.options.map((option) =>
-              typeof option === 'string'
-                ? [false]  // Inicializa como un solo booleano para opciones simples
-                : option.options.map(() => false)  // Para opciones con subopciones
-            )
-          ) as boolean[][][];  // Asegura que es de tipo boolean[][][]
-
-          // Obtener las imágenes de la carpeta correspondiente
-          this.images = this.quotesService.getImagesFromFolder(this.item.folder);
-          this.galleryItems = this.images.map(image => ({ image: image, title: this.item!.text }));
-        }
+        this.updateFormattedSelections();
+        this.calculateTotal();
       }
     });
   }
 
-  toggleCategory(index: number): void {
-    this.expandedCategories[index] = !this.expandedCategories[index]; // Solo cambiar el valor de la categoría en lugar de todas
+  get currentCategory() {
+    return this.item?.categories[this.currentCategoryIndex];
   }
 
-  completeOption(categoryIndex: number, optionIndex: number, subOptionIndex?: number): void {
-    const category = this.item!.categories[categoryIndex];
+  get totalSteps() {
+    return this.item?.categories.length ?? 0;
+  }
 
-    if (this.isString(category.options[optionIndex])) {
-      // Para categorías con opciones simples (strings)
-      this.completedOptions[categoryIndex] = this.completedOptions[categoryIndex].map((_, idx) =>
-        idx === optionIndex ? [true] : [false]
+  get progress() {
+    return ((this.currentCategoryIndex + 1) / (this.totalSteps || 1)) * 100;
+  }
+
+  selectOption(subIndex: number, optionIndex: number): void {
+    const category = this.currentCategory;
+
+    if (category?.options) {
+      const option = category.options[subIndex];
+      if (this.isSubcategory(option)) {
+        const selectedSubOption = option.options[optionIndex];
+        if (selectedSubOption) {
+          const selection = `${option.name}: ${selectedSubOption.name}`;
+          this.userSelections[`${this.currentCategoryIndex}_${subIndex}`] = selection;
+        }
+      }
+      this.updateFormattedSelections();
+      this.calculateTotal();
+    }
+  }
+
+  updateFormattedSelections(): void {
+    const groupedSelections: { category: string; subcategories: string[] }[] = [];
+  
+    Object.entries(this.userSelections).forEach(([key, value]) => {
+      const [catIndex] = key.split('_');
+      const category = this.item?.categories[+catIndex];
+      if (category) {
+        let existing = groupedSelections.find(g => g.category === category.name);
+        if (!existing) {
+          existing = { category: category.name, subcategories: [] };
+          groupedSelections.push(existing);
+        }
+        existing.subcategories.push(value);
+      }
+    });
+  
+    this.formattedSelections = groupedSelections;
+  }
+  
+
+  calculateTotal(): void {
+    this.estimatedTotal = this.basePrice + Object.values(this.userSelections).reduce((total, selection) => {
+      const selectedOption = selection.split(': ')[1];
+      const category = this.item?.categories.find(cat =>
+        cat.options.some(sub => sub.options.some(opt => opt.name === selectedOption))
       );
-    } else {
-      // Para opciones con subopciones
-      if (subOptionIndex !== undefined) {
-        this.completedOptions[categoryIndex][optionIndex] = this.completedOptions[categoryIndex][optionIndex].map(() => false);
-        this.completedOptions[categoryIndex][optionIndex][subOptionIndex] = true;
+
+      const price = category?.options.flatMap(sub => sub.options).find(opt => opt.name === selectedOption)?.price ?? 0;
+      return total + price;
+    }, 0);
+  }
+
+  isSelected(subIndex: number, optionIndex: number): boolean {
+    const category = this.currentCategory;
+    if (category?.options) {
+      const option = category.options[subIndex];
+      if (this.isSubcategory(option)) {
+        const selectedOptionName = option.options[optionIndex]?.name;
+        const selection = `${option.name}: ${selectedOptionName}`;
+        return Object.values(this.userSelections).includes(selection);
       } else {
-        this.completedOptions[categoryIndex][optionIndex] = [true];
+        const selection = `${category.name}: ${option}`;
+        return Object.values(this.userSelections).includes(selection);
       }
     }
+    return false;
+  }
 
-    // Verifica si la categoría está completa
-    if (this.isCategoryCompleted(categoryIndex)) {
-      this.expandedCategories[categoryIndex] = false; // Contraer la categoría actual
-      setTimeout(() => this.moveToNextCategory(categoryIndex), 0); // Expandir la siguiente categoría
+  isSubcategory(item: unknown): item is SubCategory {
+    return typeof item === 'object' && item !== null && 'name' in item && 'options' in item;
+  }
+
+  previousCategory(): void {
+    if (this.hasPrevious()) {
+      this.currentCategoryIndex--;
+      this.updateFormattedSelections();
     }
   }
 
-  isCategoryCompleted(categoryIndex: number): boolean {
-    const category = this.item!.categories[categoryIndex];
-
-    // Para categorías con opciones simples (strings)
-    if (category.options.every((option) => typeof option === 'string')) {
-      return this.completedOptions[categoryIndex].some((option) => option[0] === true);
-    }
-
-    // Para categorías con subcategorías
-    return this.completedOptions[categoryIndex].every((option) =>
-      Array.isArray(option) ? option.some((subOption) => subOption === true) : option[0]
-    );
-  }
-
-  moveToNextCategory(categoryIndex: number): void {
-    const nextCategoryIndex = categoryIndex + 1;
-    if (nextCategoryIndex < this.expandedCategories.length) {
-      this.expandedCategories[nextCategoryIndex] = true; // Solo expandir la siguiente categoría
-      this.cdr.detectChanges(); // Forzar la detección de cambios
+  nextCategory(): void {
+    if (this.hasNext()) {
+      this.currentCategoryIndex++;
+      this.updateFormattedSelections();
     }
   }
 
-  isOptionCompleted(categoryIndex: number, optionIndex: number): boolean {
-    const option = this.completedOptions[categoryIndex][optionIndex];
-    return Array.isArray(option) ? option.every((subOption) => subOption === true) : option[0];
+  hasPrevious(): boolean {
+    return this.currentCategoryIndex > 0;
   }
 
-  isSubOptionCompleted(categoryIndex: number, optionIndex: number, subOptionIndex: number): boolean {
-    return this.completedOptions[categoryIndex][optionIndex][subOptionIndex] === true;
+  hasNext(): boolean {
+    return this.currentCategoryIndex < (this.totalSteps - 1);
   }
 
-  isString(option: string | { name: string; options: string[] }): option is string {
-    return typeof option === 'string';
+  requestQuote(): void {
+    alert('Quote request sent!');
   }
+
+  toggleBreakdown(): void {
+    this.showBreakdown = !this.showBreakdown;
+    if (this.showBreakdown) {
+      this.updateBreakdown();
+    }
+  }
+
+  updateBreakdown(): void {
+    this.breakdownItems = Object.values(this.userSelections).map(selection => {
+      const selectedOption = selection.split(': ')[1];
+      const category = this.item?.categories.find(cat =>
+        cat.options.some(sub => sub.options.some(opt => opt.name === selectedOption))
+      );
+
+      const option = category?.options.flatMap(sub => sub.options).find(opt => opt.name === selectedOption);
+      return { name: selection, price: option?.price ?? 0 };
+    });
+  }
+
+  getIconByCategory(categoryName: string): any {
+    const category = this.item?.categories.find(cat => cat.name === categoryName);
+    return category ? this.quotesService.getIconByCategory(category) : null;
+  }
+  
 }
