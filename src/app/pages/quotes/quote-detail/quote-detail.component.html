@@ -28,31 +28,45 @@
       </h3>
       <div class="options two-columns">
         <div class="option-group">
-          <div
-            *ngFor="let option of currentCategory.options; let subIndex = index">
-            <!-- Si es un SubCategory -->
-            <h4 *ngIf="isSubcategory(option)">{{ option.name }}</h4>
-
-            <div class="button-row" *ngIf="isSubcategory(option)">
+          <!-- Contenedor único para los botones -->
+          <div class="button-row">
+            <!-- Opciones sin subcategorías -->
+            <ng-container
+              *ngFor="let option of currentCategory.options; let subIndex = index">
               <button
-                *ngFor="let subOption of option.options; let optIndex = index"
-                [class.selected]="isSelected(subIndex, optIndex)"
-                (click)="selectOption(subIndex, optIndex)">
-                {{ subOption.name }}
-              </button>
-            </div>
-
-            <!-- Opción simple para cadenas -->
-            <div class="button-row" *ngIf="!isSubcategory(option)">
-              <button
+                *ngIf="!isSubcategory(option)"
                 [class.selected]="isSelected(subIndex, 0)"
                 (click)="selectOption(subIndex, 0)">
                 {{ option.name }}
               </button>
-            </div>
+            </ng-container>
           </div>
+          <!-- Opciones con subcategorías -->
+          <ng-container
+            *ngFor="let option of currentCategory.options; let subIndex = index">
+            <ng-container *ngIf="isSubcategory(option)">
+              <!-- Contenedor de la subcategoría -->
+              <div class="subcategory-container">
+                <!-- Sección separada para el nombre de la subcategoría -->
+                <div class="subcategory-title">
+                  <h4>{{ option.name }}</h4>
+                </div>
+
+                <!-- Botones de la subcategoría -->
+                <div class="subcategory-buttons">
+                  <button
+                    *ngFor="let opt of option.options; let optIndex = index"
+                    [class.selected]="isSelected(subIndex, optIndex)"
+                    (click)="selectOption(subIndex, optIndex)">
+                    {{ opt.name }}
+                  </button>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
         </div>
       </div>
+
     </div>
 
     <!-- Estimado y botones -->
