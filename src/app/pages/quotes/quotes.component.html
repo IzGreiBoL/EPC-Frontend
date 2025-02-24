@@ -1,12 +1,31 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-md-4" *ngFor="let item of items">
-      <div class="card mb-4">
-        <a [routerLink]="['/quotes/detail', item.id]">
-          <img [src]="getFirstImage(item.folder)" class="card-img-top" alt="Image">
-        </a>
-        <div class="card-body">
-          <p class="card-text">{{ item.text }}</p>
+  <div class="row justify-content-center mt-4">
+    <div class="col-lg-6 col-md-6 mb-4" *ngFor="let item of items">
+      <div
+        class="custom-card d-flex flex-column flex-lg-row align-items-center">
+        <!-- Imagen -->
+        <div class="image-container">
+          <a [routerLink]="['/quotes/detail', item.id]">
+            <img [src]="getFirstImage(item.folder)" class="card-img-top"
+              alt="Image">
+          </a>
+        </div>
+
+        <!-- Contenido -->
+        <div class="card-body text-center text-lg-start">
+          <h3 class="card-title">{{ item.name }}</h3>
+          <p class="card-subtitle">{{ item.size }}</p>
+          <p class="card-description">Descripción breve del proyecto.</p>
+
+          <!-- Botones -->
+          <div class="quote-buttons">
+            <button class="btn btn-primary"
+              [routerLink]="['/quotes/detail', item.id, 'basic']">Basic
+              Quote</button>
+            <button class="btn btn-secondary"
+              [routerLink]="['/quotes/detail', item.id, 'advanced']">Advanced
+              Quote</button>
+          </div>
         </div>
       </div>
     </div>

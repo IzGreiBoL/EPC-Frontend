@@ -21,35 +21,34 @@
 
     <!-- Contenedor de categorías -->
     <div class="category-container" *ngIf="currentCategory">
-      <h3> <lucide-angular [img]="getIconByCategory(currentCategory.name)"
-          class="category-icon"></lucide-angular> {{ currentCategory.name
-        }}</h3>
+      <h3>
+        <lucide-angular [img]="getIconByCategory(currentCategory.name)"
+          class="category-icon"></lucide-angular>
+        {{ currentCategory.name }}
+      </h3>
       <div class="options two-columns">
-        <div
-          *ngFor="let option of currentCategory.options; let subIndex = index">
-          <div class="option-group">
+        <div class="option-group">
+          <div
+            *ngFor="let option of currentCategory.options; let subIndex = index">
             <!-- Si es un SubCategory -->
-            <h4 *ngIf="option?.name">{{ option.name }}</h4>
+            <h4 *ngIf="isSubcategory(option)">{{ option.name }}</h4>
 
-            <div class="button-row">
-              <ng-container
-                *ngIf="option?.options && option.options.length > 0; else simpleOption">
-                <button
-                  *ngFor="let subOption of option.options; let optIndex = index"
-                  [class.selected]="isSelected(subIndex, optIndex)"
-                  (click)="selectOption(subIndex, optIndex)">
-                  {{ subOption.name }}
-                </button>
-              </ng-container>
+            <div class="button-row" *ngIf="isSubcategory(option)">
+              <button
+                *ngFor="let subOption of option.options; let optIndex = index"
+                [class.selected]="isSelected(subIndex, optIndex)"
+                (click)="selectOption(subIndex, optIndex)">
+                {{ subOption.name }}
+              </button>
+            </div>
 
-              <!-- Opción simple para cadenas -->
-              <ng-template #simpleOption>
-                <button
-                  [class.selected]="isSelected(subIndex, 0)"
-                  (click)="selectOption(subIndex, 0)">
-                  {{ option }}
-                </button>
-              </ng-template>
+            <!-- Opción simple para cadenas -->
+            <div class="button-row" *ngIf="!isSubcategory(option)">
+              <button
+                [class.selected]="isSelected(subIndex, 0)"
+                (click)="selectOption(subIndex, 0)">
+                {{ option.name }}
+              </button>
             </div>
           </div>
         </div>
@@ -68,10 +67,11 @@
           <ul>
             <li *ngFor="let selection of formattedSelections"
               class="primary-text">
-              <strong><lucide-angular
-                  [img]="getIconByCategory(selection.category)"
-                  class="category-icon"></lucide-angular> {{ selection.category
-                }}</strong>
+              <strong>
+                <lucide-angular [img]="getIconByCategory(selection.category)"
+                  class="category-icon"></lucide-angular>
+                {{ selection.category }}
+              </strong>
               <ul>
                 <li *ngFor="let sub of selection.subcategories">
                   {{ sub }}
@@ -90,8 +90,8 @@
           <h5>Base Price</h5>
           <div *ngFor="let item of breakdownItems"
             class="justify-content-between d-flex text-white text-light">
-            <span class>{{ item.name }}</span>
-            <span class>+{{ item.price | currency }}</span>
+            <span>{{ item.name }}</span>
+            <span>+{{ item.price | currency }}</span>
           </div>
           <div class="breakdown-total">
             Total: {{ estimatedTotal | currency }}
@@ -104,7 +104,6 @@
           <lucide-angular [img]="this.mailIcon"></lucide-angular> Request Quote
         </button>
       </div>
-
     </div>
 
     <!-- Navegación -->

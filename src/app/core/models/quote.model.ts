@@ -1,7 +1,7 @@
 export interface Quote {
   id: number;
   name: string;
-  text: string;
+  size: string;
   folder: string;
   categories: QuoteCategory[];
 }
@@ -10,10 +10,15 @@ export interface QuoteCategory {
   id: number;
   name: string;
   icon: string;
-  options: SubCategory[];
+  options: (SubCategory | Option)[];
 }
 
 export interface SubCategory {
   name: string;
-  options: { name: string; price: number }[];
+  options: Option[];
+}
+
+export interface Option {
+  name: string;
+  price: number;
 }

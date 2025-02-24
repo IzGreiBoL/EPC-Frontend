@@ -26,24 +26,37 @@ export class QuoteDetailComponent implements OnInit {
   formattedSelections: { category: string; subcategories: string[] }[] = [];
   breakdownItems: { name: string; price: number }[] = [];
   mailIcon = Mail;
+  quoteType: 'basic' | 'advanced' = 'basic';
 
   constructor(private route: ActivatedRoute, public quotesService: QuotesService) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const id = +params.get('id')!;
+      const type = this.route.snapshot.paramMap.get('type') as 'basic' | 'advanced';
+      this.quoteType = type || 'basic';
       this.item = this.quotesService.getItemById(id);
       if (this.item) {
         const images = this.quotesService.getImagesFromFolder(this.item.folder);
-        this.galleryItems = images.map((image) => ({ image, title: this.item?.text ?? '' }));
+        this.galleryItems = images.map((image) => ({ image, title: this.item?.size ?? '' }));
+
+        const categories = this.quotesService.getCategoriesByType(this.quoteType);
+        this.item.categories = categories;
 
         this.item.categories.forEach((category, index) => {
-          if (category.options) {
+          if (this.quoteType === 'basic') {
+            // Preseleccionar solo la primera opción en la versión básica
+            if (category.options.length > 0) {
+              const option = category.options[0];
+              this.userSelections[`${index}_0`] = `${category.name}: ${option.name}`;
+            }
+          } else {
+            // Preseleccionar la primera opción de todas las subcategorías en la versión avanzada
             category.options.forEach((option, subIndex) => {
               if (this.isSubcategory(option)) {
                 this.userSelections[`${index}_${subIndex}`] = `${option.name}: ${option.options[0]?.name ?? ''}`;
               } else {
-                this.userSelections[`${index}_${subIndex}`] = `${category.name}: ${option}`;
+                this.userSelections[`${index}_${subIndex}`] = `${category.name}: ${option.name}`;
               }
             });
           }
@@ -78,6 +91,9 @@ export class QuoteDetailComponent implements OnInit {
           const selection = `${option.name}: ${selectedSubOption.name}`;
           this.userSelections[`${this.currentCategoryIndex}_${subIndex}`] = selection;
         }
+      } else {
+        const selection = `${category.name}: ${option.name}`;
+        this.userSelections[`${this.currentCategoryIndex}_${subIndex}`] = selection;
       }
       this.updateFormattedSelections();
       this.calculateTotal();
@@ -86,7 +102,7 @@ export class QuoteDetailComponent implements OnInit {
 
   updateFormattedSelections(): void {
     const groupedSelections: { category: string; subcategories: string[] }[] = [];
-  
+
     Object.entries(this.userSelections).forEach(([key, value]) => {
       const [catIndex] = key.split('_');
       const category = this.item?.categories[+catIndex];
@@ -99,19 +115,19 @@ export class QuoteDetailComponent implements OnInit {
         existing.subcategories.push(value);
       }
     });
-  
+
     this.formattedSelections = groupedSelections;
   }
-  
+
 
   calculateTotal(): void {
     this.estimatedTotal = this.basePrice + Object.values(this.userSelections).reduce((total, selection) => {
       const selectedOption = selection.split(': ')[1];
       const category = this.item?.categories.find(cat =>
-        cat.options.some(sub => sub.options.some(opt => opt.name === selectedOption))
+        cat.options.some(opt => this.isSubcategory(opt) ? opt.options.some(subOpt => subOpt.name === selectedOption) : opt.name === selectedOption)
       );
 
-      const price = category?.options.flatMap(sub => sub.options).find(opt => opt.name === selectedOption)?.price ?? 0;
+      const price = category?.options.flatMap(opt => this.isSubcategory(opt) ? opt.options : [opt]).find(opt => opt.name === selectedOption)?.price ?? 0;
       return total + price;
     }, 0);
   }
@@ -125,7 +141,7 @@ export class QuoteDetailComponent implements OnInit {
         const selection = `${option.name}: ${selectedOptionName}`;
         return Object.values(this.userSelections).includes(selection);
       } else {
-        const selection = `${category.name}: ${option}`;
+        const selection = `${category.name}: ${option.name}`;
         return Object.values(this.userSelections).includes(selection);
       }
     }
@@ -173,10 +189,10 @@ export class QuoteDetailComponent implements OnInit {
     this.breakdownItems = Object.values(this.userSelections).map(selection => {
       const selectedOption = selection.split(': ')[1];
       const category = this.item?.categories.find(cat =>
-        cat.options.some(sub => sub.options.some(opt => opt.name === selectedOption))
+        cat.options.some(opt => this.isSubcategory(opt) ? opt.options.some(subOpt => subOpt.name === selectedOption) : opt.name === selectedOption)
       );
 
-      const option = category?.options.flatMap(sub => sub.options).find(opt => opt.name === selectedOption);
+      const option = category?.options.flatMap(opt => this.isSubcategory(opt) ? opt.options : [opt]).find(opt => opt.name === selectedOption);
       return { name: selection, price: option?.price ?? 0 };
     });
   }
@@ -185,5 +201,5 @@ export class QuoteDetailComponent implements OnInit {
     const category = this.item?.categories.find(cat => cat.name === categoryName);
     return category ? this.quotesService.getIconByCategory(category) : null;
   }
-  
+
 }

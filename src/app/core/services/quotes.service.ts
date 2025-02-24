@@ -6,6 +6,49 @@ import { Home, DoorOpen, Blinds, ShowerHead, Lightbulb, Grid, Vault, Table, Pain
   providedIn: 'root'
 })
 export class QuotesService {
+  private basicCategories: QuoteCategory[] = [
+    {
+      id: 1, name: 'Kitchen Cabinets', icon: 'vault', options: [
+        { name: 'Shaker', price: 6000 },
+        { name: 'Modern Flat-Panel', price: 5500 },
+        { name: 'Traditional Raised-Panel', price: 5000 },
+        { name: 'Rustic', price: 6500 }
+      ]
+    },
+    {
+      id: 2, name: 'Exterior Design', icon: 'home', options: [
+        { name: 'Modern', price: 7000 },
+        { name: 'Traditional', price: 6000 },
+        { name: 'Contemporary', price: 8000 },
+        { name: 'Craftsman', price: 7500 }
+      ]
+    },
+    {
+      id: 3, name: 'Interior Finish Level', icon: 'paintbrush', options: [
+        { name: 'Standard', price: 5000 },
+        { name: 'Premium', price: 7000 },
+        { name: 'Luxury', price: 10000 },
+        { name: 'Custom', price: 12000 }
+      ]
+    },
+    {
+      id: 4, name: 'Number of Bedrooms', icon: 'door-open', options: [
+        { name: '2', price: 2000 },
+        { name: '3', price: 3000 },
+        { name: '4', price: 4000 },
+        { name: '5+', price: 5000 }
+      ]
+    },
+    {
+      id: 5, name: 'Number of Bathrooms', icon: 'shower-head', options: [
+        { name: '1', price: 1000 },
+        { name: '2', price: 2000 },
+        { name: '2.5', price: 2500 },
+        { name: '3+', price: 3000 }
+      ]
+    }
+  ];
+
   private categories: QuoteCategory[] = [
     {
       id: 1, name: 'Exterior Design', icon: 'home', options: [
@@ -187,11 +230,11 @@ export class QuotesService {
   ];
 
   private items: Quote[] = [
-    { id: 1, name: 'Avalon', text: '7400 FT SQ', folder: 'avalon', categories: this.categories },
-    { id: 2, name: 'Cascade', text: '3200 FT SQ', folder: 'cascade', categories: this.categories },
-    { id: 3, name: 'Estates', text: '7800 FT SQ', folder: 'estates', categories: this.categories },
-    { id: 4, name: 'Jewel', text: '2230 FT SQ', folder: 'jewel', categories: this.categories },
-    { id: 5, name: 'Pandora', text: '4444 FT SQ', folder: 'pandora', categories: this.categories }
+    { id: 1, name: 'Avalon', size: '7400 FT SQ', folder: 'avalon', categories: this.categories },
+    { id: 2, name: 'Cascade', size: '3200 FT SQ', folder: 'cascade', categories: this.categories },
+    { id: 3, name: 'Estates', size: '7800 FT SQ', folder: 'estates', categories: this.categories },
+    { id: 4, name: 'Jewel', size: '2230 FT SQ', folder: 'jewel', categories: this.categories },
+    { id: 5, name: 'Pandora', size: '4444 FT SQ', folder: 'pandora', categories: this.categories }
   ];
 
   private iconMap: Record<string, any> = {
@@ -236,5 +279,9 @@ export class QuotesService {
 
   getIconByCategory(category: QuoteCategory): string | null {
     return this.getIcon(category.icon);
+  }
+
+  getCategoriesByType(type: 'basic' | 'advanced'): QuoteCategory[] {
+    return type === 'basic' ? this.basicCategories : this.categories;
   }
 }
