@@ -3,7 +3,7 @@
     <!-- Galería de imágenes -->
     <div class="mb-5">
       <app-gallery [items]="galleryItems" [itemsPerPage]="1"
-        size="medium"></app-gallery>
+        size="small"></app-gallery>
     </div>
 
     <!-- Barra de progreso -->
@@ -67,64 +67,46 @@
         </div>
       </div>
 
+      <!-- Botones de navegación -->
+      <div class="navigation-buttons">
+        <button class="nav-button" (click)="previousCategory()"
+          [disabled]="!hasPrevious()">Previous</button>
+        <button class="nav-button" (click)="nextCategory()"
+          [disabled]="!hasNext()">Next</button>
+      </div>
     </div>
 
     <!-- Estimado y botones -->
-    <div class="estimate-container p-4">
-      <div>
+    <div class="estimate-container p-3">
+      <div class="estimate-content">
         <div class="estimated-total">
           <h2>Estimated Total</h2>
           <div class="total-amount">{{ estimatedTotal | currency }}</div>
         </div>
-        <!-- Secciones organizadas -->
-        <div class="user-selections">
-          <ul>
-            <li *ngFor="let selection of formattedSelections"
-              class="primary-text">
-              <strong>
-                <lucide-angular [img]="getIconByCategory(selection.category)"
-                  class="category-icon"></lucide-angular>
-                {{ selection.category }}
-              </strong>
-              <ul>
-                <li *ngFor="let sub of selection.subcategories">
-                  {{ sub }}
-                </li>
-              </ul>
-            </li>
-          </ul>
+        <div>
+          <button class="quote-button" (click)="requestQuote()">
+            <lucide-angular [img]="this.mailIcon"></lucide-angular> Request
+            Quote
+          </button>
         </div>
-
-        <!-- Botón de Price Breakdown -->
+      </div>
+      <!-- Botón de Price Breakdown -->
+      <!-- <div class="breakdown-button-container">
         <button class="breakdown-button" (click)="toggleBreakdown()">
-          🛠️ Price Breakdown
+          Price Breakdown
         </button>
-
-        <div *ngIf="showBreakdown" class="breakdown-details">
-          <h5>Base Price</h5>
-          <div *ngFor="let item of breakdownItems"
-            class="justify-content-between d-flex text-white text-light">
-            <span>{{ item.name }}</span>
-            <span>+{{ item.price | currency }}</span>
-          </div>
-          <div class="breakdown-total">
-            Total: {{ estimatedTotal | currency }}
-          </div>
+      </div>
+      <div *ngIf="showBreakdown" class="breakdown-details">
+        <h5>Base Price</h5>
+        <div *ngFor="let item of breakdownItems"
+          class="justify-content-between d-flex text-white text-light">
+          <span>{{ item.name }}</span>
+          <span>+{{ item.price | currency }}</span>
         </div>
-      </div>
-
-      <div>
-        <button class="quote-button" (click)="requestQuote()">
-          <lucide-angular [img]="this.mailIcon"></lucide-angular> Request Quote
-        </button>
-      </div>
-    </div>
-
-    <!-- Navegación -->
-    <div class="navigation-buttons">
-      <button (click)="previousCategory()"
-        [disabled]="!hasPrevious()">Previous</button>
-      <button (click)="nextCategory()" [disabled]="!hasNext()">Next</button>
+        <div class="breakdown-total">
+          Total: {{ estimatedTotal | currency }}
+        </div>
+      </div> -->
     </div>
   </div>
 </div>

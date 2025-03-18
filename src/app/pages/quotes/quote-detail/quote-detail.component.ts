@@ -85,6 +85,14 @@ export class QuoteDetailComponent implements OnInit {
 
     if (category?.options) {
       const option = category.options[subIndex];
+
+      // Limpiar selecciones previas solo para la subcategoría actual
+      Object.keys(this.userSelections).forEach((key) => {
+        if (key === `${this.currentCategoryIndex}_${subIndex}`) {
+          delete this.userSelections[key];
+        }
+      });
+
       if (this.isSubcategory(option)) {
         const selectedSubOption = option.options[optionIndex];
         if (selectedSubOption) {
@@ -95,6 +103,7 @@ export class QuoteDetailComponent implements OnInit {
         const selection = `${category.name}: ${option.name}`;
         this.userSelections[`${this.currentCategoryIndex}_${subIndex}`] = selection;
       }
+
       this.updateFormattedSelections();
       this.calculateTotal();
     }

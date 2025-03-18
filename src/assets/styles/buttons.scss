@@ -1,0 +1,45 @@
+// Botón primario
+.button-primary {
+    background-color: #c4953b; // Dorado
+    color: #fff; // Letras blancas
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: #b7832c; // Un dorado más oscuro para hover
+    }
+
+    &:disabled {
+        background-color: #ccc; // Gris para estado deshabilitado
+        cursor: not-allowed;
+    }
+}
+
+// Botón secundario
+.button-secondary {
+    background-color: #fff; // Blanco
+    color: #000; // Letras negras
+    border: 1px solid #ccc; // Borde gris claro
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    &:hover {
+        background-color: #f7f7f7; // Gris claro para hover
+        color: #333; // Letras gris oscuro
+    }
+
+    &:disabled {
+        background-color: #f9f9f9; // Gris muy claro para estado deshabilitado
+        color: #aaa; // Letras gris claro
+        cursor: not-allowed;
+    }
+}
