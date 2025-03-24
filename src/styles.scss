@@ -2,8 +2,10 @@
 @import "assets/styles/text.scss";
 @import "assets/styles/cards.scss";
 @import "assets/styles/buttons.scss";
+@import "assets/styles/modals.scss";
 
-html, body {
+html,
+body {
     height: 100% !important;
     font-family: "Montserrat", serif !important;
     font-optical-sizing: auto !important;
@@ -14,7 +16,9 @@ html, body {
 }
 
 @media (max-width: 544px) {
-    html, body {
+
+    html,
+    body {
         font-size: .90rem !important;
     }
 }

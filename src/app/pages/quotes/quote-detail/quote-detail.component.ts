@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { QuotesService } from '../../../core/services/quotes.service';
 import { Quote, SubCategory } from '../../../core/models/quote.model';
@@ -6,13 +6,15 @@ import { NgFor, CurrencyPipe, CommonModule } from '@angular/common';
 import { GalleryComponent } from '../../../shared/components/gallery/gallery.component';
 import { LucideAngularModule, Mail } from 'lucide-angular';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { QuoteModalComponent } from './quote-modal/quote-modal.component';
 
 @Component({
   selector: 'app-quote-detail',
   templateUrl: './quote-detail.component.html',
   styleUrls: ['./quote-detail.component.scss'],
   standalone: true,
-  imports: [CommonModule, NgFor, CurrencyPipe, GalleryComponent, LucideAngularModule],
+  imports: [CommonModule, NgFor, CurrencyPipe,LucideAngularModule, GalleryComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class QuoteDetailComponent implements OnInit {
@@ -27,8 +29,12 @@ export class QuoteDetailComponent implements OnInit {
   breakdownItems: { name: string; price: number }[] = [];
   mailIcon = Mail;
   quoteType: 'basic' | 'advanced' = 'basic';
+  gallerySize: 'small' | 'large' = 'large'; // Propiedad para el tamaño de la galería
 
-  constructor(private route: ActivatedRoute, public quotesService: QuotesService) { }
+  constructor(private route: ActivatedRoute,
+    private modalService: NgbModal,
+    public quotesService: QuotesService) {
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -66,6 +72,20 @@ export class QuoteDetailComponent implements OnInit {
         this.calculateTotal();
       }
     });
+
+    this.updateGallerySize();
+  }
+
+  // Detectar cambios en el tamaño de la ventana
+  @HostListener('window:resize', ['$event'])
+  onResize(): void {
+    this.updateGallerySize();
+  }
+
+  // Actualizar el tamaño de la galería según el ancho de la ventana
+  private updateGallerySize(): void {
+    const windowWidth = window.innerWidth;
+    this.gallerySize = windowWidth < 768 ? 'small' : 'large'; // Cambiar entre 'small' y 'medium'
   }
 
   get currentCategory() {
@@ -86,22 +106,39 @@ export class QuoteDetailComponent implements OnInit {
     if (category?.options) {
       const option = category.options[subIndex];
 
-      // Limpiar selecciones previas solo para la subcategoría actual
-      Object.keys(this.userSelections).forEach((key) => {
-        if (key === `${this.currentCategoryIndex}_${subIndex}`) {
-          delete this.userSelections[key];
-        }
-      });
+      // Lógica para la versión básica
+      if (this.quoteType === 'basic') {
+        // Limpiar todas las selecciones previas de la categoría actual
+        Object.keys(this.userSelections).forEach((key) => {
+          if (key.startsWith(`${this.currentCategoryIndex}_`)) {
+            delete this.userSelections[key];
+          }
+        });
 
-      if (this.isSubcategory(option)) {
-        const selectedSubOption = option.options[optionIndex];
-        if (selectedSubOption) {
-          const selection = `${option.name}: ${selectedSubOption.name}`;
-          this.userSelections[`${this.currentCategoryIndex}_${subIndex}`] = selection;
-        }
-      } else {
+        // Agregar la nueva selección
         const selection = `${category.name}: ${option.name}`;
         this.userSelections[`${this.currentCategoryIndex}_${subIndex}`] = selection;
+      }
+
+      // Lógica para la versión avanzada
+      else if (this.quoteType === 'advanced') {
+        // Limpiar selecciones previas solo para la subcategoría actual
+        Object.keys(this.userSelections).forEach((key) => {
+          if (key === `${this.currentCategoryIndex}_${subIndex}`) {
+            delete this.userSelections[key];
+          }
+        });
+
+        if (this.isSubcategory(option)) {
+          const selectedSubOption = option.options[optionIndex];
+          if (selectedSubOption) {
+            const selection = `${option.name}: ${selectedSubOption.name}`;
+            this.userSelections[`${this.currentCategoryIndex}_${subIndex}`] = selection;
+          }
+        } else {
+          const selection = `${category.name}: ${option.name}`;
+          this.userSelections[`${this.currentCategoryIndex}_${subIndex}`] = selection;
+        }
       }
 
       this.updateFormattedSelections();
@@ -184,7 +221,7 @@ export class QuoteDetailComponent implements OnInit {
   }
 
   requestQuote(): void {
-    alert('Quote request sent!');
+    this.modalService.open(QuoteModalComponent, { centered: true });
   }
 
   toggleBreakdown(): void {

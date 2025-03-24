@@ -1,0 +1,22 @@
+<div class="modal-header">
+    <h5 class="modal-title">Request a Quote</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+</div>
+<div class="modal-body">
+    <form>
+        <!-- Nombre -->
+        <input type="text" class="form-control mb-3" placeholder="John Doe" />
+
+        <!-- Correo -->
+        <input type="email" class="form-control mb-3" placeholder="john@example.com" />
+
+        <!-- Teléfono -->
+        <input type="tel" class="form-control mb-3" placeholder="(555) 555-5555" />
+
+        <!-- Mensaje -->
+        <textarea class="form-control mb-3" rows="3" placeholder="Any specific requirements or questions..."></textarea>
+
+        <!-- Botón de enviar -->
+        <button type="submit" class="btn btn-warning w-100">Submit Quote Request</button>
+    </form>
+</div>
