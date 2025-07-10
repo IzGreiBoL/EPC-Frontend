@@ -8,18 +8,28 @@
         >
           <i class="bi bi-arrow-left"></i>
         </button>
-        <img src="images/EPC_PNG_Original1.png" alt="" class="logo ms-3" />
-        <h4 class="text-start ms-3 mb-0">EPC Development</h4>
+        <span
+          *ngIf="!isHomePage"
+          class="d-flex align-items-center cursor-pointer"
+          style="cursor:pointer"
+          (click)="navigateToHome($event)"
+          tabindex="0"
+          aria-label="Go to Home"
+        >
+          <img src="images/EPC_PNG_Original1.png" alt="" class="logo ms-3" />
+          <h4 class="text-start ms-3 mb-0">EPC Development</h4>
+        </span>
+        <ng-container *ngIf="isHomePage">
+          <img src="images/EPC_PNG_Original1.png" alt="" class="logo ms-3" />
+          <h4 class="text-start ms-3 mb-0">EPC Development</h4>
+        </ng-container>
       </div>
       <div
         class="col-6 col-md-6 col-lg-6 d-flex justify-content-end align-items-center position-relative"
       >
-        <ul class="nav me-auto">
+        <ul class="nav ms-auto d-none d-lg-flex">
           <li class="nav-item">
-            <a class="nav-link text-white" href="/floor-plan">Floor Plan</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white" href="/quotes">Quotes</a>
+            <a class="nav-link text-white" href="/quotes">Floor Plans</a>
           </li>
           <li class="nav-item dropdown" ngbDropdown>
             <a
@@ -37,42 +47,61 @@
               aria-labelledby="servicesDropdown"
             >
               <li>
-                <a class="dropdown-item" href="/services/custom-home-design"
-                  >Custom Home Design</a
-                >
+                <a class="dropdown-item" href="/services">All Services</a>
               </li>
-              <li>
-                <a class="dropdown-item" href="/services/site-analysis">Site Analysis and Preparation</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/services/construction-management"
-                  >Construction Management</a
-                >
-              </li>
-              <li>
-                <a class="dropdown-item" href="/services/interior-design">Interior Design and Custom Finishes</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="/services/pricing-budgeting">Transparent Pricing and Budgeting</a>
-              </li>
-              <li>
-                <a
-                  class="dropdown-item"
-                  href="/services/post-construction-support"
-                  >Post-Construction Support</a
-                >
+              <li *ngFor="let service of services">
+                <a class="dropdown-item" [routerLink]="['/services', service.slug]" (click)="navigateToService(service.slug)">
+                  {{ service.title }}
+                </a>
               </li>
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" href="/projects">Projects</a>
+            <a class="nav-link text-white" href="#" (click)="navigateToProjects($event)">Projects</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" href="/contact-us">Contact Us</a>
+            <a class="nav-link text-white" href="#" (click)="navigateToContactUs($event)">Contact Us</a>
           </li>
         </ul>
-        <app-sidebar></app-sidebar>
+        <!-- Sidebar toggle and sidebar for mobile -->
+        <button class="sidebar-toggle d-lg-none" (click)="toggleSidebar()">
+          <div class="grid-icon">
+            <div></div><div></div><div></div>
+            <div></div><div></div><div></div>
+            <div></div><div></div><div></div>
+          </div>
+        </button>
+        <div class="sidebar" [class.sidebar-open]="isSidebarOpen">
+          <ul class="sidebar-menu no-bullets">
+            <li>
+              <a href="#" (click)="navigateToHome($event)">Home</a>
+            </li>
+            <li>
+              <a href="/quotes">Floor Plans</a>
+            </li>
+            <li class="no-margin">
+              <div class="d-flex align-items-center">
+                <a href="/services" class="flex-grow-1">Services</a>
+                <button class="submenu-toggle ms-2"
+                  (click)="toggleSubmenu($event)">&#9660;</button>
+              </div>
+              <ul class="submenu no-bullets" [ngClass]="{'submenu-open': isSubmenuOpen}">
+                <li *ngFor="let service of services">
+                  <a [routerLink]="['/services', service.slug]"
+                    (click)="navigateToService(service.slug)">
+                    {{ service.title }}
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="#" (click)="navigateToProjects($event)">Projects</a>
+            </li>
+            <li>
+              <a href="#" (click)="navigateToContactUs($event)">Contact Us</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </header>
-  
