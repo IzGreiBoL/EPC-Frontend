@@ -11,6 +11,7 @@ export interface QuoteCategory {
   id: number;
   name: string;
   icon: string;
+  basePrice: number;
   options: (SubCategory | Option)[];
 }
 
@@ -21,5 +22,5 @@ export interface SubCategory {
 
 export interface Option {
   name: string;
-  price: number;
+  price: number | string;
 }

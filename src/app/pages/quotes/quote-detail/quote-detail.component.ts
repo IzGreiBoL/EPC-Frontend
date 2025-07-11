@@ -14,7 +14,7 @@ import { QuoteModalComponent } from './quote-modal/quote-modal.component';
   templateUrl: './quote-detail.component.html',
   styleUrls: ['./quote-detail.component.scss'],
   standalone: true,
-  imports: [CommonModule, NgFor, CurrencyPipe,LucideAngularModule, GalleryComponent],
+  imports: [CommonModule, NgFor, CurrencyPipe, LucideAngularModule, GalleryComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class QuoteDetailComponent implements OnInit {
@@ -22,14 +22,17 @@ export class QuoteDetailComponent implements OnInit {
   galleryItems: { image: string; title: number }[] = [];
   currentCategoryIndex = 0;
   userSelections: Record<string, string> = {};
-  estimatedTotal = 0;
+  estimatedTotal: number | string = 0;
   basePrice = 0;
   showBreakdown = false;
   formattedSelections: { category: string; subcategories: string[] }[] = [];
-  breakdownItems: { name: string; price: number }[] = [];
+  breakdownItems: { name: string; price: number | string }[] = [];
   mailIcon = Mail;
   quoteType: 'basic' | 'advanced' = 'basic';
   gallerySize: 'small' | 'large' = 'large'; // Propiedad para el tamaño de la galería
+  pricePerSqFtNum: number = 0;
+  numericTotal = 0;          // siempre number
+  hasCustomOption = false;
 
   constructor(private route: ActivatedRoute,
     private modalService: NgbModal,
@@ -169,25 +172,60 @@ export class QuoteDetailComponent implements OnInit {
 
 
   calculateTotal(): void {
-    // Sumar basePrice + cada opción seleccionada
-    let total = this.basePrice;
-    Object.values(this.userSelections).forEach(selection => {
-      const selectedOption = selection.split(': ')[1];
-      const category = this.item?.categories.find(cat =>
-        cat.options.some(opt => this.isSubcategory(opt) ? opt.options.some(subOpt => subOpt.name === selectedOption) : opt.name === selectedOption)
-      );
-      const option = category?.options.flatMap(opt => this.isSubcategory(opt) ? opt.options : [opt]).find(opt => opt.name === selectedOption);
+    const countedCategories = new Set<number>(); // ⬅︎ ids ya procesados
+    let extraPerSqFt = 0;
+    let hasCustomOption = false;
 
-      if (option) {
-        // Si el precio es menor a 100, se considera porcentaje
-        if (option.price < 100) {
-          total += this.basePrice * (option.price / 100);
-        } else {
-          total += option.price;
-        }
+    Object.values(this.userSelections).forEach(selection => {
+      const selectedOptionName = selection.split(': ')[1];
+
+      // localizar categoría y opción
+      const category = this.item?.categories.find(cat =>
+        cat.options.some(opt =>
+          this.isSubcategory(opt)
+            ? opt.options.some(sub => sub.name === selectedOptionName)
+            : opt.name === selectedOptionName
+        )
+      );
+      if (!category) return;
+
+      const option = category.options
+        .flatMap(opt => this.isSubcategory(opt) ? opt.options : [opt])
+        .find(opt => opt.name === selectedOptionName);
+      if (!option) return;
+
+      // sumar basePrice solo la primera vez por categoría
+      if (!countedCategories.has(category.id)) {
+        extraPerSqFt += category.basePrice ?? 0;
+        countedCategories.add(category.id);
+        console.log(category.name, 'basePrice:', category.basePrice);
+      }
+
+      // sumar sobreprecio (si es numérico)
+      if (typeof option.price === 'number') {
+        extraPerSqFt += option.price;
+      } else if (option.price === '+c') {
+        hasCustomOption = true;
       }
     });
-    this.estimatedTotal = total;
+
+    // 4️⃣ precio POR ft² (modelo base + extras)
+    const pricePerSqFt = this.basePrice + extraPerSqFt;
+
+    // 5️⃣ total global
+    const size = (this.item as any)?.size ?? 0;
+    const numericTotal = pricePerSqFt * size;
+
+    // Guarda valores para la vista
+    this.numericTotal = numericTotal;        // <-- número puro
+    this.hasCustomOption = hasCustomOption;
+
+    this.estimatedTotal = hasCustomOption
+      ? `${numericTotal.toFixed(2)} + c`
+      : numericTotal.toFixed(2);
+
+    // 6️⃣ guardar $/ft²
+    this.pricePerSqFtNum = pricePerSqFt; 
   }
 
   isSelected(subIndex: number, optionIndex: number): boolean {

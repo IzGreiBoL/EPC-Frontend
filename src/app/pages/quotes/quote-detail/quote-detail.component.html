@@ -48,8 +48,6 @@
                     [class.selected]="isSelected(subIndex, optIndex)"
                     (click)="selectOption(subIndex, optIndex)">
                     {{ opt.name }}
-                    <span class="option-price">({{ opt.price |
-                      currency:'USD':'symbol':'1.0-2' }})</span>
                   </button>
                 </div>
               </div>
@@ -85,13 +83,22 @@
       <div class="estimate-content">
         <div class="estimated-total">
           <h2>Estimated Total</h2>
-          <div class="total-amount">{{ estimatedTotal | currency }}</div>
-        </div>
-        <div>
-          <button class="quote-button" (click)="requestQuote()">
-            <lucide-angular [img]="this.mailIcon"></lucide-angular> Request
-            Quote
-          </button>
+
+          <div class="total-amount">
+            {{ numericTotal | currency:'USD':'symbol':'1.2-2' }}
+            {{ hasCustomOption ? ' + c' : '' }}
+          </div>
+
+          <!-- Price per sqft -->
+          <div class="per-sqft">
+            <small>
+              Price per sq ft:
+              <b>
+                {{ pricePerSqFtNum | currency:'USD':'symbol':'1.2-2' }}
+                {{ hasCustomOption ? ' + c' : '' }}
+              </b>
+            </small>
+          </div>
         </div>
       </div>
       <!-- Botón de Price Breakdown -->
