@@ -11,11 +11,13 @@ import { Service } from '../../../core/models/service.model';
   styleUrls: ['./custom-home-design.component.scss']
 })
 export class CustomHomeDesignComponent implements OnInit {
-  service: Service | undefined;
+  services: Service[] = [];
 
   constructor(private servicesService: ServicesService) {}
 
   ngOnInit(): void {
-    this.service = this.servicesService.getServiceBySlug('custom-home-design');
+    this.services = this.servicesService.getServices().filter(
+      s => s.category === 'custom-home-design'
+    );
   }
 }

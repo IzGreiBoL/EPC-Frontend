@@ -17,7 +17,7 @@ export class OtherServices implements OnInit, AfterViewInit {
   constructor(private servicesService: ServicesService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.services = this.servicesService.getServices().filter(service => service.slug !== 'custom-home-design');
+    this.services = this.servicesService.getServices().filter(service => service.category === 'other-services');
   }
 
   ngAfterViewInit(): void {

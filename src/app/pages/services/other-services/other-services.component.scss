@@ -1,0 +1,162 @@
+// Fondo general con gradiente
+
+// Badge
+.service-badge {
+  background: #2d3a5a;
+  color: #8cb4ff;
+  font-size: 0.85rem;
+  padding: 0.35em 1em;
+  border-radius: 1em;
+  letter-spacing: 0.05em;
+}
+
+// Título principal
+.service-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #fff;
+  .text-accent {
+    color: #3ad07b;
+  }
+}
+
+// Descripción
+.service-desc {
+  font-size: 1.1rem;
+}
+
+// Características con íconos
+.service-features {
+  font-size: 1rem;
+  color: #8cb4ff;
+  .feature {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    i {
+      font-size: 1.1em;
+      margin-right: 0.3em;
+    }
+  }
+}
+
+// Botones
+.btn-outline-light.service-btn {
+  border: 1.5px solid #fff;
+  color: #fff;
+  background: transparent;
+}
+.btn-primary.service-btn:hover,
+.btn-outline-light.service-btn:hover {
+  background: #3ad07b;
+  color: #fff;
+  border-color: #3ad07b;
+}
+
+// Tarjeta de servicio
+.service-card {
+  border-radius: 1.2em;
+  color: #fff;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+// Imagen
+img.img-fluid {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 0.7em;
+}
+
+// Estilos existentes
+img.img-fluid {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: 1rem;
+  object-fit: contain;
+  /* Si quieres limitar la altura máxima en escritorio: */
+  @media (min-width: 1024px) {
+    max-height: 350px;
+  }
+}
+
+.row.align-items-center {
+  min-height: 300px;
+  display: flex;
+  flex-wrap: wrap;
+  background: none; // Elimina cualquier fondo
+  background-color: transparent; // Asegura fondo transparente
+  box-shadow: none; // Elimina sombra si existía
+  border-radius: 0; // Sin bordes redondeados
+  border: none; // Sin borde
+  // Opcional: agrega separación visual entre filas
+  // border-bottom: 1px solid #eee;
+  // padding-bottom: 2rem;
+  // margin-bottom: 2rem;
+}
+
+.col-12.col-lg-6 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.col-12.col-lg-6.text-center {
+  align-items: center;
+  justify-content: center;
+}
+
+button.btn {
+  width: auto;
+  max-width: 220px;
+  align-self: flex-start;
+}
+
+@media (min-width: 1024px) {
+  .order-lg-1 {
+    order: 1;
+  }
+  .order-lg-2 {
+    order: 2;
+  }
+  .row.align-items-center {
+    min-height: 350px;
+  }
+  .col-12.col-lg-6 {
+    height: 100%;
+  }
+}
+
+@media (max-width: 1023.98px) {
+  .row.align-items-center {
+    min-height: unset;
+    display: block;
+  }
+  .col-12 {
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .service-title {
+    font-size: 2rem;
+  }
+  .service-card {
+    min-height: 260px;
+    max-width: 100%;
+  }
+  .row.align-items-center {
+    flex-direction: column;
+  }
+  .col-12.col-lg-6 {
+    max-width: 100%;
+  }
+}

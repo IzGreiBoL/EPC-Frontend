@@ -20,7 +20,7 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
   //#region INPUTS Y VARIABLES DE ESTADO
 
   /** Inputs **/
-  @Input() items: { image: string, title: string }[] = [];
+  @Input() items: { image: string, title: number }[] = [];
   @Input() itemsPerPage = 1;
   @Input() size?: 'small' | 'medium' | 'large' | string;
 

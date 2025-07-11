@@ -19,11 +19,11 @@ import { QuoteModalComponent } from './quote-modal/quote-modal.component';
 })
 export class QuoteDetailComponent implements OnInit {
   item: Quote | undefined;
-  galleryItems: { image: string; title: string }[] = [];
+  galleryItems: { image: string; title: number }[] = [];
   currentCategoryIndex = 0;
   userSelections: Record<string, string> = {};
-  estimatedTotal = 415000;
-  basePrice = 400000;
+  estimatedTotal = 0;
+  basePrice = 0;
   showBreakdown = false;
   formattedSelections: { category: string; subcategories: string[] }[] = [];
   breakdownItems: { name: string; price: number }[] = [];
@@ -43,8 +43,10 @@ export class QuoteDetailComponent implements OnInit {
       this.quoteType = type || 'basic';
       this.item = this.quotesService.getItemById(id);
       if (this.item) {
+        // Si el modelo tiene basePrice, úsalo; si no, usa un valor por defecto
+        this.basePrice = (this.item as any).basePrice;
         const images = this.quotesService.getImagesFromFolder(this.item.folder);
-        this.galleryItems = images.map((image) => ({ image, title: this.item?.size ?? '' }));
+        this.galleryItems = images.map((image) => ({ image, title: this.item?.size ?? 0 }));
 
         const categories = this.quotesService.getCategoriesByType(this.quoteType);
         this.item.categories = categories;
@@ -167,15 +169,25 @@ export class QuoteDetailComponent implements OnInit {
 
 
   calculateTotal(): void {
-    this.estimatedTotal = this.basePrice + Object.values(this.userSelections).reduce((total, selection) => {
+    // Sumar basePrice + cada opción seleccionada
+    let total = this.basePrice;
+    Object.values(this.userSelections).forEach(selection => {
       const selectedOption = selection.split(': ')[1];
       const category = this.item?.categories.find(cat =>
         cat.options.some(opt => this.isSubcategory(opt) ? opt.options.some(subOpt => subOpt.name === selectedOption) : opt.name === selectedOption)
       );
+      const option = category?.options.flatMap(opt => this.isSubcategory(opt) ? opt.options : [opt]).find(opt => opt.name === selectedOption);
 
-      const price = category?.options.flatMap(opt => this.isSubcategory(opt) ? opt.options : [opt]).find(opt => opt.name === selectedOption)?.price ?? 0;
-      return total + price;
-    }, 0);
+      if (option) {
+        // Si el precio es menor a 100, se considera porcentaje
+        if (option.price < 100) {
+          total += this.basePrice * (option.price / 100);
+        } else {
+          total += option.price;
+        }
+      }
+    });
+    this.estimatedTotal = total;
   }
 
   isSelected(subIndex: number, optionIndex: number): boolean {

@@ -17,6 +17,6 @@ export class ServicesComponent implements OnInit {
   constructor(private servicesService: ServicesService) { }
 
   ngOnInit(): void {
-    this.services = this.servicesService.getServices();
+        this.services = this.servicesService.getServices().filter(service => service.showInHeader);
   }
 }

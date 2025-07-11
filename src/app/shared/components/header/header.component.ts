@@ -5,7 +5,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { isPlatformBrowser } from '@angular/common';
 import { ServicesService } from '../../../core/services/services.service';
 import { Service } from '../../../core/models/service.model';
-import { filter, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -89,7 +89,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   getServices(): void {
-    this.services = this.servicesService.getServices().filter(service => service.slug);
+    this.services = this.servicesService.getServices().filter(service => service.showInHeader);
   }
 
   navigateToService(slug: string): void {

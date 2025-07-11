@@ -1,8 +1,9 @@
 export interface Quote {
   id: number;
   name: string;
-  size: string;
+  size: number;
   folder: string;
+  basePrice: number; // Optional base price for quotes
   categories: QuoteCategory[];
 }
 

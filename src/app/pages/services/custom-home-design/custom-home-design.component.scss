@@ -1,0 +1,159 @@
+img.img-fluid {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 0.7em;
+  display: block;
+  margin-bottom: 1rem;
+
+  @media (min-width: 1024px) {
+    max-height: 350px;
+  }
+}
+
+.services-bg {
+  min-height: 100vh;
+  color: #fff;
+}
+
+.service-badge {
+  background: #2d3a5a;
+  color: #8cb4ff;
+  font-size: 0.85rem;
+  padding: 0.35em 1em;
+  border-radius: 1em;
+  letter-spacing: 0.05em;
+}
+
+.service-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #fff;
+
+  .text-accent {
+    color: #3ad07b;
+  }
+
+  @media (max-width: 991.98px) {
+    font-size: 2rem;
+  }
+}
+
+.service-desc {
+  font-size: 1.1rem;
+}
+
+.service-features {
+  font-size: 1rem;
+  color: #8cb4ff;
+
+  .feature {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+
+    i {
+      font-size: 1.1em;
+      margin-right: 0.3em;
+    }
+  }
+}
+
+.service-card {
+  border-radius: 1.2em;
+  color: #fff;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @media (max-width: 991.98px) {
+    min-height: 260px;
+    max-width: 100%;
+  }
+}
+
+button.service-btn {
+  font-size: 1rem;
+  padding: 0.7em 2em;
+  border-radius: 0.5em;
+  font-weight: 600;
+  box-shadow: 0 2px 8px 0 rgba(50, 80, 180, 0.08);
+  transition: background 0.2s, color 0.2s;
+  width: auto;
+  max-width: 220px;
+  align-self: flex-start;
+
+  &.btn-primary {
+    background: #2563eb;
+    border: none;
+    color: #fff;
+
+    &:hover {
+      background: #3ad07b;
+      color: #fff;
+    }
+  }
+
+  &.btn-outline-light {
+    border: 1.5px solid #fff;
+    color: #fff;
+    background: transparent;
+
+    &:hover {
+      background: #3ad07b;
+      color: #fff;
+      border-color: #3ad07b;
+    }
+  }
+}
+
+.row.align-items-center {
+  min-height: 300px;
+  display: flex;
+  flex-wrap: wrap;
+  background: none;
+  background-color: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  border: none;
+
+  @media (min-width: 1024px) {
+    min-height: 350px;
+  }
+
+  @media (max-width: 1023.98px) {
+    min-height: unset;
+    display: block;
+  }
+}
+
+.col-md-7 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.col-md-5 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.col-12.col-lg-6 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+
+  @media (max-width: 1023.98px) {
+    margin-bottom: 2rem;
+  }
+}
+
+.col-12.col-lg-6.text-center {
+  align-items: center;
+  justify-content: center;
+}

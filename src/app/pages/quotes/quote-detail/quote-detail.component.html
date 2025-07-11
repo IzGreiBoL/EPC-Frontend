@@ -2,20 +2,8 @@
   <div class="content p-4">
     <!-- Galería de imágenes -->
     <div class="mb-3">
-      <app-gallery [items]="galleryItems" [itemsPerPage]="1" [size]="gallerySize"></app-gallery>
-    </div>
-
-    <!-- Barra de progreso -->
-    <div class="progress-container">
-      <div class="progress-bar">
-        <div class="progress-fill" [style.width.%]="progress"></div>
-      </div>
-      <div class="icon-steps">
-        <div *ngFor="let step of [].constructor(totalSteps); let i = index"
-          class="step">
-          <div class="icon" [class.active]="i <= currentCategoryIndex"></div>
-        </div>
-      </div>
+      <app-gallery [items]="galleryItems" [itemsPerPage]="1"
+        [size]="gallerySize"></app-gallery>
     </div>
 
     <!-- Contenedor de categorías -->
@@ -25,7 +13,7 @@
           class="category-icon"></lucide-angular>
         {{ currentCategory.name }}
       </h3>
-      <div class="options two-columns">
+      <div class="options two-columns mb-4">
         <div class="option-group">
           <!-- Contenedor único para los botones -->
           <div class="button-row">
@@ -37,6 +25,8 @@
                 [class.selected]="isSelected(subIndex, 0)"
                 (click)="selectOption(subIndex, 0)">
                 {{ option.name }}
+                <span class="option-price">({{ option.price |
+                  currency:'USD':'symbol':'1.0-2' }})</span>
               </button>
             </ng-container>
           </div>
@@ -58,11 +48,26 @@
                     [class.selected]="isSelected(subIndex, optIndex)"
                     (click)="selectOption(subIndex, optIndex)">
                     {{ opt.name }}
+                    <span class="option-price">({{ opt.price |
+                      currency:'USD':'symbol':'1.0-2' }})</span>
                   </button>
                 </div>
               </div>
             </ng-container>
           </ng-container>
+        </div>
+      </div>
+
+      <!-- Barra de progreso -->
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="progress"></div>
+        </div>
+        <div class="icon-steps">
+          <div *ngFor="let step of [].constructor(totalSteps); let i = index"
+            class="step">
+            <div class="icon" [class.active]="i <= currentCategoryIndex"></div>
+          </div>
         </div>
       </div>
 
