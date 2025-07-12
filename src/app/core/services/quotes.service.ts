@@ -95,7 +95,7 @@ export class QuotesService {
         },
         {
           name: 'Driveway', options: [
-            { name: 'As Is', price: 0 },
+            { name: 'As Is', price: 13.84 },
             { name: 'Custom', price: "+c" }
           ]
         }
@@ -141,12 +141,12 @@ export class QuotesService {
       options: [
         {
           name: 'Fixture Colors', options: [
-            { name: 'Brass', price: 0 },
             { name: 'Black', price: 0 },
             { name: 'Brushed Nickel', price: 0 },
             { name: 'Chrome', price: 0 },
             { name: 'Gold', price: 0 },
-            { name: 'Matte Black', price: 0.55 }
+            { name: 'Matte Black', price: 0.55 },
+            { name: 'Bronze', price: 0 },
           ]
         }
       ]
@@ -177,11 +177,11 @@ export class QuotesService {
       options: [
         {
           name: 'Flooring Materials', options: [
-            { name: 'Hardwood', price: 0 },
             { name: 'Luxury Vinyl', price: 0 },
             { name: 'Carpet', price: 0 },
             { name: 'Concrete', price: 0 },
-            { name: 'Tile', price: 0.27 }
+            { name: 'Tile', price: 0.27 },
+            { name: 'Hardwood', price: 2.17 },
           ]
         },
         {
@@ -242,7 +242,7 @@ export class QuotesService {
             { name: 'Neutral', price: 0 },
             { name: 'Bold', price: 0 },
             { name: 'Pastels', price: 0 },
-            { name: 'Custom', price: "+c" }
+            { name: 'Custom', price: 2.90 }
           ]
         },
         {
@@ -261,8 +261,8 @@ export class QuotesService {
         {
           name: 'Appliances', options: [
             { name: 'No', price: 0 },
-            { name: 'Yes', price: 7.08 },
-            { name: 'Custom Design', price: "+c" }
+            { name: 'Yes', price: 4.73 },
+            { name: 'Custom Design', price: 7.08 }
           ]
         }
       ]

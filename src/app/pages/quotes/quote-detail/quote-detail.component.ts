@@ -1,8 +1,8 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { QuotesService } from '../../../core/services/quotes.service';
 import { Quote, SubCategory } from '../../../core/models/quote.model';
-import { NgFor, CurrencyPipe, CommonModule } from '@angular/common';
+import { NgFor, CurrencyPipe, CommonModule, isPlatformBrowser } from '@angular/common';
 import { GalleryComponent } from '../../../shared/components/gallery/gallery.component';
 import { LucideAngularModule, Mail } from 'lucide-angular';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -18,9 +18,12 @@ import { QuoteModalComponent } from './quote-modal/quote-modal.component';
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class QuoteDetailComponent implements OnInit {
+
+  /* propiedades de la vista */
   item: Quote | undefined;
   galleryItems: { image: string; title: number }[] = [];
   currentCategoryIndex = 0;
+  /** clave:  `${catIdx}_${subIdx}`  →  texto mostrado */
   userSelections: Record<string, string> = {};
   estimatedTotal: number | string = 0;
   basePrice = 0;
@@ -29,223 +32,221 @@ export class QuoteDetailComponent implements OnInit {
   breakdownItems: { name: string; price: number | string }[] = [];
   mailIcon = Mail;
   quoteType: 'basic' | 'advanced' = 'basic';
-  gallerySize: 'small' | 'large' = 'large'; // Propiedad para el tamaño de la galería
-  pricePerSqFtNum: number = 0;
-  numericTotal = 0;          // siempre number
+  gallerySize: 'small' | 'large' = 'large';
+  pricePerSqFtNum = 0;
+  numericTotal = 0;
   hasCustomOption = false;
 
-  constructor(private route: ActivatedRoute,
-    private modalService: NgbModal,
-    public quotesService: QuotesService) {
-  }
+  /* registra qué subcategorías el usuario ya tocó            */
+  /** índiceDeCategoría → conjunto de subíndices ya clicados */
+  private touched: Record<number, Set<number>> = {};
 
+  constructor(
+    private route: ActivatedRoute,
+    private modalService: NgbModal,
+    public quotesService: QuotesService,
+    @Inject(PLATFORM_ID) private platformId: object,
+  ) { }
+
+  /* ciclo de vida*/
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.subscribe(params => {
       const id = +params.get('id')!;
       const type = this.route.snapshot.paramMap.get('type') as 'basic' | 'advanced';
       this.quoteType = type || 'basic';
+
       this.item = this.quotesService.getItemById(id);
-      if (this.item) {
-        // Si el modelo tiene basePrice, úsalo; si no, usa un valor por defecto
-        this.basePrice = (this.item as any).basePrice;
-        const images = this.quotesService.getImagesFromFolder(this.item.folder);
-        this.galleryItems = images.map((image) => ({ image, title: this.item?.size ?? 0 }));
+      if (!this.item) { return; }
 
-        const categories = this.quotesService.getCategoriesByType(this.quoteType);
-        this.item.categories = categories;
+      this.basePrice = (this.item as any).basePrice;
+      const images = this.quotesService.getImagesFromFolder(this.item.folder);
+      this.galleryItems = images.map(image => ({ image, title: this.item?.size ?? 0 }));
 
-        this.item.categories.forEach((category, index) => {
-          if (this.quoteType === 'basic') {
-            // Preseleccionar solo la primera opción en la versión básica
-            if (category.options.length > 0) {
-              const option = category.options[0];
-              this.userSelections[`${index}_0`] = `${category.name}: ${option.name}`;
-            }
-          } else {
-            // Preseleccionar la primera opción de todas las subcategorías en la versión avanzada
-            category.options.forEach((option, subIndex) => {
-              if (this.isSubcategory(option)) {
-                this.userSelections[`${index}_${subIndex}`] = `${option.name}: ${option.options[0]?.name ?? ''}`;
-              } else {
-                this.userSelections[`${index}_${subIndex}`] = `${category.name}: ${option.name}`;
-              }
-            });
-          }
-        });
+      /* categorías según versión */
+      this.item.categories = this.quotesService.getCategoriesByType(this.quoteType);
 
-        this.updateFormattedSelections();
-        this.calculateTotal();
-      }
-    });
-
-    this.updateGallerySize();
-  }
-
-  // Detectar cambios en el tamaño de la ventana
-  @HostListener('window:resize', ['$event'])
-  onResize(): void {
-    this.updateGallerySize();
-  }
-
-  // Actualizar el tamaño de la galería según el ancho de la ventana
-  private updateGallerySize(): void {
-    const windowWidth = window.innerWidth;
-    this.gallerySize = windowWidth < 768 ? 'small' : 'large'; // Cambiar entre 'small' y 'medium'
-  }
-
-  get currentCategory() {
-    return this.item?.categories[this.currentCategoryIndex];
-  }
-
-  get totalSteps() {
-    return this.item?.categories.length ?? 0;
-  }
-
-  get progress() {
-    return ((this.currentCategoryIndex + 1) / (this.totalSteps || 1)) * 100;
-  }
-
-  selectOption(subIndex: number, optionIndex: number): void {
-    const category = this.currentCategory;
-
-    if (category?.options) {
-      const option = category.options[subIndex];
-
-      // Lógica para la versión básica
-      if (this.quoteType === 'basic') {
-        // Limpiar todas las selecciones previas de la categoría actual
-        Object.keys(this.userSelections).forEach((key) => {
-          if (key.startsWith(`${this.currentCategoryIndex}_`)) {
-            delete this.userSelections[key];
-          }
-        });
-
-        // Agregar la nueva selección
-        const selection = `${category.name}: ${option.name}`;
-        this.userSelections[`${this.currentCategoryIndex}_${subIndex}`] = selection;
-      }
-
-      // Lógica para la versión avanzada
-      else if (this.quoteType === 'advanced') {
-        // Limpiar selecciones previas solo para la subcategoría actual
-        Object.keys(this.userSelections).forEach((key) => {
-          if (key === `${this.currentCategoryIndex}_${subIndex}`) {
-            delete this.userSelections[key];
-          }
-        });
-
-        if (this.isSubcategory(option)) {
-          const selectedSubOption = option.options[optionIndex];
-          if (selectedSubOption) {
-            const selection = `${option.name}: ${selectedSubOption.name}`;
-            this.userSelections[`${this.currentCategoryIndex}_${subIndex}`] = selection;
+      /* pre‑selecciones (no cuentan como “tocadas”) */
+      this.item.categories.forEach((cat, catIdx) => {
+        if (this.quoteType === 'basic') {
+          if (cat.options.length) {
+            const opt = cat.options[0];
+            this.userSelections[`${catIdx}_0`] = `${cat.name}: ${opt.name}`;
           }
         } else {
-          const selection = `${category.name}: ${option.name}`;
-          this.userSelections[`${this.currentCategoryIndex}_${subIndex}`] = selection;
+          cat.options.forEach((opt, subIdx) => {
+            if (this.isSubcategory(opt)) {
+              this.userSelections[`${catIdx}_${subIdx}`] = `${opt.name}: ${opt.options[0]?.name ?? ''}`;
+            } else {
+              this.userSelections[`${catIdx}_${subIdx}`] = `${cat.name}: ${opt.name}`;
+            }
+          });
         }
-      }
+      });
 
       this.updateFormattedSelections();
       this.calculateTotal();
+    });
+
+    this.updateGallerySize();
+  }
+
+  /*eventos de ventana */
+  @HostListener('window:resize')
+  onResize(): void { this.updateGallerySize(); }
+
+  private updateGallerySize(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const w = window.innerWidth;
+      this.gallerySize = w < 768 ? 'small' : 'large';
     }
   }
 
+  /* getters rápidos */
+  get currentCategory() { return this.item?.categories[this.currentCategoryIndex]; }
+  get totalSteps() { return this.item?.categories.length ?? 0; }
+  get progress() { return ((this.currentCategoryIndex + 1) / (this.totalSteps || 1)) * 100; }
+
+  /*handler principal*/
+  selectOption(subIdx: number, optIdx: number): void {
+    const category = this.currentCategory;
+    if (!category?.options) { return; }
+
+    const option = category.options[subIdx];
+
+    /* limpieza y escritura según modo */
+    if (this.quoteType === 'basic') {
+      Object.keys(this.userSelections).forEach(k => {
+        if (k.startsWith(`${this.currentCategoryIndex}_`)) { delete this.userSelections[k]; }
+      });
+      this.userSelections[`${this.currentCategoryIndex}_${subIdx}`] =
+        `${category.name}: ${option.name}`;
+    } else { /* advanced */
+      Object.keys(this.userSelections).forEach(k => {
+        if (k === `${this.currentCategoryIndex}_${subIdx}`) { delete this.userSelections[k]; }
+      });
+
+      if (this.isSubcategory(option)) {
+        const subOpt = option.options[optIdx];
+        if (subOpt) {
+          this.userSelections[`${this.currentCategoryIndex}_${subIdx}`] =
+            `${option.name}: ${subOpt.name}`;
+        }
+      } else {
+        this.userSelections[`${this.currentCategoryIndex}_${subIdx}`] =
+          `${category.name}: ${option.name}`;
+      }
+    }
+
+    /*marcar subcategoría como “tocada” */
+    if (!this.touched[this.currentCategoryIndex]) {
+      this.touched[this.currentCategoryIndex] = new Set<number>();
+    }
+    this.touched[this.currentCategoryIndex].add(subIdx);
+
+    /* avance automático */
+    if (this.isCurrentCategoryComplete()) { this.goToNextCategory(); }
+
+    this.updateFormattedSelections();
+    this.calculateTotal();
+  }
+
+  /* helpers de formato */
   updateFormattedSelections(): void {
-    const groupedSelections: { category: string; subcategories: string[] }[] = [];
+    const grouped: { category: string; subcategories: string[] }[] = [];
 
     Object.entries(this.userSelections).forEach(([key, value]) => {
-      const [catIndex] = key.split('_');
-      const category = this.item?.categories[+catIndex];
-      if (category) {
-        let existing = groupedSelections.find(g => g.category === category.name);
-        if (!existing) {
-          existing = { category: category.name, subcategories: [] };
-          groupedSelections.push(existing);
-        }
-        existing.subcategories.push(value);
-      }
+      const [catIdx] = key.split('_');
+      const cat = this.item?.categories[+catIdx];
+      if (!cat) { return; }
+
+      let group = grouped.find(g => g.category === cat.name);
+      if (!group) { group = { category: cat.name, subcategories: [] }; grouped.push(group); }
+      group.subcategories.push(value);
     });
 
-    this.formattedSelections = groupedSelections;
+    this.formattedSelections = grouped;
   }
 
-
+  /* cálculo de totales*/
   calculateTotal(): void {
-    const countedCategories = new Set<number>(); // ⬅︎ ids ya procesados
-    let extraPerSqFt = 0;
-    let hasCustomOption = false;
+    const counted = new Set<number>();
+    let extraPerFt = 0;
+    let hasCustom = false;
 
-    Object.values(this.userSelections).forEach(selection => {
-      const selectedOptionName = selection.split(': ')[1];
+    Object.values(this.userSelections).forEach(sel => {
+      const selName = sel.split(': ')[1];
 
-      // localizar categoría y opción
-      const category = this.item?.categories.find(cat =>
-        cat.options.some(opt =>
-          this.isSubcategory(opt)
-            ? opt.options.some(sub => sub.name === selectedOptionName)
-            : opt.name === selectedOptionName
+      const cat = this.item?.categories.find(c =>
+        c.options.some(o =>
+          this.isSubcategory(o)
+            ? o.options.some(s => s.name === selName)
+            : o.name === selName
         )
       );
-      if (!category) return;
+      if (!cat) { return; }
 
-      const option = category.options
-        .flatMap(opt => this.isSubcategory(opt) ? opt.options : [opt])
-        .find(opt => opt.name === selectedOptionName);
-      if (!option) return;
+      const opt = cat.options
+        .flatMap(o => this.isSubcategory(o) ? o.options : [o])
+        .find(o => o.name === selName);
+      if (!opt) { return; }
 
-      // sumar basePrice solo la primera vez por categoría
-      if (!countedCategories.has(category.id)) {
-        extraPerSqFt += category.basePrice ?? 0;
-        countedCategories.add(category.id);
-        console.log(category.name, 'basePrice:', category.basePrice);
+      if (!counted.has(cat.id)) {
+        extraPerFt += cat.basePrice ?? 0;
+        counted.add(cat.id);
       }
 
-      // sumar sobreprecio (si es numérico)
-      if (typeof option.price === 'number') {
-        extraPerSqFt += option.price;
-      } else if (option.price === '+c') {
-        hasCustomOption = true;
-      }
+      if (typeof opt.price === 'number') { extraPerFt += opt.price; }
+      else if (opt.price === '+c') { hasCustom = true; }
     });
 
-    // 4️⃣ precio POR ft² (modelo base + extras)
-    const pricePerSqFt = this.basePrice + extraPerSqFt;
-
-    // 5️⃣ total global
+    const pricePerFt = this.basePrice + extraPerFt;
     const size = (this.item as any)?.size ?? 0;
-    const numericTotal = pricePerSqFt * size;
+    const total = pricePerFt * size;
 
-    // Guarda valores para la vista
-    this.numericTotal = numericTotal;        // <-- número puro
-    this.hasCustomOption = hasCustomOption;
-
-    this.estimatedTotal = hasCustomOption
-      ? `${numericTotal.toFixed(2)} + c`
-      : numericTotal.toFixed(2);
-
-    // 6️⃣ guardar $/ft²
-    this.pricePerSqFtNum = pricePerSqFt; 
+    this.numericTotal = total;
+    this.hasCustomOption = hasCustom;
+    this.estimatedTotal = hasCustom ? `${total.toFixed(2)} + c` : total.toFixed(2);
+    this.pricePerSqFtNum = pricePerFt;
   }
 
-  isSelected(subIndex: number, optionIndex: number): boolean {
+  /* ────────────utilidades──────────── */
+  isSelected(subIdx: number, optIdx: number): boolean {
     const category = this.currentCategory;
-    if (category?.options) {
-      const option = category.options[subIndex];
-      if (this.isSubcategory(option)) {
-        const selectedOptionName = option.options[optionIndex]?.name;
-        const selection = `${option.name}: ${selectedOptionName}`;
-        return Object.values(this.userSelections).includes(selection);
-      } else {
-        const selection = `${category.name}: ${option.name}`;
-        return Object.values(this.userSelections).includes(selection);
-      }
+    if (!category?.options) { return false; }
+
+    const option = category.options[subIdx];
+
+    if (this.isSubcategory(option)) {
+      const selName = option.options[optIdx]?.name;
+      return Object.values(this.userSelections).includes(`${option.name}: ${selName}`);
     }
-    return false;
+    return Object.values(this.userSelections).includes(`${category.name}: ${option.name}`);
   }
 
   isSubcategory(item: unknown): item is SubCategory {
-    return typeof item === 'object' && item !== null && 'name' in item && 'options' in item;
+    return typeof item === 'object' && item !== null &&
+      'name' in item && 'options' in item;
+  }
+
+  /* completa solo lo que tocó el usuario */
+  private isCurrentCategoryComplete(): boolean {
+    const cat = this.currentCategory;
+    if (!cat) { return false; }
+
+    const touchedSet = this.touched[this.currentCategoryIndex] ?? new Set<number>();
+    return cat.options.every((_o, idx) => touchedSet.has(idx));
+  }
+
+  /* navegación */
+  private goToNextCategory(): void {
+    if (this.hasNext()) {
+      this.currentCategoryIndex++;
+      /* crear set vacío para la nueva categoría */
+      if (!this.touched[this.currentCategoryIndex]) {
+        this.touched[this.currentCategoryIndex] = new Set<number>();
+      }
+      this.updateFormattedSelections();
+    }
   }
 
   previousCategory(): void {
@@ -254,48 +255,41 @@ export class QuoteDetailComponent implements OnInit {
       this.updateFormattedSelections();
     }
   }
+  nextCategory(): void { if (this.hasNext()) { this.goToNextCategory(); } }
 
-  nextCategory(): void {
-    if (this.hasNext()) {
-      this.currentCategoryIndex++;
-      this.updateFormattedSelections();
-    }
-  }
+  hasPrevious(): boolean { return this.currentCategoryIndex > 0; }
+  hasNext(): boolean { return this.currentCategoryIndex < (this.totalSteps - 1); }
 
-  hasPrevious(): boolean {
-    return this.currentCategoryIndex > 0;
-  }
-
-  hasNext(): boolean {
-    return this.currentCategoryIndex < (this.totalSteps - 1);
-  }
-
+  /* ────────────modal y breakdown──────────── */
   requestQuote(): void {
     this.modalService.open(QuoteModalComponent, { centered: true });
   }
 
   toggleBreakdown(): void {
     this.showBreakdown = !this.showBreakdown;
-    if (this.showBreakdown) {
-      this.updateBreakdown();
-    }
+    if (this.showBreakdown) { this.updateBreakdown(); }
   }
 
   updateBreakdown(): void {
-    this.breakdownItems = Object.values(this.userSelections).map(selection => {
-      const selectedOption = selection.split(': ')[1];
-      const category = this.item?.categories.find(cat =>
-        cat.options.some(opt => this.isSubcategory(opt) ? opt.options.some(subOpt => subOpt.name === selectedOption) : opt.name === selectedOption)
+    this.breakdownItems = Object.values(this.userSelections).map(sel => {
+      const selName = sel.split(': ')[1];
+      const cat = this.item?.categories.find(c =>
+        c.options.some(o =>
+          this.isSubcategory(o)
+            ? o.options.some(s => s.name === selName)
+            : o.name === selName
+        )
       );
+      const opt = cat?.options
+        .flatMap(o => this.isSubcategory(o) ? o.options : [o])
+        .find(o => o.name === selName);
 
-      const option = category?.options.flatMap(opt => this.isSubcategory(opt) ? opt.options : [opt]).find(opt => opt.name === selectedOption);
-      return { name: selection, price: option?.price ?? 0 };
+      return { name: sel, price: opt?.price ?? 0 };
     });
   }
 
-  getIconByCategory(categoryName: string): any {
-    const category = this.item?.categories.find(cat => cat.name === categoryName);
-    return category ? this.quotesService.getIconByCategory(category) : null;
+  getIconByCategory(name: string): any {
+    const cat = this.item?.categories.find(c => c.name === name);
+    return cat ? this.quotesService.getIconByCategory(cat) : null;
   }
-
 }
