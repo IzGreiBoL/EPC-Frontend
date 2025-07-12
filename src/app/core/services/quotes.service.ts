@@ -10,46 +10,46 @@ export class QuotesService {
     {
       id: 1,
       name: 'Kitchen Cabinets',
-      basePrice: 0, //TODO: cambiar a un precio base real
+      basePrice: 0,
       icon: 'vault',
       options: [
-        { name: 'Shaker', price: 6000 },
-        { name: 'Modern Flat-Panel', price: 5500 },
-        { name: 'Traditional Raised-Panel', price: 5000 },
-        { name: 'Rustic', price: 6500 }
+        { name: 'Shaker', price: 0 },
+        { name: 'Rustic', price: 5 },
+        { name: 'Traditional Raised-Panel', price: 8 },
+        { name: 'Modern Flat-Panel', price: 20 },
       ]
     },
     {
       id: 2,
       name: 'Exterior Design',
-      basePrice: 0, //TODO: cambiar a un precio base real
+      basePrice: 0,
       icon: 'home',
       options: [
-        { name: 'Modern', price: 7000 },
-        { name: 'Traditional', price: 6000 },
-        { name: 'Contemporary', price: 8000 },
-        { name: 'Craftsman', price: 7500 }
+        { name: 'Modern', price: 0 },
+        { name: 'Traditional', price: 0 },
+        { name: 'Craftsman', price: 8 },
+        { name: 'Contemporary', price: 15 },
       ]
     },
     {
       id: 3,
       name: 'Interior Finish Level',
-      basePrice: 0, //TODO: cambiar a un precio base real
+      basePrice: 0,
       icon: 'paintbrush',
       options: [
-        { name: 'Standard', price: 5000 },
-        { name: 'Premium', price: 7000 },
-        { name: 'Luxury', price: 10000 },
-        { name: 'Custom', price: 12000 }
+        { name: 'Standard', price: 0 },
+        { name: 'Premium', price: 15 },
+        { name: 'Luxury', price: 30 },
+        { name: 'Custom', price: "+c" }
       ]
     },
     {
       id: 4,
       name: 'Number of Bedrooms',
-      basePrice: 0, //TODO: cambiar a un precio base real
+      basePrice: 0,
       icon: 'door-open',
       options: [
-        { name: '2', price: 2000 },
+        { name: '2', price: 2000 }, //TODO pendiente actualizar precios
         { name: '3', price: 3000 },
         { name: '4', price: 4000 },
         { name: '5+', price: 5000 }
@@ -58,13 +58,13 @@ export class QuotesService {
     {
       id: 5,
       name: 'Number of Bathrooms',
-      basePrice: 0, //TODO: cambiar a un precio base real
+      basePrice: 0,
       icon: 'shower-head',
       options: [
-        { name: '1', price: 1000 },
-        { name: '2', price: 2000 },
-        { name: '2.5', price: 2500 },
-        { name: '3+', price: 3000 }
+        { name: '1', price: 0 },
+        { name: '2', price: 0 },
+        { name: '2.5', price: 8 },
+        { name: '3+', price: 15 }
       ]
     }
   ];
