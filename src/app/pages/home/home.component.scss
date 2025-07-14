@@ -1,12 +1,10 @@
-/* Estilos existentes... */
-
 .d-flex {
     display: flex;
     flex-direction: column;
 }
 
 .d-flexmp {
-    background-image: url('../../../../public/images/home_page.jpg');
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2), transparent), url('../../../../public/images/home_page.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
