@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-footer',
@@ -8,5 +9,29 @@ import { Component } from '@angular/core';
   styleUrl: './footer.component.scss'
 })
 export class FooterComponent {
+
+  constructor(
+    private router: Router
+  ) {
+
+  }
+
+  navigateToContactUs(event: Event): void {
+    event.preventDefault();
+    this.router.navigate(['/']).then(() => {
+      setTimeout(() => {
+        this.router.navigate(['/'], { fragment: 'contactus' }).then(() => {
+          this.scrollToContactUs();
+        });
+      }, 100); // Pequeño retraso para asegurar que la navegación se complete
+    });
+  }
+
+  private scrollToContactUs(): void {
+    const element = document.getElementById('contactus');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 
 }
