@@ -14,8 +14,18 @@
         <!-- Contenido -->
         <div class="card-body text-center text-lg-start">
           <h3 class="card-title">{{ item.name }}</h3>
-          <p class="card-subtitle">{{ item.size }}</p>
-          <p class="card-description">Descripción breve del proyecto.</p>
+          <p class="card-subtitle">{{ item.size }} sq. ft.</p>
+          <div
+            class="d-flex justify-content-center justify-content-lg-start align-items-center mb-3">
+            <div class="d-flex align-items-center me-3">
+              <lucide-angular [img]="this.bedroomsIcon"></lucide-angular>
+              <span class="ms-1">{{ item.bedrooms }}</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <lucide-angular [img]="this.bathroomsIcon"></lucide-angular>
+              <span class="ms-1">{{ item.bathrooms }}</span>
+            </div>
+          </div>
 
           <!-- Botones -->
           <div class="quote-buttons">

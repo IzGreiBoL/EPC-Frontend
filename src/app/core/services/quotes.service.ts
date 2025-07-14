@@ -270,11 +270,11 @@ export class QuotesService {
   ];
 
   private items: Quote[] = [
-    { id: 1, name: 'Avalon', size: 1620, folder: 'avalon', basePrice: 114.76, categories: this.categories },
-    { id: 2, name: 'Cascade', size: 1470, folder: 'cascade', basePrice: 114.76, categories: this.categories },
-    { id: 3, name: 'Estates', size: 1443, folder: 'estates', basePrice: 114.76, categories: this.categories },
-    { id: 4, name: 'Jewel', size: 1470, folder: 'jewel', basePrice: 114.76, categories: this.categories },
-    { id: 5, name: 'Pandora', size: 1400, folder: 'pandora', basePrice: 114.76, categories: this.categories }
+    { id: 1, name: 'Avalon', size: 1620, bedrooms: 4, bathrooms: 2, folder: 'avalon', basePrice: 114.76, categories: this.categories },
+    { id: 2, name: 'Cascade', size: 1470, bedrooms: 3, bathrooms: 3, folder: 'cascade', basePrice: 114.76, categories: this.categories },
+    { id: 3, name: 'Estates', size: 1443, bedrooms: 3, bathrooms: 2, folder: 'estates', basePrice: 114.76, categories: this.categories },
+    { id: 4, name: 'Jewel', size: 1470, bedrooms: 3, bathrooms: 2, folder: 'jewel', basePrice: 114.76, categories: this.categories },
+    { id: 5, name: 'Pandora', size: 1400, bedrooms: 3, bathrooms: 2, folder: 'pandora', basePrice: 114.76, categories: this.categories }
   ];
 
   private iconMap: Record<string, any> = {
