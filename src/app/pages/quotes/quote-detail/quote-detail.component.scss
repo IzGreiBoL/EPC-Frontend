@@ -762,6 +762,30 @@ h4 {
         }
       }
     }
+
+    .show-more-row, .show-less-row {
+      margin-top: 6px;
+      text-align: left;
+    }
+    .show-more-btn, .show-less-btn {
+      background: none;
+      border: none;
+      color: $gold;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: .98rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0;
+      .arrow {
+        font-size: 1.1em;
+        margin-left: 2px;
+      }
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 }
 

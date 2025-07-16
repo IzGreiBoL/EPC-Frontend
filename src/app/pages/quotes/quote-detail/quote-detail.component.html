@@ -145,7 +145,7 @@
     <!-- ─── Sidebar pasos ─── -->
     <aside class="sidebar">
       <nav class="steps-nav">
-        <h5 class="steps-title">Configuration Steps</h5>
+        <h4 class="mb-3">Configuration steps</h4>
         <ul>
           <li *ngFor="let cat of item?.categories; let i = index"
             [class.active]="i === currentCategoryIndex"
@@ -249,23 +249,38 @@
     <!-- ─── Panel derecho ─── -->
     <aside class="right-panel">
       <div class="price-breakdown">
-        <h4>Price Breakdown</h4>
-        <!-- Listado elegante de opciones seleccionadas -->
+        <h4>Selection breakdown</h4>
         <div class="selected-options-list">
-          <ng-container *ngFor="let group of formattedSelections">
-            <div class="option-category">
-              <span class="category-icon">
-                <lucide-angular [img]="getIconByCategory(group.category)"></lucide-angular>
-              </span>
-              <span class="category-name">{{ group.category }}</span>
-            </div>
-            <ul>
-              <li *ngFor="let sub of group.subcategories">
-                <span class="option-dot"></span>
-                <span class="option-label">{{ sub }}</span>
-              </li>
-            </ul>
+          <!-- Mostrar solo las primeras 4 categorías si no está desplegado -->
+          <ng-container *ngFor="let group of formattedSelections; let catIdx = index">
+            <ng-container *ngIf="showBreakdown || catIdx < 4">
+              <div class="option-category">
+                <span class="category-icon">
+                  <lucide-angular [img]="getIconByCategory(group.category)"></lucide-angular>
+                </span>
+                <span class="category-name">{{ group.category }}</span>
+              </div>
+              <ul>
+                <li *ngFor="let sub of group.subcategories">
+                  <span class="option-dot"></span>
+                  <span class="option-label">{{ sub }}</span>
+                </li>
+              </ul>
+            </ng-container>
           </ng-container>
+          <!-- Mostrar botón para desplegar si hay más de 4 categorías y no está desplegado -->
+          <div *ngIf="!showBreakdown && formattedSelections.length > 4" class="show-more-row">
+            <button class="show-more-btn" (click)="toggleBreakdown()">
+              +{{ formattedSelections.length - 4 }} more categories
+              <span class="arrow">&#9660;</span>
+            </button>
+          </div>
+          <!-- Botón para ocultar si está desplegado -->
+          <div *ngIf="showBreakdown && formattedSelections.length > 4" class="show-less-row">
+            <button class="show-less-btn" (click)="toggleBreakdown()">
+              Hide details <span class="arrow">&#9650;</span>
+            </button>
+          </div>
         </div>
         <div class="total">
           <span>Total</span>
