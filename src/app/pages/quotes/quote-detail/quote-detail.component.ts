@@ -65,7 +65,7 @@ export class QuoteDetailComponent implements OnInit {
     public quotesService: QuotesService,
     private pricing: QuotePricingService,
     @Inject(PLATFORM_ID) private platformId: object,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -162,10 +162,6 @@ export class QuoteDetailComponent implements OnInit {
       });
       this.userSelections[`${this.currentCategoryIndex}_${subIdx}`] =
         `${category.name}: ${(option as Option).name}`;
-
-      // Avanza automáticamente en versión básica
-      this.goToNextCategory();
-      this.cdr.detectChanges();
     } else {
       delete this.userSelections[`${this.currentCategoryIndex}_${subIdx}`];
 
@@ -184,11 +180,6 @@ export class QuoteDetailComponent implements OnInit {
         this.touched[this.currentCategoryIndex] = new Set<number>();
       }
       this.touched[this.currentCategoryIndex].add(subIdx);
-
-      if (this.isCurrentCategoryComplete()) {
-        this.goToNextCategory();
-        this.cdr.detectChanges();
-      }
     }
 
     this.updateFormattedSelections();

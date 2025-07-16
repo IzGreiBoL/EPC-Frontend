@@ -31,7 +31,7 @@ h4 {
     padding: 1.2rem 1rem 1rem 1rem;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 102;
     border-bottom: 1px solid rgba(#fff, .04);
 
     .mobile-header-row {
@@ -54,10 +54,12 @@ h4 {
       justify-content: center;
       cursor: pointer;
       transition: background .2s;
+
       &:disabled {
         opacity: .5;
         cursor: not-allowed;
       }
+
       &:hover:not(:disabled) {
         background: $gold;
         color: $dark-1;
@@ -71,6 +73,7 @@ h4 {
       flex: 1;
       min-width: 0;
     }
+
     .mobile-title {
       font-size: 1.1rem;
       font-weight: 700;
@@ -79,6 +82,7 @@ h4 {
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     .mobile-step {
       font-size: .85rem;
       color: $text-light;
@@ -91,12 +95,14 @@ h4 {
       background: $dark-3;
       border-radius: 3px;
       overflow: hidden;
+
       .progress-fill {
         height: 100%;
         background: $gold;
         transition: width .4s;
       }
     }
+
     .progress-meta {
       display: flex;
       justify-content: space-between;
@@ -109,12 +115,14 @@ h4 {
   .mobile-content {
     padding: 1rem;
     padding-bottom: 100px;
+
     .gallery-wrapper {
       border-radius: 12px;
       overflow: hidden;
       margin-bottom: 1.2rem;
       box-shadow: 0 2px 10px rgba(#000, .18);
     }
+
     .category-container {
       background: $dark-2;
       border-radius: 14px;
@@ -129,6 +137,7 @@ h4 {
         align-items: center;
         gap: .5rem;
       }
+
       .category-description {
         color: $text-light;
         font-size: .95rem;
@@ -161,6 +170,7 @@ h4 {
             font-size: 1rem;
             font-weight: 600;
           }
+
           .option-price {
             font-size: .95rem;
             color: $gold;
@@ -172,6 +182,7 @@ h4 {
             background: $gold;
             color: $dark-1;
             border-color: $gold;
+
             .option-price {
               color: $dark-1;
             }
@@ -181,6 +192,7 @@ h4 {
 
       .subcategory-container {
         margin-bottom: 1.2rem;
+
         .subcategory-title {
           font-size: 1rem;
           font-weight: 600;
@@ -216,6 +228,7 @@ h4 {
             font-size: 1rem;
             font-weight: 600;
           }
+
           .option-price {
             font-size: .95rem;
             color: $gold;
@@ -227,6 +240,7 @@ h4 {
             background: $gold;
             color: $dark-1;
             border-color: $gold;
+
             .option-price {
               color: $dark-1;
             }
@@ -239,11 +253,13 @@ h4 {
         flex-direction: column;
         gap: 10px;
         margin-bottom: 1.2rem;
+
         label {
           color: $text-light;
           font-weight: 600;
           margin-bottom: 2px;
         }
+
         input {
           padding: 10px;
           border-radius: 6px;
@@ -264,6 +280,7 @@ h4 {
     border-top: 1px solid rgba(#fff, .08);
     z-index: 200;
     padding: 0;
+
     .mobile-footer-inner {
       display: flex;
       align-items: center;
@@ -271,20 +288,24 @@ h4 {
       padding: 1.1rem 1.2rem;
       gap: 1.2rem;
     }
+
     .mobile-total-group {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+
       .mobile-total-label {
         color: $text-light;
         font-size: .95rem;
         margin-bottom: 2px;
       }
+
       .mobile-total-amount {
         color: $gold;
         font-size: 1.35rem;
         font-weight: 700;
       }
+
       .mobile-per-sqft {
         font-size: .98rem;
         color: $text-light;
@@ -292,6 +313,7 @@ h4 {
         margin-top: 2px;
       }
     }
+
     .mobile-quote-btn {
       background: $gold;
       color: $dark-1;
@@ -302,6 +324,7 @@ h4 {
       font-size: 1.1rem;
       cursor: pointer;
       transition: background .2s;
+
       &:hover {
         background: $gold-dark;
       }
@@ -357,7 +380,7 @@ h4 {
       align-self: flex-start;
     }
 
-    > div {
+    >div {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -388,6 +411,7 @@ h4 {
       border-radius: 6px;
       padding: .5rem 1rem;
       cursor: pointer;
+
       &:hover {
         background: $gold-dark;
       }
@@ -449,6 +473,7 @@ h4 {
       &.active {
         background: $dark-3;
         color: $gold;
+
         .step-icon {
           background: rgba($gold, .18);
         }
@@ -596,6 +621,7 @@ h4 {
 
     .subcategory-container {
       margin-bottom: 1.2rem;
+
       .subcategory-title {
         font-size: 1rem;
         font-weight: 600;
@@ -722,11 +748,13 @@ h4 {
           width: 24px;
           height: 24px;
           margin-right: 2px;
+
           lucide-angular {
             width: 18px;
             height: 18px;
           }
         }
+
         .category-name {
           font-size: 1rem;
           font-weight: 600;
@@ -756,6 +784,7 @@ h4 {
           display: inline-block;
           margin-right: 6px;
         }
+
         .option-label {
           font-weight: 500;
           color: #fff;
@@ -763,11 +792,14 @@ h4 {
       }
     }
 
-    .show-more-row, .show-less-row {
+    .show-more-row,
+    .show-less-row {
       margin-top: 6px;
       text-align: left;
     }
-    .show-more-btn, .show-less-btn {
+
+    .show-more-btn,
+    .show-less-btn {
       background: none;
       border: none;
       color: $gold;
@@ -778,10 +810,12 @@ h4 {
       align-items: center;
       gap: 4px;
       padding: 0;
+
       .arrow {
         font-size: 1.1em;
         margin-left: 2px;
       }
+
       &:hover {
         text-decoration: underline;
       }
