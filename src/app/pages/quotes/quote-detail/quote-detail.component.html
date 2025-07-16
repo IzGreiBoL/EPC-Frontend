@@ -84,8 +84,9 @@
         <ng-container
           *ngFor="let option of currentCategory.options; let subIndex = index">
           <button *ngIf="!isSubcategory(option)"
+            #optBtn
             [class.selected]="isSelected(subIndex, 0)"
-            (click)="selectOption(subIndex, 0)">
+            (click)="selectOption(subIndex, 0); optBtn.blur()">
             <span class="option-title">{{ option.name }}</span>
           </button>
         </ng-container>
@@ -100,8 +101,9 @@
             <div class="subcategory-buttons">
               <button
                 *ngFor="let opt of option.options; let optIndex = index"
+                #optBtn
                 [class.selected]="isSelected(subIndex, optIndex)"
-                (click)="selectOption(subIndex, optIndex)">
+                (click)="selectOption(subIndex, optIndex); optBtn.blur()">
                 <span class="option-title">{{ opt.name }}</span>
               </button>
             </div>
@@ -258,10 +260,23 @@
 
       <div class="price-breakdown">
         <h4>Price Breakdown</h4>
-        <!-- <div *ngFor="let p of priceDetails">
-          <span>{{ p.label }}</span>
-          <span class="price">{{ p.amount | currency }}</span>
-        </div> -->
+        <!-- Listado elegante de opciones seleccionadas -->
+        <div class="selected-options-list">
+          <ng-container *ngFor="let group of formattedSelections">
+            <div class="option-category">
+              <span class="category-icon">
+                <lucide-angular [img]="getIconByCategory(group.category)"></lucide-angular>
+              </span>
+              <span class="category-name">{{ group.category }}</span>
+            </div>
+            <ul>
+              <li *ngFor="let sub of group.subcategories">
+                <span class="option-dot"></span>
+                <span class="option-label">{{ sub }}</span>
+              </li>
+            </ul>
+          </ng-container>
+        </div>
         <div class="total">
           <span>Total</span>
           <span>
