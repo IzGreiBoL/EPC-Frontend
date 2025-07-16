@@ -215,17 +215,18 @@ export class QuoteDetailComponent implements OnInit {
 
     const grouped: { category: string; subcategories: string[] }[] = [];
 
-    Object.entries(this.userSelections).forEach(([key, value]) => {
-      const [catIdx] = key.split('_');
-      const cat = this.item?.categories[+catIdx];
-      if (!cat) return;
-
-      let group = grouped.find(g => g.category === cat.name);
-      if (!group) {
-        group = { category: cat.name, subcategories: [] };
-        grouped.push(group);
+    // Mantener el orden original de las categorías y opciones
+    this.item?.categories.forEach((cat, catIdx) => {
+      const subcategories: string[] = [];
+      cat.options.forEach((_opt, subIdx) => {
+        const key = `${catIdx}_${subIdx}`;
+        if (this.userSelections[key]) {
+          subcategories.push(this.userSelections[key]);
+        }
+      });
+      if (subcategories.length) {
+        grouped.push({ category: cat.name, subcategories });
       }
-      group.subcategories.push(value);
     });
 
     this.formattedSelections = grouped;
