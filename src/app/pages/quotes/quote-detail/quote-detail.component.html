@@ -192,6 +192,18 @@
         <div class="options">
           <div class="option-group">
 
+            <!-- Opciones principales (no subcategoría) -->
+            <div class="button-row" *ngIf="!optionlessCategoryHasFields()">
+              <ng-container
+                *ngFor="let option of currentCategory.options; let subIndex = index">
+                <button *ngIf="!isSubcategory(option)"
+                  [class.selected]="isSelected(subIndex, 0)"
+                  (click)="selectOption(subIndex, 0)">
+                  <span class="option-title">{{ option.name }}</span>
+                </button>
+              </ng-container>
+            </div>
+
             <!-- Sub‑categorías -->
             <ng-container
               *ngFor="let option of currentCategory.options; let subIndex = index">

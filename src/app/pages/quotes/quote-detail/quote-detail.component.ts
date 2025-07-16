@@ -162,6 +162,10 @@ export class QuoteDetailComponent implements OnInit {
       });
       this.userSelections[`${this.currentCategoryIndex}_${subIdx}`] =
         `${category.name}: ${(option as Option).name}`;
+
+      // Avanza automáticamente en versión básica
+      this.goToNextCategory();
+      this.cdr.detectChanges();
     } else {
       delete this.userSelections[`${this.currentCategoryIndex}_${subIdx}`];
 
@@ -175,16 +179,16 @@ export class QuoteDetailComponent implements OnInit {
         this.userSelections[`${this.currentCategoryIndex}_${subIdx}`] =
           `${category.name}: ${(option as Option).name}`;
       }
-    }
 
-    if (!this.touched[this.currentCategoryIndex]) {
-      this.touched[this.currentCategoryIndex] = new Set<number>();
-    }
-    this.touched[this.currentCategoryIndex].add(subIdx);
+      if (!this.touched[this.currentCategoryIndex]) {
+        this.touched[this.currentCategoryIndex] = new Set<number>();
+      }
+      this.touched[this.currentCategoryIndex].add(subIdx);
 
-    if (this.isCurrentCategoryComplete()) {
-      this.goToNextCategory();
-      this.cdr.detectChanges();
+      if (this.isCurrentCategoryComplete()) {
+        this.goToNextCategory();
+        this.cdr.detectChanges();
+      }
     }
 
     this.updateFormattedSelections();
