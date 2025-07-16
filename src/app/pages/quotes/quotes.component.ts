@@ -24,6 +24,7 @@ export class QuotesComponent implements OnInit {
   }
 
   getFirstImage(folder: string): string {
-    return `images/${folder}/image1.jpg`;
+    const images = this.quotesService.getImagesFromFolder(folder);
+    return images.length ? images[0] : '';
   }
 }

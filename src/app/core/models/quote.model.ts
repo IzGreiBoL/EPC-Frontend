@@ -7,6 +7,7 @@ export interface Quote {
   folder: string;
   basePrice: number; // Optional base price for quotes
   categories: QuoteCategory[];
+  imagesCount?: number; // Optional number of images
 }
 
 export interface QuoteCategory {

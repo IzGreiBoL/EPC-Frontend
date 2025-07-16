@@ -270,11 +270,22 @@ export class QuotesService {
   ];
 
   private items: Quote[] = [
-    { id: 1, name: 'Avalon', size: 1620, bedrooms: 4, bathrooms: 2, folder: 'avalon', basePrice: 114.76, categories: this.categories },
-    { id: 2, name: 'Cascade', size: 1470, bedrooms: 3, bathrooms: 3, folder: 'cascade', basePrice: 114.76, categories: this.categories },
-    { id: 3, name: 'Estates', size: 1443, bedrooms: 3, bathrooms: 2, folder: 'estates', basePrice: 114.76, categories: this.categories },
-    { id: 4, name: 'Jewel', size: 1470, bedrooms: 3, bathrooms: 2, folder: 'jewel', basePrice: 114.76, categories: this.categories },
-    { id: 5, name: 'Pandora', size: 1400, bedrooms: 3, bathrooms: 2, folder: 'pandora', basePrice: 114.76, categories: this.categories }
+    { id: 1, name: 'Avalon', size: 1620, bedrooms: 4, bathrooms: 2, folder: 'avalon', basePrice: 114.76, categories: this.categories, imagesCount: 5 },
+    { id: 2, name: 'Cascade', size: 1470, bedrooms: 3, bathrooms: 3, folder: 'cascade', basePrice: 114.76, categories: this.categories, imagesCount: 5 },
+    { id: 3, name: 'Estates', size: 1443, bedrooms: 3, bathrooms: 2, folder: 'estates', basePrice: 114.76, categories: this.categories, imagesCount: 5 },
+    { id: 4, name: 'Jewel', size: 1470, bedrooms: 3, bathrooms: 2, folder: 'jewel', basePrice: 114.76, categories: this.categories, imagesCount: 5 },
+    { id: 5, name: 'Pandora', size: 1400, bedrooms: 3, bathrooms: 2, folder: 'pandora', basePrice: 114.76, categories: this.categories, imagesCount: 1 },
+    {
+      id: 999,
+      name: 'Custom Build',
+      size: 2000,
+      bedrooms: 3,
+      bathrooms: 2,
+      folder: 'custom',
+      basePrice: 0,
+      categories: [],
+      imagesCount: 1
+    }
   ];
 
   private iconMap: Record<string, any> = {
@@ -301,13 +312,13 @@ export class QuotesService {
   }
 
   getImagesFromFolder(folder: string): string[] {
-    return [
-      `images/${folder}/image1.jpg`,
-      `images/${folder}/image2.jpg`,
-      `images/${folder}/image3.jpg`,
-      `images/${folder}/image4.jpg`,
-      `images/${folder}/image5.jpg`
-    ];
+    const item = this.items.find(i => i.folder === folder);
+    const count = item?.imagesCount ?? 1;
+    const images: string[] = [];
+    for (let i = 1; i <= count; i++) {
+      images.push(`images/${folder}/image${i}.jpg`);
+    }
+    return images;
   }
 
   getFirstImageFromFolder(folder: string): string {

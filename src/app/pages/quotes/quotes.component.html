@@ -1,11 +1,10 @@
 <div class="container-fluid">
   <div class="row justify-content-center mt-4">
     <div class="col-lg-6 col-md-6 mb-4" *ngFor="let item of items">
-      <div
-        class="custom-card d-flex flex-column flex-lg-row align-items-center">
+      <div class="custom-card d-flex flex-column flex-lg-row align-items-center">
         <!-- Imagen -->
         <div class="image-container">
-          <a [routerLink]="['/quotes/detail', item.id]">
+          <a [routerLink]="['/quotes/detail', item.id, item.id === 999 ? 'custom' : 'basic']">
             <img [src]="getFirstImage(item.folder)" class="card-img-top"
               alt="Image">
           </a>
@@ -18,11 +17,11 @@
           <div
             class="d-flex justify-content-center justify-content-lg-start align-items-center mb-3">
             <div class="d-flex align-items-center me-3">
-              <lucide-angular [img]="this.bedroomsIcon"></lucide-angular>
+              <lucide-angular [img]="bedroomsIcon"></lucide-angular>
               <span class="ms-1">{{ item.bedrooms }}</span>
             </div>
             <div class="d-flex align-items-center">
-              <lucide-angular [img]="this.bathroomsIcon"></lucide-angular>
+              <lucide-angular [img]="bathroomsIcon"></lucide-angular>
               <span class="ms-1">{{ item.bathrooms }}</span>
             </div>
           </div>
@@ -30,40 +29,12 @@
           <!-- Botones -->
           <div class="quote-buttons">
             <button class="button-secondary"
+              *ngIf="item.id !== 999"
               [routerLink]="['/quotes/detail', item.id, 'basic']">Basic
               Quote</button>
             <button class="button-primary"
-              [routerLink]="['/quotes/detail', item.id, 'advanced']">Advanced
-              Quote</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========== TARJETA CUSTOM ========== -->
-    <div class="col-lg-6 col-md-6 mb-4">
-      <div
-        class="custom-card d-flex flex-column flex-lg-row align-items-center">
-
-        <!-- Imagen genérica -->
-        <div class="image-container">
-          <a [routerLink]="['/quotes/detail', items[0]?.id ?? 1, 'custom']">
-            <img src="images/house1.jpg"
-              class="card-img-top" alt="Custom Build">
-          </a>
-        </div>
-
-        <!-- Contenido -->
-        <div class="card-body text-center text-lg-start">
-          <div class="mb-3">
-            <h3 class="card-title">Custom Build</h3>
-            <p class="card-subtitle">Define sqft, bedrooms & bathrooms</p>
-          </div>
-
-          <div class="quote-buttons">
-            <button class="button-primary"
-              [routerLink]="['/quotes/detail', items[0]?.id ?? 1, 'custom']">
-              Custom quote
+              [routerLink]="['/quotes/detail', item.id, item.id === 999 ? 'custom' : 'advanced']">
+              {{ item.id === 999 ? 'Custom Quote' : 'Advanced Quote' }}
             </button>
           </div>
         </div>
