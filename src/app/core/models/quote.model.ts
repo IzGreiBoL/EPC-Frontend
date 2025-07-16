@@ -15,6 +15,7 @@ export interface QuoteCategory {
   icon: string;
   basePrice: number;
   options: (SubCategory | Option)[];
+  fields?: FieldDescriptor[];
 }
 
 export interface SubCategory {
@@ -25,4 +26,10 @@ export interface SubCategory {
 export interface Option {
   name: string;
   price: number | string;
+}
+
+export interface FieldDescriptor {
+  key: 'sqft' | 'bedrooms' | 'bathrooms';
+  label: string;
+  type: 'number' | 'text';
 }

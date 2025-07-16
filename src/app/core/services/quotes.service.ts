@@ -305,7 +305,8 @@ export class QuotesService {
       `images/${folder}/image1.jpg`,
       `images/${folder}/image2.jpg`,
       `images/${folder}/image3.jpg`,
-      `images/${folder}/image4.jpg`
+      `images/${folder}/image4.jpg`,
+      `images/${folder}/image5.jpg`
     ];
   }
 

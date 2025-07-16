@@ -39,5 +39,35 @@
         </div>
       </div>
     </div>
+
+    <!-- ========== TARJETA CUSTOM ========== -->
+    <div class="col-lg-6 col-md-6 mb-4">
+      <div
+        class="custom-card d-flex flex-column flex-lg-row align-items-center">
+
+        <!-- Imagen genérica -->
+        <div class="image-container">
+          <a [routerLink]="['/quotes/detail', items[0]?.id ?? 1, 'custom']">
+            <img src="images/house1.jpg"
+              class="card-img-top" alt="Custom Build">
+          </a>
+        </div>
+
+        <!-- Contenido -->
+        <div class="card-body text-center text-lg-start">
+          <div class="mb-3">
+            <h3 class="card-title">Custom Build</h3>
+            <p class="card-subtitle">Define sqft, bedrooms & bathrooms</p>
+          </div>
+
+          <div class="quote-buttons">
+            <button class="button-primary"
+              [routerLink]="['/quotes/detail', items[0]?.id ?? 1, 'custom']">
+              Custom quote
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
