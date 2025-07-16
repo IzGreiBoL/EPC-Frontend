@@ -248,16 +248,6 @@
 
     <!-- ─── Panel derecho ─── -->
     <aside class="right-panel">
-      <div class="right-panel-outer">
-        <h5 class="right-panel-title">Configuration Steps</h5>
-        <div class="quick-steps">
-          <button *ngFor="let cat of item?.categories; let i = index"
-            (click)="currentCategoryIndex = i">
-            {{ cat.name }}
-          </button>
-        </div>
-      </div>
-
       <div class="price-breakdown">
         <h4>Price Breakdown</h4>
         <!-- Listado elegante de opciones seleccionadas -->
