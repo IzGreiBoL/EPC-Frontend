@@ -1,0 +1,299 @@
+<div class="quote-detail">
+    <!-- ═════ TOPBAR STICKY (solo desktop) ═════ -->
+    <header class="topbar desktop-only" *ngIf="!isMobile">
+        <div class="topbar-inner">
+            <div class="title-group">
+                <h2>House Configuration</h2>
+                <small>Step {{ currentCategoryIndex + 1 }}: {{
+                    categories[currentCategoryIndex].name }}</small>
+            </div>
+
+            <div class="total-group">
+                <span class="label">Total</span>
+                <div>
+                    <span class="amount">
+                        {{ totalNumeric | currency }}
+                        <ng-container *ngIf="hasCustomOption"> +
+                            c</ng-container>
+                    </span>
+                    <div class="per-sqft-header">
+                        {{ pricePerSqFtNum | currency:'USD':'symbol':'1.2-2'
+                        }}/sqft
+                    </div>
+                </div>
+                <button class="quote-btn"
+                    (click)="requestQuote()">Quote</button>
+            </div>
+        </div>
+
+        <!-- Barra de progreso -->
+        <div class="progress-bar">
+            <div class="progress-fill"
+                [style.width.%]="((currentCategoryIndex + 1) / (categories.length || 1)) * 100"></div>
+        </div>
+        <div class="progress-meta">
+            <span>Progress</span>
+            <span>{{ ((currentCategoryIndex + 1) / (categories.length || 1)) *
+                100 | number:'1.0-0' }}% Complete</span>
+        </div>
+    </header>
+
+    <!-- ═════ MOBILE HEADER & LAYOUT ═════ -->
+    <div class="mobile-header" *ngIf="isMobile">
+        <div class="mobile-header-row">
+            <button class="nav-btn" (click)="previousCategory()"
+                [disabled]="currentCategoryIndex === 0">
+                <span>&lt;</span>
+            </button>
+            <div class="mobile-title-group">
+                <span class="mobile-title">{{
+                    categories[currentCategoryIndex].name }}</span>
+                <span class="mobile-step">Step {{ currentCategoryIndex + 1 }} of
+                    {{ categories.length }}</span>
+            </div>
+            <button class="nav-btn" (click)="nextCategory()"
+                [disabled]="currentCategoryIndex === categories.length - 1">
+                <span>&gt;</span>
+            </button>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill"
+                [style.width.%]="((currentCategoryIndex + 1) / (categories.length || 1)) * 100"></div>
+        </div>
+        <div class="progress-meta">
+            <span>Step {{ currentCategoryIndex + 1 }} of {{ categories.length
+                }}</span>
+            <span>{{ ((currentCategoryIndex + 1) / (categories.length || 1)) *
+                100 | number:'1.0-0' }}% Complete</span>
+        </div>
+    </div>
+
+    <div class="mobile-content" *ngIf="isMobile">
+        <div class="gallery-wrapper">
+            <app-gallery [items]="galleryItems" [itemsPerPage]="1"
+                [size]="'small'"></app-gallery>
+        </div>
+
+        <section class="category-container"
+            *ngIf="categories[currentCategoryIndex] as currentCategory">
+            <h3>
+                <lucide-angular
+                    [img]="getIconByCategory(currentCategory.name)"></lucide-angular>
+                {{ currentCategory.name }}
+            </h3>
+            <p class="category-description">
+                Choose the materials and style for your home's exterior. These
+                selections will affect both the appearance and the final cost.
+            </p>
+
+            <!-- Opciones como botones grandes -->
+            <div class="button-row" *ngIf="!currentCategory.fields">
+                <ng-container
+                    *ngFor="let option of currentCategory.options; let subIndex = index">
+                    <button *ngIf="!isSubcategory(option)"
+                        #optBtn
+                        [class.selected]="userSelections[currentCategoryIndex + '_' + subIndex]"
+                        (click)="selectOption({ subIdx: subIndex, optIdx: 0 }); optBtn.blur()">
+                        <span class="option-title">{{ option.name }}</span>
+                    </button>
+                </ng-container>
+            </div>
+
+            <!-- Subcategorías: muestra el nombre y las opciones en grid de 2 columnas -->
+            <ng-container
+                *ngFor="let option of currentCategory.options; let subIndex = index">
+                <ng-container *ngIf="isSubcategory(option)">
+                    <div class="subcategory-container">
+                        <h4 class="subcategory-title">{{ option.name }}</h4>
+                        <div class="subcategory-buttons">
+                            <button
+                                *ngFor="let opt of option.options; let optIndex = index"
+                                #optBtn
+                                [class.selected]="userSelections[currentCategoryIndex + '_' + subIndex] && userSelections[currentCategoryIndex + '_' + subIndex].includes(opt.name)"
+                                (click)="selectOption({ subIdx: subIndex, optIdx: optIndex }); optBtn.blur()">
+                                <span class="option-title">{{ opt.name }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </ng-container>
+            </ng-container>
+
+            <!-- Campos custom -->
+            <div class="field-row" *ngIf="currentCategory.fields">
+                <ng-container *ngFor="let f of currentCategory.fields">
+                    <label>{{ f.label }}</label>
+                    <input [type]="f.type"
+                        [(ngModel)]="customValues[f.key]"
+                        (ngModelChange)="onCustomFieldChange({ key: f.key, value: $event })" />
+                </ng-container>
+            </div>
+        </section>
+    </div>
+
+    <!-- ═════ MOBILE FOOTER (Resumen y botón) ═════ -->
+    <div class="mobile-footer" *ngIf="isMobile">
+        <div class="mobile-footer-inner">
+            <div class="mobile-total-group">
+                <span class="mobile-total-label">Total Estimate</span>
+                <span class="mobile-total-amount">{{ totalNumeric |
+                    currency:'USD':'symbol':'1.0-0' }}</span>
+                <span class="mobile-per-sqft">
+                    {{ pricePerSqFtNum | currency:'USD':'symbol':'1.2-2' }}/sqft
+                </span>
+            </div>
+            <button class="mobile-quote-btn" (click)="requestQuote()">Get
+                Quote</button>
+        </div>
+    </div>
+
+    <!-- ═════ LAYOUT DESKTOP / CONTENIDO ═════ -->
+    <div class="quote-layout desktop-only" *ngIf="!isMobile">
+        <!-- ─── Sidebar pasos ─── -->
+        <aside class="sidebar">
+            <nav class="steps-nav">
+                <h4 class="mb-3">Configuration steps</h4>
+                <ul>
+                    <li *ngFor="let cat of categories; let i = index"
+                        [class.active]="i === currentCategoryIndex"
+                        [class.completed]="i < currentCategoryIndex"
+                        (click)="selectOption({ subIdx: i, optIdx: 0 })">
+                        <span class="step-icon">
+                            <lucide-angular
+                                [img]="getIconByCategory(cat.name)"></lucide-angular>
+                        </span>
+                        <span class="step-labels">
+                            <span class="step-name">{{ cat.name }}</span>
+                            <span class="step-desc">Step {{ i + 1 }}</span>
+                        </span>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- ─── Columna central ─── -->
+        <main class="main-content">
+            <div class="gallery-wrapper">
+                <app-gallery [items]="galleryItems" [itemsPerPage]="1"
+                    [size]="gallerySize"></app-gallery>
+            </div>
+            <section class="category-container"
+                *ngIf="categories[currentCategoryIndex] as currentCategory">
+                <h3>
+                    <lucide-angular
+                        [img]="getIconByCategory(currentCategory.name)"></lucide-angular>
+                    {{ currentCategory.name }}
+                </h3>
+                <p class="category-description">
+                    Choose the materials and style for your home's design. These
+                    selections will affect both the appearance and the final
+                    cost.
+                </p>
+                <div class="options">
+                    <div class="option-group">
+                        <div class="button-row" *ngIf="!currentCategory.fields">
+                            <ng-container
+                                *ngFor="let option of currentCategory.options; let subIndex = index">
+                                <button *ngIf="!isSubcategory(option)"
+                                    [class.selected]="userSelections[currentCategoryIndex + '_' + subIndex]"
+                                    (click)="selectOption({ subIdx: subIndex, optIdx: 0 })">
+                                    <span class="option-title">{{ option.name
+                                        }}</span>
+                                </button>
+                            </ng-container>
+                        </div>
+                        <ng-container
+                            *ngFor="let option of currentCategory.options; let subIndex = index">
+                            <ng-container *ngIf="isSubcategory(option)">
+                                <div class="subcategory-container mb-4">
+                                    <h4 class="subcategory-title">{{ option.name
+                                        }}</h4>
+                                    <div class="subcategory-buttons">
+                                        <button
+                                            *ngFor="let opt of option.options; let optIndex = index"
+                                            [class.selected]="userSelections[currentCategoryIndex + '_' + subIndex] && userSelections[currentCategoryIndex + '_' + subIndex].includes(opt.name)"
+                                            (click)="selectOption({ subIdx: subIndex, optIdx: optIndex })">
+                                            <span class="option-title">{{
+                                                opt.name }}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                        <div class="field-row" *ngIf="currentCategory.fields">
+                            <ng-container
+                                *ngFor="let f of currentCategory.fields">
+                                <label>{{ f.label }}</label>
+                                <input [type]="f.type"
+                                    [(ngModel)]="customValues[f.key]"
+                                (ngModelChange)="onCustomFieldChange({ key: f.key, value: $event })" />
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="navigation-buttons">
+                    <button (click)="previousCategory()"
+                        [disabled]="currentCategoryIndex === 0">Previous</button>
+                    <button (click)="nextCategory()"
+                        [disabled]="currentCategoryIndex === categories.length - 1">Next</button>
+                </div>
+            </section>
+        </main>
+        <!-- ─── Panel derecho ─── -->
+        <aside class="right-panel">
+            <div class="price-breakdown">
+                <h4>Selection breakdown</h4>
+                <div class="selected-options-list">
+                    <ng-container
+                        *ngFor="let group of formattedSelections; let catIdx = index">
+                        <ng-container *ngIf="showBreakdown || catIdx < 4">
+                            <div class="option-category">
+                                <span class="category-icon">
+                                    <lucide-angular
+                                        [img]="getIconByCategory(group.category)"></lucide-angular>
+                                </span>
+                                <span class="category-name">{{ group.category
+                                    }}</span>
+                            </div>
+                            <ul>
+                                <li *ngFor="let sub of group.subcategories">
+                                    <span class="option-dot"></span>
+                                    <span class="option-label">{{ sub }}</span>
+                                </li>
+                            </ul>
+                        </ng-container>
+                    </ng-container>
+                    <div
+                        *ngIf="!showBreakdown && formattedSelections.length > 4"
+                        class="show-more-row">
+                        <button class="show-more-btn"
+                            (click)="toggleBreakdown()">
+                            +{{ formattedSelections.length - 4 }} more
+                            categories
+                            <span class="arrow">&#9660;</span>
+                        </button>
+                    </div>
+                    <div *ngIf="showBreakdown && formattedSelections.length > 4"
+                        class="show-less-row">
+                        <button class="show-less-btn"
+                            (click)="toggleBreakdown()">
+                            Hide details <span class="arrow">&#9650;</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="total">
+                    <span>Total</span>
+                    <span>
+                        {{ totalNumeric | currency }}
+                        <ng-container *ngIf="hasCustomOption"> +
+                            c</ng-container>
+                    </span>
+                </div>
+                <div class="per-sqft under-total">
+                    {{ pricePerSqFtNum | currency:'USD':'symbol':'1.2-2' }}/sqft
+                </div>
+                <button class="quote-button"
+                    (click)="requestQuote()">Request Full Quote</button>
+            </div>
+        </aside>
+    </div>
+</div>

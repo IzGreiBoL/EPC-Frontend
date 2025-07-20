@@ -289,16 +289,16 @@ export class QuotesService {
   ];
 
   private iconMap: Record<string, any> = {
-    home: Home,
+    'home': Home,
     'door-open': DoorOpen,
-    blinds: Blinds,
+    'blinds': Blinds,
     'shower-head': ShowerHead,
-    lightbulb: Lightbulb,
-    grid: Grid,
-    vault: Vault,
-    table: Table,
-    paintbrush: Paintbrush,
-    microwave: Microwave
+    'lightbulb': Lightbulb,
+    'grid': Grid,
+    'vault': Vault,
+    'table': Table,
+    'paintbrush': Paintbrush,
+    'microwave': Microwave
   };
 
   constructor() { }
