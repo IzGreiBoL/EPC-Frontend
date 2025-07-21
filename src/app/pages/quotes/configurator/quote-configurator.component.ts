@@ -39,7 +39,7 @@ export class QuoteConfiguratorComponent {
     @Input() item?: Quote;
     @Input() categories: QuoteCategory[] = [];
     @Input() galleryItems: { image: string; title: number }[] = [];
-    @Input() quoteType: 'basic' | 'advanced' | 'custom' = 'basic';
+    @Input() quoteType: 'basic' | 'advanced' | 'custom' | 'remodel' = 'basic';
     @Input() isMobile = false;
     @Input() gallerySize: 'small' | 'large' = 'large';
 
@@ -113,8 +113,8 @@ export class QuoteConfiguratorComponent {
         const category = this.currentCategory;
         if (!category?.options) return;
         const option = category.options[event.subIdx];
-        // Si es versión básica, solo puede haber una opción seleccionada por categoría
-        if (this.quoteType === 'basic') {
+        // Si es versión básica o remodel, solo puede haber una opción seleccionada por categoría
+        if (this.quoteType === 'basic' || this.quoteType === 'remodel') {
             // Elimina todas las selecciones de la categoría actual
             Object.keys(this.userSelections).forEach(k => {
                 if (k.startsWith(`${this.currentCategoryIndex}_`)) delete this.userSelections[k];

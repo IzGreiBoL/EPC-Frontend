@@ -6,4 +6,5 @@ export interface Service {
     text: string;
     quoteButtonText?: string;
     showInHeader?: boolean;
+    redirectUrl?: string;
 }

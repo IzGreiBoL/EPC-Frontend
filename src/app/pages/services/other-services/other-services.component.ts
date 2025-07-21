@@ -1,13 +1,13 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ServicesService } from '../../../core/services/services.service';
 import { Service } from '../../../core/models/service.model';
 
 @Component({
   selector: 'app-other-services',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './other-services.component.html',
   styleUrls: ['./other-services.component.scss']
 })

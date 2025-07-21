@@ -312,8 +312,9 @@ export class QuotesService {
   }
 
   getImagesFromFolder(folder: string): string[] {
+    // Busca el item, pero si no existe, usa un valor por defecto
     const item = this.items.find(i => i.folder === folder);
-    const count = item?.imagesCount ?? 1;
+    const count = item?.imagesCount ?? 5;
     const images: string[] = [];
     for (let i = 1; i <= count; i++) {
       images.push(`images/${folder}/image${i}.jpg`);
@@ -335,5 +336,87 @@ export class QuotesService {
 
   getCategoriesByType(type: 'basic' | 'advanced'): QuoteCategory[] {
     return type === 'basic' ? this.basicCategories : this.categories;
+  }
+
+  buildCustomCategory(): QuoteCategory[] {
+    return [{
+      id: 999,
+      name: 'Custom parameters',
+      icon: 'home',
+      basePrice: 0,
+      options: [],
+      fields: [
+        { key: 'sqft', label: 'Square footage', type: 'number' },
+        { key: 'bedrooms', label: 'Bedrooms', type: 'number' },
+        { key: 'bathrooms', label: 'Bathrooms', type: 'number' },
+      ],
+    }];
+  }
+
+  buildRemodelCategory(): QuoteCategory[] {
+    return [
+      {
+        id: 1001,
+        name: 'Sq ft',
+        icon: 'home',
+        basePrice: 0,
+        options: [],
+        fields: [
+          { key: 'sqft', label: 'Sq ft', type: 'text' }
+        ]
+      },
+      {
+        id: 1002,
+        name: 'Foundation',
+        icon: 'grid',
+        basePrice: 0,
+        options: [
+          { name: 'Yes', price: 0 },
+          { name: 'No', price: 0 }
+        ]
+      },
+      {
+        id: 1003,
+        name: 'Sheet rock',
+        icon: 'paintbrush',
+        basePrice: 0,
+        options: [
+          { name: 'Yes', price: 0 },
+          { name: 'No', price: 0 }
+        ]
+      },
+      {
+        id: 1004,
+        name: 'Framing',
+        icon: 'vault',
+        basePrice: 0,
+        options: [
+          { name: 'Yes', price: 0 },
+          { name: 'No', price: 0 }
+        ]
+      },
+      {
+        id: 1005,
+        name: 'Bathrooms',
+        icon: 'shower-head',
+        basePrice: 0,
+        options: [
+          { name: '1', price: 0 },
+          { name: '2', price: 0 },
+          { name: '3', price: 0 },
+          { name: '4+', price: 0 }
+        ]
+      },
+      {
+        id: 1006,
+        name: 'Finishes',
+        icon: 'paintbrush',
+        basePrice: 0,
+        options: [
+          { name: 'Yes', price: 0 },
+          { name: 'No', price: 0 }
+        ]
+      }
+    ];
   }
 }

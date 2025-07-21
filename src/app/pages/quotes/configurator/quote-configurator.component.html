@@ -156,7 +156,7 @@
                     <li *ngFor="let cat of categories; let i = index"
                         [class.active]="i === currentCategoryIndex"
                         [class.completed]="i < currentCategoryIndex"
-                        (click)="selectOption({ subIdx: i, optIdx: 0 })">
+                        (click)="currentCategoryIndex = i">
                         <span class="step-icon">
                             <lucide-angular
                                 [img]="getIconByCategory(cat.name)"></lucide-angular>

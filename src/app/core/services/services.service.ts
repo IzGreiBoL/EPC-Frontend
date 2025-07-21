@@ -76,7 +76,8 @@ export class ServicesService {
       text: 'At EPC Developments, we specialize in custom home remodeling and addition services that transform your existing space into something new and exciting. Whether you\'re looking to renovate a single room, add extra living space, or complete a home makeover, our expert team combines innovative design with quality craftsmanship to enhance functionality and aesthetics. We work closely with you to ensure that every detail aligns with your vision, all while maintaining transparency in pricing and delivering results on time and within budget. Let us help you reimagine your home with our tailored remodeling and addition solutions.',
       quoteButtonText: 'Free Quote',
       category: 'other-services',
-      showInHeader: true
+      showInHeader: true,
+      redirectUrl: '/quotes/remodel'
     },
     {
       slug: 'custom-floorplans-design',
