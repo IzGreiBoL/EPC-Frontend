@@ -16,7 +16,7 @@ import { QuoteModalComponent } from '../shared/quote-modal/quote-modal.component
     [quoteType]="'remodel'"
     [isMobile]="isMobile"
     [gallerySize]="gallerySize"
-    [pricingService]="pricing"
+    [pricingService]="pricingAdapter"
     (requestQuote)="requestQuote()"
   ></app-quote-configurator>`,
   standalone: true,
@@ -38,6 +38,7 @@ export class RemodelQuoteComponent implements OnInit {
   galleryItems: { image: string; title: number }[] = [];
   isMobile = false;
   gallerySize: 'small' | 'large' = 'large';
+  pricingAdapter: any;
 
   constructor(
     private quotesService: QuotesService,
@@ -50,6 +51,24 @@ export class RemodelQuoteComponent implements OnInit {
     this.categories = this.quotesService.buildRemodelCategory();
     this.galleryItems = this.quotesService.getImagesFromFolder(this.item.folder)
       .map(image => ({ image, title: this.item.size }));
+
+    // Adaptador para cumplir la firma esperada
+    this.pricingAdapter = {
+      calcStandard: (
+        categories: QuoteCategory[],
+        userSelections: Record<string, string>,
+        _basePrice: number // <- ignora el argumento recibido
+      ) => {
+        const size = this.item?.size && this.item.size > 0 ? this.item.size : 1;
+        const basePrice = this.item?.basePrice ?? 0; // <-- usa el basePrice del modelo
+        const result = this.pricing.calcStandard(categories, userSelections, basePrice, size);
+        return {
+          pricePerFt: result.pricePerFt,
+          hasCustom: result.hasCustom
+        };
+      }
+    };
+
     this.isMobile = this.resizeService.isMobile;
     this.gallerySize = this.resizeService.gallerySize;
     this.resizeService.isMobile$.subscribe(val => this.isMobile = val);

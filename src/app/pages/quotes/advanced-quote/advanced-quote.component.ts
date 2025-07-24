@@ -17,7 +17,7 @@ import { QuoteModalComponent } from '../shared/quote-modal/quote-modal.component
     [quoteType]="'advanced'"
     [isMobile]="isMobile"
     [gallerySize]="gallerySize"
-    [pricingService]="pricing"
+    [pricingService]="pricingAdapter"
     (requestQuote)="requestQuote()"
   ></app-quote-configurator>`,
   standalone: true,
@@ -29,6 +29,7 @@ export class AdvancedQuoteComponent implements OnInit {
   galleryItems: { image: string; title: number }[] = [];
   isMobile = false;
   gallerySize: 'small' | 'large' = 'large';
+  pricingAdapter: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -48,6 +49,22 @@ export class AdvancedQuoteComponent implements OnInit {
       this.galleryItems = images.map(image => ({ image, title: this.item?.size ?? 0 }));
 
       this.categories = this.quotesService.getCategoriesByType('advanced');
+
+      // Adapter que siempre pasa size
+      this.pricingAdapter = {
+        calcStandard: (
+          categories: QuoteCategory[],
+          userSelections: Record<string, string>
+        ) => {
+          const size = this.item?.size && this.item.size > 0 ? this.item.size : 1;
+          const basePrice = this.item?.basePrice ?? 0; // <-- usa el basePrice del modelo
+          const result = this.pricing.calcStandard(categories, userSelections, basePrice, size);
+          return {
+            pricePerFt: result.pricePerFt,
+            hasCustom: result.hasCustom
+          };
+        }
+      };
     });
     this.isMobile = this.resizeService.isMobile;
     this.gallerySize = this.resizeService.gallerySize;

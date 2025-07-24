@@ -17,7 +17,7 @@ import { QuoteConfiguratorComponent } from "../configurator/quote-configurator.c
     [quoteType]="'basic'"
     [isMobile]="isMobile"
     [gallerySize]="gallerySize"
-    [pricingService]="pricing"
+    [pricingService]="pricingAdapter"
     (previousCategory)="previousCategory()"
     (nextCategory)="nextCategory()"
     (requestQuote)="requestQuote()"
@@ -43,6 +43,7 @@ export class BasicQuoteComponent implements OnInit {
   breakdownItems: { name: string; price: number | string }[] = [];
   basePrice = 0;
   private touched: Record<number, Set<number>> = {};
+  pricingAdapter: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -66,6 +67,21 @@ export class BasicQuoteComponent implements OnInit {
       this.initPreSelections();
       this.updateFormattedSelections();
       this.calculateTotal();
+
+      this.pricingAdapter = {
+        calcStandard: (
+          categories: QuoteCategory[],
+          userSelections: Record<string, string>
+        ) => {
+          const size = this.item?.size && this.item.size > 0 ? this.item.size : 1;
+          const basePrice = this.item?.basePrice ?? 0; // <-- usa el basePrice del modelo
+          const result = this.pricing.calcStandard(categories, userSelections, basePrice, size);
+          return {
+            pricePerFt: result.pricePerFt,
+            hasCustom: result.hasCustom
+          };
+        }
+      };
     });
     this.isMobile = this.resizeService.isMobile;
     this.gallerySize = this.resizeService.gallerySize;
@@ -140,6 +156,7 @@ export class BasicQuoteComponent implements OnInit {
       this.categories,
       this.userSelections,
       this.basePrice,
+      this.item.size
     );
     const size = this.item.size ?? 0;
     const total = pricePerFt * size;

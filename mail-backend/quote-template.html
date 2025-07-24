@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Quote Template</title>
+  </head>
+  <body style="background:#f6f6f6;color:#365b6d;font-family:'Montserrat',Arial,sans-serif;margin:0;padding:0;">
+    <div style="width:816px;margin:24px auto 0 auto;background:#fff;box-shadow:0 0 16px #0002;box-sizing:border-box;padding:96px;border-radius:0;overflow:hidden;">
+      <div style="display:grid;grid-template-columns:1fr 190px;gap:0 40px;align-items:flex-start;">
+        <div style="display:flex;flex-direction:column;justify-content:flex-start;">
+          <div style="align-self:center;">
+            <img src="/images/mail-images/quote.png" alt="Quote" style="width:240px;height:auto;">
+          </div>
+          <div style="font-size:20px;letter-spacing:2px;margin:24px 0 18px 0;">QUOTE NO. <span style="font-weight:normal;">´quoteNo´</span></div>
+          <div style="display:flex;justify-content:space-between;gap:24px;margin-bottom:18px;">
+            <span style="font-size:16px;">Quote from</span>
+            <span>
+              <span style="font-size:16px;font-weight:bold;text-align:left;letter-spacing:1px;">EPC DEVELOPMENTS</span><br>
+              <span style="font-size:13px;letter-spacing:2px;text-align:left;margin-top:2px;font-weight:400;">CUSTOM BUILDER</span>
+            </span>
+          </div>
+          <div>
+            <div style="font-weight:bold;font-size:18px;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase;">Model Selections</div>
+            <ul style="list-style:none;padding:0;margin:0 0 12px 0;font-size:15px;">
+              ´modelSelectionsRows´
+            </ul>
+          </div>
+          <table style="width:100%;margin-top:18px;border-collapse:collapse;font-size:16px;border-radius:4px;overflow:hidden;box-shadow:0 0 0 1.5px #22313f22;">
+            <tr>
+              <th style="color:#f7f7f7;font-weight:600;background:#1d4355;letter-spacing:1px;padding:8px 18px;text-align:left;">Price Per sqft</th>
+              <td style="text-align:end;color:#f7f7f7;background:#1d4355;padding:8px 18px;">$´pricePerSqft´</td>
+            </tr>
+            <tr>
+              <th style="color:#f7f7f7;font-weight:600;background:#1d4355;letter-spacing:1px;padding:8px 18px;text-align:left;">Sqft Total</th>
+              <td style="text-align:end;color:#f7f7f7;background:#1d4355;padding:8px 18px;">´sqftTotal´</td>
+            </tr>
+            <tr>
+              <td colspan="2" style="background:#f2f1ec;color:#365b6d;font-size:22px;font-weight:bold;border-top:2px solid #22313f;text-align:right;padding:8px 18px;">
+                Total: $´total´
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;position:relative;margin-top:0;background:none;border:none;padding:0;box-sizing:border-box;">
+          <img src="/images/mail-images/epc-logo.png" alt="EPC Logo" style="width:80px;margin-bottom:12px;display:block;">
+          <div style="background:#fff;border:1.5px solid #e6d7c1;border-radius:0;padding:0 10px 10px 10px;box-sizing:border-box;width:100%;display:flex;flex-direction:column;align-items:center;position:relative;">
+            <div style="font-weight:bold;font-size:17px;letter-spacing:1px;margin:12px 0 18px 0;text-transform:uppercase;">´date´</div>
+            <div style="width:120px;height:150px;margin:0 auto 18px auto;display:flex;align-items:center;justify-content:center;position:relative;border-radius:12px;border:none;overflow:visible;">
+              <div style="--radius:4px;width:120px;height:150px;position:absolute;top:0;left:0;z-index:1;pointer-events:none;
+                background-image:
+                  radial-gradient(var(--radius),transparent 98%,#dedad4),
+                  linear-gradient(#dedad4 0 0);
+                background-repeat:round,no-repeat;
+                background-position:
+                  calc(var(--radius) * -1.5) calc(var(--radius) * -1.5),
+                  50%;
+                background-size:
+                  calc(var(--radius) * 3) calc(var(--radius) * 3),
+                  calc(100% - var(--radius) * 3) calc(100% - var(--radius) * 3);">
+              </div>
+              <img src="´stampImageUrl´" alt="Stamp" style="position:relative;z-index:2;width:100px;height:130px;object-fit:cover;border-radius:8px;margin:0;box-shadow:0 0 2px #22313f44;background:#fff;">
+            </div>
+            <div style="margin-top:10px;font-size:15px;text-align:left;width:100%;">
+              <strong style="display:block;margin-bottom:2px;font-size:15px;font-weight:bold;">Quote to:</strong>
+              <div style="font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">´clientName´</div>
+              <div style="font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">´modelOfHouse´</div>
+            </div>
+            <div style="margin:14px 0 56px 0;font-size:13px;font-weight:400;text-align:left;width:100%;">
+              *This quote will expire
+              <strong style="display:block;font-size:15px;font-weight:bold;margin-top:4px;text-transform:uppercase;">30 DAYS AFTER THE DAY IT WAS MADE</strong>
+            </div>
+            <div style="border-top:1px solid #22313f;align-self:center;">
+              <img src="/images/mail-images/thank-you.png" alt="Thank You" style="width:180px;height:auto;display:inline-block;">
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr style="border:none;border-top:1px solid #22313f;margin:12px 0 12px 0;">
+      <div style="font-size:14px;display:flex;justify-content:space-around;gap:60px;margin-top:24px;">
+        <div>
+          <strong style="display:block;font-weight:bold;margin-bottom:2px;font-size:13px;letter-spacing:1px;text-transform:uppercase;">EMAIL</strong>
+          <a href="mailto:EPCDEVELOPMENTS@GMAIL.COM" style="color:#365b6d;text-decoration:none;">EPCDEVELOPMENTS@GMAIL.COM</a>
+        </div>
+        <div>
+          <strong style="display:block;font-weight:bold;margin-bottom:2px;font-size:13px;letter-spacing:1px;text-transform:uppercase;">MOBILE</strong>
+          +832-931-0425
+        </div>
+        <div>
+          <strong style="display:block;font-weight:bold;margin-bottom:2px;font-size:13px;letter-spacing:1px;text-transform:uppercase;">WEBSITE</strong>
+          <a href="https://epcbi.com" style="color:#365b6d;text-decoration:none;">EPCBI.COM</a>
+        </div>
+      </div>
+      <hr style="border:none;border-top:1px solid #22313f;margin:12px 0 12px 0;">
+      <div style="font-size:12px;text-align:center;letter-spacing:0.5px;margin-top:12px;">
+        <span style="font-weight:bold;font-size:13px;display:block;text-transform:uppercase;">*THIS QUOTE IS VALID FOR 30 DAYS FROM THE DATE OF ISSUE.</span>
+        <div style="font-size:10px;font-weight:400;margin-top:8px;text-align:start;">
+          THIS QUOTE IS AN ESTIMATE ONLY AND DOES NOT CONSTITUTE A CONTRACT.
+          PRICES, MATERIALS, AND TIMELINES ARE SUBJECT TO CHANGE BASED ON FINAL
+          SELECTIONS, SITE CONDITIONS, AND PERMITTING. FINAL TERMS WILL BE
+          CONFIRMED IN A SIGNED CONSTRUCTION AGREEMENT.
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

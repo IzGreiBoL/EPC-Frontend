@@ -74,10 +74,11 @@ export class QuotesService {
       id: 1,
       name: 'Exterior Design',
       icon: 'home',
-      basePrice: 3.79,
       options: [
         {
-          name: 'Siding Materials', options: [
+          name: 'Siding Materials',
+          basePrice: 3.79,
+          options: [
             { name: 'Fiber cement', price: 0 },
             { name: 'Wood', price: 2.50 },
             { name: 'Stone', price: 5.05 },
@@ -86,16 +87,20 @@ export class QuotesService {
           ]
         },
         {
-          name: 'Roofing Styles', options: [
+          name: 'Roofing Styles',
+          basePrice: 2.91,
+          options: [
             { name: 'Shingle', price: 0 },
-            { name: 'Metal', price: 2.91 },
-            { name: 'Tile', price: 4.34 },
-            { name: 'Clay', price: 10.25 }
+            { name: 'Metal', price: 4.34 },
+            { name: 'Tile', price: 10.25 },
+            { name: 'Clay', price: 30.84 }
           ]
         },
         {
-          name: 'Driveway', options: [
-            { name: 'As Is', price: 13.84 },
+          name: 'Driveway',
+          basePrice: 13.84,
+          options: [
+            { name: 'As Is', price: 0 },
             { name: 'Custom', price: "+c" }
           ]
         }
@@ -104,11 +109,12 @@ export class QuotesService {
     {
       id: 2,
       name: 'Front Door Material',
-      basePrice: 1.22,
       icon: 'door-open',
       options: [
         {
-          name: 'Material', options: [
+          name: 'Material',
+          basePrice: 1.22,
+          options: [
             { name: 'Fiberglass', price: 0 },
             { name: 'Steel', price: 0.10 },
             { name: 'Wood', price: 0.64 },
@@ -120,11 +126,12 @@ export class QuotesService {
     {
       id: 3,
       name: 'Window Design & Colors',
-      basePrice: 2.48,
       icon: 'blinds',
       options: [
         {
-          name: 'Window Colors', options: [
+          name: 'Window Colors',
+          basePrice: 2.48,
+          options: [
             { name: 'White', price: 0 },
             { name: 'Black', price: 1.18 },
             { name: 'Natural Wood', price: 20.09 },
@@ -136,17 +143,18 @@ export class QuotesService {
     {
       id: 4,
       name: 'Bathroom Fixtures',
-      basePrice: 3.37,
       icon: 'shower-head',
       options: [
         {
-          name: 'Fixture Colors', options: [
+          name: 'Fixture Colors',
+          basePrice: 3.37,
+          options: [
             { name: 'Black', price: 0 },
             { name: 'Brushed Nickel', price: 0 },
             { name: 'Chrome', price: 0 },
             { name: 'Gold', price: 0 },
             { name: 'Matte Black', price: 0.55 },
-            { name: 'Bronze', price: 0 },
+            { name: 'Bronze', price: 1.8 },
           ]
         }
       ]
@@ -154,11 +162,12 @@ export class QuotesService {
     {
       id: 5,
       name: 'Lighting Fixtures',
-      basePrice: 1.86,
       icon: 'lightbulb',
       options: [
         {
-          name: 'Lighting Colors', options: [
+          name: 'Lighting Colors',
+          basePrice: 1.86,
+          options: [
             { name: 'Black', price: 0 },
             { name: 'White', price: 0 },
             { name: 'Brass', price: 0.62 },
@@ -172,20 +181,23 @@ export class QuotesService {
     {
       id: 6,
       name: 'Flooring & Backsplashes',
-      basePrice: 1.87,
       icon: 'grid',
       options: [
         {
-          name: 'Flooring Materials', options: [
-            { name: 'Luxury Vinyl', price: 0 },
+          name: 'Flooring Materials',
+          basePrice: 1.87,
+          options: [
             { name: 'Carpet', price: 0 },
             { name: 'Concrete', price: 0 },
-            { name: 'Tile', price: 0.27 },
+            { name: 'Tile', price: 0 },
+            { name: 'Luxury Vinyl', price: 0.27 },
             { name: 'Hardwood', price: 2.17 },
           ]
         },
         {
-          name: 'Backsplash', options: [
+          name: 'Backsplash',
+          basePrice: 0,
+          options: [
             { name: 'No', price: 0 },
             { name: 'Yes', price: 0.33 }
           ]
@@ -195,11 +207,12 @@ export class QuotesService {
     {
       id: 7,
       name: 'Cabinetry',
-      basePrice: 6.83,
       icon: 'vault',
       options: [
         {
-          name: 'Cabinet Styles', options: [
+          name: 'Cabinet Styles',
+          basePrice: 6.83,
+          options: [
             { name: 'Shaker', price: 0 },
             { name: 'Modern', price: 0 },
             { name: 'Traditional', price: 0 },
@@ -207,7 +220,9 @@ export class QuotesService {
           ]
         },
         {
-          name: 'Cabinet Colors', options: [
+          name: 'Cabinet Colors',
+          basePrice: 0,
+          options: [
             { name: 'Painted', price: 0 },
             { name: 'Stain', price: 1 },
           ]
@@ -217,16 +232,17 @@ export class QuotesService {
     {
       id: 8,
       name: 'Countertops',
-      basePrice: 46.95,
       icon: 'table',
       options: [
         {
-          name: 'Materials', options: [
+          name: 'Materials',
+          basePrice: 46.95,
+          options: [
             { name: 'Granite', price: 0 },
-            { name: 'Concrete', price: 0 },
-            { name: 'Butcher Block', price: 0 },
             { name: 'Quartz', price: 11.75 },
             { name: 'Marble', price: 40.85 },
+            { name: 'Concrete', price: 40.85 },
+            { name: 'Butcher Block', price: 40.85 },
           ]
         }
       ]
@@ -234,11 +250,12 @@ export class QuotesService {
     {
       id: 9,
       name: 'Paint & Accent Walls',
-      basePrice: 3.96,
       icon: 'paintbrush',
       options: [
         {
-          name: 'Paint Colors', options: [
+          name: 'Paint Colors',
+          basePrice: 3.96,
+          options: [
             { name: 'Neutral', price: 0 },
             { name: 'Bold', price: 0 },
             { name: 'Pastels', price: 0 },
@@ -246,7 +263,9 @@ export class QuotesService {
           ]
         },
         {
-          name: 'Accent Wall', options: [
+          name: 'Accent Wall',
+          basePrice: 0,
+          options: [
             { name: 'No', price: 0 },
             { name: 'Yes', price: "+c" },
           ]
@@ -256,10 +275,11 @@ export class QuotesService {
     {
       id: 10,
       name: 'Appliance Selection & Upgrades',
-      basePrice: 0,
       icon: 'microwave', options: [
         {
-          name: 'Appliances', options: [
+          name: 'Appliances',
+          basePrice: 0,
+          options: [
             { name: 'No', price: 0 },
             { name: 'Yes', price: 4.73 },
             { name: 'Custom Design', price: 7.08 }

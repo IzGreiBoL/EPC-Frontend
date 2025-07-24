@@ -101,7 +101,10 @@ export class QuoteConfiguratorComponent {
                     }
                 } else {
                     // Si hay opciones simples, preselecciona la primera
-                    if (subIdx === 0) {
+                    if (
+                        !cat.options.some(o => this.isSubcategory(o)) // solo si no hay subcategorías
+                        && subIdx === 0
+                    ) {
                         this.userSelections[`${catIdx}_${subIdx}`] = `${cat.name}: ${opt.name}`;
                     }
                 }
@@ -168,16 +171,23 @@ export class QuoteConfiguratorComponent {
 
     calculateTotal(): void {
         if (!this.item || !this.pricingService) return;
-        const { pricePerFt, hasCustom } = this.pricingService.calcStandard(
-            this.categories,
-            this.userSelections,
-            this.basePrice,
-        );
+        let result: { pricePerFt: number; hasCustom: boolean };
         const size = this.item.size ?? 0;
-        const total = pricePerFt * size;
+        if ('calcStandard' in this.pricingService) {
+            // Siempre pasa size como cuarto argumento
+            result = (this.pricingService as any).calcStandard(
+                this.categories,
+                this.userSelections,
+                this.basePrice,
+                size
+            );
+        } else {
+            return;
+        }
+        const total = result.pricePerFt * size;
         this.totalNumeric = total;
-        this.hasCustomOption = hasCustom;
-        this.pricePerSqFtNum = pricePerFt;
+        this.hasCustomOption = result.hasCustom;
+        this.pricePerSqFtNum = result.pricePerFt;
     }
 
     toggleBreakdown(): void {
@@ -186,7 +196,23 @@ export class QuoteConfiguratorComponent {
     }
 
     requestQuote(): void {
-        this.modalService.open(QuoteModalComponent, { centered: true });
+        // Prepara los datos de la cotización a enviar al modal
+        const quoteData = {
+            quoteNo: this.item?.id ? String(this.item.id) : '',
+            date: new Date().toLocaleDateString(),
+            clientName: '', // Se llenará en el modal
+            modelOfHouse: this.item?.name || '',
+            selections: this.formattedSelections,
+            pricePerSqft: this.pricePerSqFtNum,
+            sqftTotal: this.item?.size || '',
+            total: this.totalNumeric,
+            hasCustomOption: this.hasCustomOption,
+            customValues: this.customValues,
+            item: this.item,
+            stampImageUrl: (this.galleryItems[0]?.image ?? '') // Usa la imagen principal del modelo
+        };
+        const modalRef = this.modalService.open(QuoteModalComponent, { centered: true });
+        modalRef.componentInstance.quoteData = quoteData;
     }
 
     onCustomFieldChange(event: { key: string; value: number }): void {

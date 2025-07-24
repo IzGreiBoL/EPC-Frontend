@@ -17,7 +17,7 @@ import { QuoteModalComponent } from '../shared/quote-modal/quote-modal.component
     [quoteType]="'custom'"
     [isMobile]="isMobile"
     [gallerySize]="gallerySize"
-    [pricingService]="pricing"
+    [pricingService]="pricingAdapter"
     (requestQuote)="requestQuote()"
   ></app-quote-configurator>`,
   standalone: true,
@@ -29,6 +29,7 @@ export class CustomQuoteComponent implements OnInit {
   galleryItems: { image: string; title: number }[] = [];
   isMobile = false;
   gallerySize: 'small' | 'large' = 'large';
+  pricingAdapter: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -48,6 +49,22 @@ export class CustomQuoteComponent implements OnInit {
       this.galleryItems = images.map(image => ({ image, title: this.item?.size ?? 0 }));
 
       this.categories = this.quotesService.buildCustomCategory();
+
+      // Adaptador para cumplir la firma esperada
+      this.pricingAdapter = {
+        calcStandard: (
+          categories: QuoteCategory[],
+          userSelections: Record<string, string>,
+          basePrice: number
+        ) => {
+          const size = this.item?.size && this.item.size > 0 ? this.item.size : 1;
+          const result = this.pricing.calcStandard(categories, userSelections, basePrice, size);
+          return {
+            pricePerFt: result.pricePerFt,
+            hasCustom: result.hasCustom
+          };
+        }
+      };
     });
     this.isMobile = this.resizeService.isMobile;
     this.gallerySize = this.resizeService.gallerySize;

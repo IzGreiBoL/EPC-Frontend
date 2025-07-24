@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <title>Quote PDF</title>
+    <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      width: 100vw;
+      box-sizing: border-box;
+      color: #365b6d;
+      font-family: 'Montserrat', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 816px;
+      height: 1056px;
+      padding: 96px 96px 96px 96px;
+      box-sizing: border-box;
+      box-shadow: 0 0 16px #0002;
+      overflow: hidden;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .main-content {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 190px;
+      gap: 0 40px;
+      align-items: flex-start;
+    }
+
+    .left {
+      padding-right: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .quote-title {
+      align-self: center;
+    }
+
+    .quote-title img {
+      width: 240px;
+      height: auto;
+    }
+
+    .quote-no {
+      font-size: 20px;
+      letter-spacing: 2px;
+      margin: 24px 0 18px 0;
+    }
+
+    .from-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 18px;
+    }
+
+    .from-label {
+      font-size: 16px;
+    }
+
+    .from-company {
+      font-size: 16px;
+      font-weight: bold;
+      text-align: left;
+      letter-spacing: 1px;
+    }
+
+    .from-sub {
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-align: left;
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    .model-selections-title {
+      font-weight: bold;
+      font-size: 18px;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .model-selections ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 12px 0;
+      font-size: 15px;
+    }
+
+    .model-selections ul li {
+      margin-bottom: 10px;
+      line-height: 1.5;
+      padding-left: 0;
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 6px;
+    }
+
+    .price-table {
+      width: 100%;
+      margin-top: 18px;
+      border-collapse: collapse;
+      font-size: 16px;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1.5px #22313f22;
+    }
+
+    .price-table th,
+    .price-table td {
+      padding: 8px 18px;
+      border: none;
+      text-align: left;
+    }
+
+    .price-table th {
+      color: #f7f7f7;
+      font-weight: 600;
+      background: #1d4355;
+      letter-spacing: 1px;
+    }
+
+    .price-table td {
+      text-align: end;
+      color: #f7f7f7;
+      background: #1d4355;
+    }
+
+    .total-row td {
+      background: #f2f1ec;
+      color: #365b6d;
+      font-size: 22px;
+      font-weight: bold;
+      background: #f2f1ec;
+      border-top: 2px solid #22313f;
+      text-align: right;
+    }
+
+    .total-row td:first-child {
+      text-align: left;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .contact-details {
+      font-size: 14px;
+      display: flex;
+      justify-content: space-around;
+      gap: 60px;
+    }
+
+    .contact-details .col {
+      margin-right: 0;
+    }
+
+    .contact-details strong {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 2px;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .contact-details a {
+      color: #365b6d;
+      text-decoration: none;
+    }
+
+    .footer {
+      font-size: 12px;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+
+    .footer .valid {
+      font-weight: bold;
+      font-size: 13px;
+      display: block;
+      text-transform: uppercase;
+    }
+
+    .footer .legal {
+      font-size: 10px;
+      font-weight: 400;
+      margin-top: 8px;
+      text-align: start;
+    }
+
+    .right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      margin-top: 0;
+      background: none;
+      border: none;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .logo-epc-main {
+      width: 80px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .right-content {
+      background: #fff;
+      border: 1.5px solid #e6d7c1;
+      border-radius: 0;
+      padding: 0 10px 10px 10px;
+      box-sizing: border-box;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .right .date-title {
+      font-weight: bold;
+      font-size: 17px;
+      letter-spacing: 1px;
+      margin: 12px 0 18px 0;
+      text-transform: uppercase;
+    }
+
+    .stamp {
+      width: 120px;
+      height: 150px;
+      margin: 0 auto 18px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border-radius: 12px;
+      border: none;
+      overflow: visible;
+    }
+
+    /* Borde cuadrado con picos tipo postal */
+    .stamp-border {
+      --radius: 4px;
+      width: 120px;
+      height: 150px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      pointer-events: none;
+      background-image:
+        radial-gradient(
+          var(--radius),
+          transparent 98%,
+          #dedad4
+        ),
+        linear-gradient(#dedad4 0 0);
+      background-repeat: round, no-repeat;
+      background-position:
+        calc(var(--radius) * -1.5) calc(var(--radius) * -1.5),
+        50%;
+      background-size:
+        calc(var(--radius) * 3) calc(var(--radius) * 3),
+        calc(100% - var(--radius) * 3) calc(100% - var(--radius) * 3);
+    }
+
+    .stamp img {
+      position: relative;
+      z-index: 2;
+      width: 100px;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 0;
+      box-shadow: 0 0 2px #22313f44;
+      background: #fff;
+    }
+
+    .right .quote-to {
+      margin-top: 10px;
+      font-size: 15px;
+      text-align: left;
+      width: 100%;
+    }
+
+    .right .quote-to strong {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .right .quote-to .model-house,
+    .client-name {
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .right .expire {
+      margin: 14px 0 56px 0;
+      font-size: 13px;
+      font-weight: 400;
+      text-align: left;
+      width: 100%;
+    }
+
+    .right .expire strong {
+      display: block;
+      font-size: 15px;
+      font-weight: bold;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    .thankyou {
+      border-top: 1px solid #22313f;
+      align-self: center;
+    }
+
+    .thankyou img {
+      width: 180px;
+      height: auto;
+      display: inline-block;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #22313f;
+      margin: 12px 0 12px 0;
+    }
+  </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="main-content">
+        <div class="left">
+          <div class="quote-title">
+            <img src="/images/mail-images/quote.png" alt="Quote" />
+          </div>
+          <div class="quote-no">QUOTE NO. <span
+              style="font-weight: normal;">´quoteNo´</span></div>
+          <div class="from-row">
+            <span class="from-label">Quote from</span>
+            <span>
+              <span class="from-company">EPC DEVELOPMENTS</span><br />
+              <span class="from-sub">CUSTOM BUILDER</span>
+            </span>
+          </div>
+          <div class="model-selections">
+            <div class="model-selections-title">Model Selections</div>
+            <ul>
+              ´modelSelectionsRows´
+            </ul>
+          </div>
+          <table class="price-table">
+            <tr>
+              <th>Price Per sqft</th>
+              <td>$´pricePerSqft´</td>
+            </tr>
+            <tr>
+              <th>Sqft Total</th>
+              <td>´sqftTotal´</td>
+            </tr>
+            <tr class="total-row">
+              <td>Total:</td>
+              <td>$´total´</td>
+            </tr>
+          </table>
+        </div>
+        <div class="right">
+          <img class="logo-epc-main" src="/images/mail-images/epc-logo.png"
+            alt="EPC Logo" />
+          <div class="right-content">
+            <div class="date-title">´date´</div>
+            <div class="stamp">
+              <div class="stamp-border"></div>
+              <img src="´stampImageUrl´" alt="Stamp" />
+            </div>
+            <div class="quote-to">
+              <strong>Quote to:</strong>
+              <div class="client-name">´clientName´</div>
+              <div class="model-house">´modelOfHouse´</div>
+            </div>
+            <div class="expire">
+              *This quote will expire
+              <strong>30 DAYS AFTER THE DAY IT WAS MADE</strong>
+            </div>
+            <div class="thankyou">
+              <img src="/images/mail-images/thank-you.png" alt="Thank You" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="contact-details">
+        <div class="col">
+          <strong>EMAIL</strong>
+          <a
+            href="mailto:EPCDEVELOPMENTS@GMAIL.COM">EPCDEVELOPMENTS@GMAIL.COM</a>
+        </div>
+        <div class="col">
+          <strong>MOBILE</strong>
+          +832-931-0425
+        </div>
+        <div class="col">
+          <strong>WEBSITE</strong>
+          <a href="https://epcbi.com">EPCBI.COM</a>
+        </div>
+      </div>
+      <hr />
+      <div class="footer">
+        <span class="valid">*THIS QUOTE IS VALID FOR 30 DAYS FROM THE DATE OF
+          ISSUE.</span>
+        <div class="legal">
+          THIS QUOTE IS AN ESTIMATE ONLY AND DOES NOT CONSTITUTE A CONTRACT.
+          PRICES, MATERIALS, AND TIMELINES ARE SUBJECT TO CHANGE BASED ON FINAL
+          SELECTIONS, SITE CONDITIONS, AND PERMITTING. FINAL TERMS WILL BE
+          CONFIRMED IN A SIGNED CONSTRUCTION AGREEMENT.
+        </div>
+      </div>
+    </div>
+  </body>
+
+</html>

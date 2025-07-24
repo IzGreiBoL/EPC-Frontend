@@ -14,13 +14,14 @@ export interface QuoteCategory {
   id: number;
   name: string;
   icon: string;
-  basePrice: number;
+  basePrice?: number;
   options: (SubCategory | Option)[];
   fields?: FieldDescriptor[];
 }
 
 export interface SubCategory {
   name: string;
+  basePrice?: number;
   options: Option[];
 }
 

@@ -1,22 +1,30 @@
 <div class="modal-header">
-    <h5 class="modal-title">Request a Quote</h5>
-    <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+  <h5 class="modal-title">Request a Quote</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
 </div>
 <div class="modal-body">
-    <form>
-        <!-- Nombre -->
-        <input type="text" class="form-control mb-3" placeholder="John Doe" />
+  <form [formGroup]="quoteForm" (ngSubmit)="onSubmit()">
+    <!-- Nombre -->
+    <input type="text" class="form-control mb-3" formControlName="name" placeholder="John Doe" [class.is-invalid]="quoteForm.get('name')?.invalid && quoteForm.get('name')?.touched" />
+    <div *ngIf="quoteForm.get('name')?.invalid && quoteForm.get('name')?.touched" class="invalid-feedback d-block">Name is required.</div>
 
-        <!-- Correo -->
-        <input type="email" class="form-control mb-3" placeholder="john@example.com" />
+    <!-- Correo -->
+    <input type="email" class="form-control mb-3" formControlName="email" placeholder="john@example.com" [class.is-invalid]="quoteForm.get('email')?.invalid && quoteForm.get('email')?.touched" />
+    <div *ngIf="quoteForm.get('email')?.invalid && quoteForm.get('email')?.touched" class="invalid-feedback d-block">Valid email is required.</div>
 
-        <!-- Teléfono -->
-        <input type="tel" class="form-control mb-3" placeholder="(555) 555-5555" />
+    <!-- Teléfono -->
+    <input type="tel" class="form-control mb-3" formControlName="phone" placeholder="(555) 555-5555" />
 
-        <!-- Mensaje -->
-        <textarea class="form-control mb-3" rows="3" placeholder="Any specific requirements or questions..."></textarea>
+    <!-- Mensaje -->
+    <textarea class="form-control mb-3" rows="3" formControlName="message" placeholder="Any specific requirements or questions..."></textarea>
 
-        <!-- Botón de enviar -->
-        <button type="submit" class="btn btn-warning w-100">Submit Quote Request</button>
-    </form>
+    <!-- Mensajes de éxito/error -->
+    <div *ngIf="successMsg" class="alert alert-success">{{ successMsg }}</div>
+    <div *ngIf="errorMsg" class="alert alert-danger">{{ errorMsg }}</div>
+
+    <!-- Botón de enviar -->
+    <button type="submit" class="btn btn-warning w-100" [disabled]="loading || quoteForm.invalid">
+      {{ loading ? 'Sending...' : 'Submit Quote Request' }}
+    </button>
+  </form>
 </div>
