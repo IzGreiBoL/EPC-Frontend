@@ -50,6 +50,10 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
   private resizeListener!: () => void;
   private routeSubscription!: Subscription;
 
+  /** Variables para la visualización ampliada */
+  isImageViewerOpen = false;
+  selectedImageIndex = 0;
+
   //#endregion
 
   //#region CONSTRUCTOR
@@ -112,6 +116,11 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
       this.resizeListener();
     }
     this.routeSubscription?.unsubscribe();
+
+    // Asegurar que el scroll del cuerpo se restaure si el componente se destruye mientras el modal está abierto
+    if (this.isBrowser && this.isImageViewerOpen) {
+      document.body.style.overflow = '';
+    }
   }
 
   //#endregion
@@ -280,6 +289,169 @@ export class GalleryComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     const itemWidth = carousel.scrollWidth / this.items.length;
     const newIndex = Math.round(carousel.scrollLeft / itemWidth);
     this.scrollToIndex(newIndex);
+  }
+
+  //#endregion
+
+  //#region FUNCIONES DE VISUALIZACIÓN AMPLIADA
+
+  /**
+   * Abre el visualizador de imágenes en pantalla completa.
+   * @param index - Índice de la imagen a mostrar.
+   */
+  openImageViewer(index: number): void {
+    this.selectedImageIndex = index;
+    this.isImageViewerOpen = true;
+    this.cdr.detectChanges();
+
+    // Prevenir el scroll del cuerpo cuando el modal está abierto
+    if (this.isBrowser) {
+      document.body.style.overflow = 'hidden';
+
+      // Esperar a que el DOM se actualice y ajustar el tamaño del contenedor
+      setTimeout(() => {
+        this.adjustImageViewerSize();
+      }, 100);
+    }
+  }
+
+  /**
+   * Cierra el visualizador de imágenes.
+   */
+  closeImageViewer(): void {
+    this.isImageViewerOpen = false;
+    this.cdr.detectChanges();
+
+    // Restaurar el scroll del cuerpo cuando el modal se cierra
+    if (this.isBrowser) {
+      document.body.style.overflow = '';
+    }
+  }
+
+  /**
+   * Navega a la imagen anterior o siguiente dentro del visualizador.
+   * @param direction - Dirección de navegación (-1 para anterior, 1 para siguiente).
+   */
+  navigateImage(direction: number): void {
+    const newIndex = this.selectedImageIndex + direction;
+    if (newIndex >= 0 && newIndex < this.items.length) {
+      this.selectedImageIndex = newIndex;
+      this.cdr.detectChanges();
+      
+      // Ajustar el contenedor para la imagen actual
+      this.adjustImageForViewer();
+    }
+  }
+
+  /**
+   * Ajusta la visualización de la imagen actual sin cambiar el tamaño del contenedor.
+   * Esto evita el efecto de zoom en imágenes secundarias.
+   */
+  private adjustImageForViewer(): void {
+    if (!this.isBrowser) return;
+    
+    setTimeout(() => {
+      const imgElement = document.querySelector('.fullscreen-image') as HTMLImageElement;
+      if (imgElement) {
+        // Asegurar que la imagen se muestre con sus proporciones originales
+        imgElement.style.width = 'auto';
+        imgElement.style.height = 'auto';
+        imgElement.style.maxWidth = '100%';
+        imgElement.style.maxHeight = '100%';
+        imgElement.style.objectFit = 'contain';
+      }
+    }, 50);
+  }
+
+  /**
+   * Ajusta el tamaño del visualizador según la primera imagen.
+   * Esto garantiza que los botones de navegación siempre estén en la misma posición.
+   */
+  private adjustImageViewerSize(): void {
+    if (!this.isBrowser || this.items.length === 0) return;
+
+    const container = document.querySelector('.image-viewer-container') as HTMLElement;
+    const firstImage = new Image();
+
+    firstImage.onload = () => {
+      // Detectar si estamos en móvil
+      const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+      if (isMobile) {
+        // En móvil, el contenedor se ajustará automáticamente a través de CSS
+        this.cdr.detectChanges();
+        return;
+      }
+
+      // Para escritorio, usar exactamente las dimensiones naturales de la imagen
+      const naturalWidth = firstImage.naturalWidth;
+      const naturalHeight = firstImage.naturalHeight;
+
+      // Verificar si las dimensiones son demasiado grandes para el viewport
+      const maxViewportWidth = window.innerWidth * 0.9;
+      const maxViewportHeight = window.innerHeight * 0.9;
+
+      let finalWidth = naturalWidth;
+      let finalHeight = naturalHeight;
+
+      // Escalar proporcionalmente si excede el viewport
+      if (finalWidth > maxViewportWidth) {
+        const ratio = maxViewportWidth / finalWidth;
+        finalWidth = maxViewportWidth;
+        finalHeight = finalHeight * ratio;
+      }
+
+      if (finalHeight > maxViewportHeight) {
+        const ratio = maxViewportHeight / finalHeight;
+        finalHeight = maxViewportHeight;
+        finalWidth = finalWidth * ratio;
+      }
+
+      // Aplicar dimensiones exactas
+      container.style.width = `${finalWidth}px`;
+      container.style.height = `${finalHeight}px`;
+
+      // Eliminar cualquier fondo o borde que pueda causar problemas
+      container.style.backgroundColor = 'transparent';
+      container.style.border = 'none';
+      container.style.padding = '0';
+      container.style.margin = '0';
+
+      // Guardar dimensiones como variables CSS
+      const root = document.documentElement;
+      root.style.setProperty('--lightbox-width', `${finalWidth}px`);
+      root.style.setProperty('--lightbox-height', `${finalHeight}px`);
+
+      this.cdr.detectChanges();
+    };
+
+    // Cargar la primera imagen para determinar tamaño
+    firstImage.src = this.items[0].image;
+  }
+
+  /**
+   * Maneja las teclas de navegación cuando el visualizador está abierto.
+   * @param event - Evento de teclado.
+   */
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent): void {
+    if (!this.isImageViewerOpen) return;
+
+    switch (event.key) {
+      case 'Escape':
+        this.closeImageViewer();
+        break;
+      case 'ArrowLeft':
+        if (this.selectedImageIndex > 0) {
+          this.navigateImage(-1);
+        }
+        break;
+      case 'ArrowRight':
+        if (this.selectedImageIndex < this.items.length - 1) {
+          this.navigateImage(1);
+        }
+        break;
+    }
   }
 
   //#endregion

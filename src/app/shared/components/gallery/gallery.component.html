@@ -14,7 +14,7 @@
             <li *ngFor="let item of items; let i = index"
                 [class.active]="i === currentIndex"
                 [class.home-route]="isHomeRoute">
-                <img [src]="item.image" [alt]="item.title" />
+                <img [src]="item.image" [alt]="item.title" (click)="openImageViewer(i)" />
                 <div class="content" *ngIf="isHomeRoute">
                     <span><h2>{{ item.title }}</h2></span>
                 </div>
@@ -37,5 +37,32 @@
             (click)="scrollToIndex(i)"
             [attr.aria-label]="'Ir a la página ' + (i + 1)">
         </span>
+    </div>
+</div>
+
+<!-- Modal/Lightbox para visualización ampliada -->
+<div class="image-viewer-overlay" *ngIf="isImageViewerOpen" (click)="closeImageViewer()">
+    <div class="image-viewer-container" (click)="$event.stopPropagation()">
+        <button class="close-button" (click)="closeImageViewer()" aria-label="Cerrar">
+            &times;
+        </button>
+        
+        <div class="image-wrapper">
+            <img [src]="items[selectedImageIndex].image" [alt]="items[selectedImageIndex].title" class="fullscreen-image">
+            
+            <button *ngIf="selectedImageIndex > 0" 
+                    class="nav-button prev-button" 
+                    (click)="navigateImage(-1)" 
+                    aria-label="Imagen anterior">
+                &#10094;
+            </button>
+            
+            <button *ngIf="selectedImageIndex < items.length - 1" 
+                    class="nav-button next-button" 
+                    (click)="navigateImage(1)" 
+                    aria-label="Imagen siguiente">
+                &#10095;
+            </button>
+        </div>
     </div>
 </div>
