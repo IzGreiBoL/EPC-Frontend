@@ -10,7 +10,7 @@
             </span>
           </h1>
           <div class="service-desc mb-4 text-light" [innerHTML]="service.text"></div>
-          <div class="d-flex gap-3" *ngIf="i === 0">
+          <div class="d-flex gap-3" *ngIf="i === services.length - 1">
             <button class="button-primary">{{ service.quoteButtonText }}</button>
           </div>
         </div>

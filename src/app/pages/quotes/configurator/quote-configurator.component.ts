@@ -44,7 +44,7 @@ export class QuoteConfiguratorComponent {
     @Input() gallerySize: 'small' | 'large' = 'large';
 
     userSelections: Record<string, string> = {};
-    customValues: Record<string, number> = { sqft: 2000, bedrooms: 3, bathrooms: 2 };
+    customValues: Record<string, number> = { sqft: 100, bedrooms: 3, bathrooms: 2 }; //TODO: ponerle minimo 100, no menos en el html
     currentCategoryIndex = 0;
     totalNumeric = 0;
     pricePerSqFtNum = 0;

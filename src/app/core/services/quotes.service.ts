@@ -6,6 +6,10 @@ import { Home, DoorOpen, Blinds, ShowerHead, Lightbulb, Grid, Vault, Table, Pain
   providedIn: 'root'
 })
 export class QuotesService {
+
+  //Para la base es 190, para la avanzada es 101.42
+
+  //Para la configuración básica es 190 base y cuando sumes los extras, se suma al total
   private basicCategories: QuoteCategory[] = [
     {
       id: 1,
@@ -49,10 +53,10 @@ export class QuotesService {
       basePrice: 0,
       icon: 'door-open',
       options: [
-        { name: '2', price: 2000 }, //TODO pendiente actualizar precios
-        { name: '3', price: 3000 },
-        { name: '4', price: 4000 },
-        { name: '5+', price: 5000 }
+        { name: '2', price: 0 }, //TODO pendiente actualizar precios
+        { name: '3', price: 0 },
+        { name: '4', price: 14 },
+        { name: '5+', price: 28 }
       ]
     },
     {
@@ -98,7 +102,7 @@ export class QuotesService {
         },
         {
           name: 'Driveway',
-          basePrice: 13.84,
+          basePrice: 13.34,
           options: [
             { name: 'As Is', price: 0 },
             { name: 'Custom', price: "+c" }
@@ -239,10 +243,10 @@ export class QuotesService {
           basePrice: 46.95,
           options: [
             { name: 'Granite', price: 0 },
+            { name: 'Concrete', price: 0 },
+            { name: 'Butcher Block', price: 0 },
             { name: 'Quartz', price: 11.75 },
             { name: 'Marble', price: 40.85 },
-            { name: 'Concrete', price: 40.85 },
-            { name: 'Butcher Block', price: 40.85 },
           ]
         }
       ]
@@ -257,8 +261,6 @@ export class QuotesService {
           basePrice: 3.96,
           options: [
             { name: 'Neutral', price: 0 },
-            { name: 'Bold', price: 0 },
-            { name: 'Pastels', price: 0 },
             { name: 'Custom', price: 2.90 }
           ]
         },
@@ -290,11 +292,11 @@ export class QuotesService {
   ];
 
   private items: Quote[] = [
-    { id: 1, name: 'Avalon', size: 1620, bedrooms: 4, bathrooms: 2, folder: 'avalon', basePrice: 114.76, categories: this.categories, imagesCount: 5 },
-    { id: 2, name: 'Cascade', size: 1470, bedrooms: 3, bathrooms: 3, folder: 'cascade', basePrice: 114.76, categories: this.categories, imagesCount: 5 },
-    { id: 3, name: 'Estates', size: 1443, bedrooms: 3, bathrooms: 2, folder: 'estates', basePrice: 114.76, categories: this.categories, imagesCount: 5 },
-    { id: 4, name: 'Jewel', size: 1470, bedrooms: 3, bathrooms: 2, folder: 'jewel', basePrice: 114.76, categories: this.categories, imagesCount: 5 },
-    { id: 5, name: 'Pandora', size: 1400, bedrooms: 3, bathrooms: 2, folder: 'pandora', basePrice: 114.76, categories: this.categories, imagesCount: 1 },
+    { id: 1, name: 'Avalon', size: 1620, bedrooms: 4, bathrooms: 2, folder: 'avalon', basePrice: 101.42, categories: this.categories, imagesCount: 5 },
+    { id: 2, name: 'Cascade', size: 1470, bedrooms: 3, bathrooms: 2.5, folder: 'cascade', basePrice: 101.42, categories: this.categories, imagesCount: 5 },
+    { id: 3, name: 'Estates', size: 1443, bedrooms: 3, bathrooms: 2, folder: 'estates', basePrice: 101.42, categories: this.categories, imagesCount: 5 },
+    { id: 4, name: 'Jewel', size: 1470, bedrooms: 3, bathrooms: 2, folder: 'jewel', basePrice: 101.42, categories: this.categories, imagesCount: 5 },
+    { id: 5, name: 'Pandora', size: 1400, bedrooms: 3, bathrooms: 2, folder: 'pandora', basePrice: 101.42, categories: this.categories, imagesCount: 1 },
     {
       id: 999,
       name: 'Custom Build',
@@ -359,6 +361,25 @@ export class QuotesService {
   }
 
   buildCustomCategory(): QuoteCategory[] {
+    //TODO: SQFT minimo 1300
+    //TODO: BATHROOMS es decimal, pero solo en .5
+    //TODO: BATHROOMS: Empieza en 2.5 pero a partir 3 se suman 10 dolares, pero a partir de 3.5 se suman 5 dólares.
+    //TODO: BEDROOMS: A partir de 1500 caben 4 cuartos. Si require 4 cuartos, una casa de 1500 sqft es recomendadable, si tienes preguntas, ponerle el link de contacto.
+    // hasta 2200 es cuando se pueden 5 cuartos.
+    //TODO: Si no caben los pinches cuartos en el sqft, pues ponerle un mensaje para darle la opción de cambio automático.
+
+    //1300 = 3 cuartos hasta 2.5 baños
+    //1500 = 4 cuartos, 3 baños (puede ponerle los que quiere)
+    //2200 = 5 cuartos, 4 baños (puede ponerle los que quiere)
+
+    //si requiere una casa de más de 6 cuartos, por favor contáctenos.
+
+
+    //Agregarle otra opción de Garage space con opciones de 1, 2, 3, 4.
+
+    //Después de darle next, darle dos botones, uno con request y otro para personalizar. Si le da al personalizar
+    //Pues le damos todas las categorías y opciones del avanzado, pero sin los precios base de cada opción y utilizando los
+    //paraámetros que el usuario ingresó en el paso 1.
     return [{
       id: 999,
       name: 'Custom parameters',
@@ -386,57 +407,19 @@ export class QuotesService {
         ]
       },
       {
+        //TODO: debe seleccionar los primeros dos, y al menos dos
         id: 1002,
-        name: 'Foundation',
+        name: 'Remodel selections',
         icon: 'grid',
         basePrice: 0,
         options: [
-          { name: 'Yes', price: 0 },
-          { name: 'No', price: 0 }
+          { name: 'Foundation', price: 38 },
+          { name: 'Framing and crafts', price: 38 },
+          { name: 'Sheet rock', price: 38 },
+          { name: 'Bathrooms', price: 38 },
+          { name: 'Finishes', price: 38 }
         ]
       },
-      {
-        id: 1003,
-        name: 'Sheet rock',
-        icon: 'paintbrush',
-        basePrice: 0,
-        options: [
-          { name: 'Yes', price: 0 },
-          { name: 'No', price: 0 }
-        ]
-      },
-      {
-        id: 1004,
-        name: 'Framing',
-        icon: 'vault',
-        basePrice: 0,
-        options: [
-          { name: 'Yes', price: 0 },
-          { name: 'No', price: 0 }
-        ]
-      },
-      {
-        id: 1005,
-        name: 'Bathrooms',
-        icon: 'shower-head',
-        basePrice: 0,
-        options: [
-          { name: '1', price: 0 },
-          { name: '2', price: 0 },
-          { name: '3', price: 0 },
-          { name: '4+', price: 0 }
-        ]
-      },
-      {
-        id: 1006,
-        name: 'Finishes',
-        icon: 'paintbrush',
-        basePrice: 0,
-        options: [
-          { name: 'Yes', price: 0 },
-          { name: 'No', price: 0 }
-        ]
-      }
     ];
   }
 }
