@@ -30,7 +30,6 @@ export class RemodelQuoteComponent implements OnInit {
     bedrooms: 0,
     bathrooms: 0,
     folder: 'remodel',
-    basePrice: 0,
     categories: [],
     imagesCount: 5
   };
@@ -57,11 +56,14 @@ export class RemodelQuoteComponent implements OnInit {
       calcStandard: (
         categories: QuoteCategory[],
         userSelections: Record<string, string>,
-        _basePrice: number // <- ignora el argumento recibido
       ) => {
         const size = this.item?.size && this.item.size > 0 ? this.item.size : 1;
-        const basePrice = this.item?.basePrice ?? 0; // <-- usa el basePrice del modelo
-        const result = this.pricing.calcStandard(categories, userSelections, basePrice, size);
+        const result = this.pricing.calcStandard(
+          categories, 
+          userSelections, 
+          this.quotesService.REMODEL_QUOTE_BASE_PRICE,
+          size
+        );
         return {
           pricePerFt: result.pricePerFt,
           hasCustom: result.hasCustom

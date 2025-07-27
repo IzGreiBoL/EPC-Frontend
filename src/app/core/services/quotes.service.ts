@@ -7,9 +7,12 @@ import { Home, DoorOpen, Blinds, ShowerHead, Lightbulb, Grid, Vault, Table, Pain
 })
 export class QuotesService {
 
-  //Para la base es 190, para la avanzada es 101.42
+  // Precios base para diferentes tipos de cotizaciones
+  readonly BASIC_QUOTE_BASE_PRICE = 190;
+  readonly ADVANCED_QUOTE_BASE_PRICE = 101.42;
+  readonly REMODEL_QUOTE_BASE_PRICE = 0;
+  readonly CUSTOM_QUOTE_BASE_PRICE = 0;
 
-  //Para la configuración básica es 190 base y cuando sumes los extras, se suma al total
   private basicCategories: QuoteCategory[] = [
     {
       id: 1,
@@ -53,7 +56,7 @@ export class QuotesService {
       basePrice: 0,
       icon: 'door-open',
       options: [
-        { name: '2', price: 0 }, //TODO pendiente actualizar precios
+        { name: '2', price: 0 },
         { name: '3', price: 0 },
         { name: '4', price: 14 },
         { name: '5+', price: 28 }
@@ -73,7 +76,7 @@ export class QuotesService {
     }
   ];
 
-  private categories: QuoteCategory[] = [
+  private advancedCategories: QuoteCategory[] = [
     {
       id: 1,
       name: 'Exterior Design',
@@ -292,11 +295,11 @@ export class QuotesService {
   ];
 
   private items: Quote[] = [
-    { id: 1, name: 'Avalon', size: 1620, bedrooms: 4, bathrooms: 2, folder: 'avalon', basePrice: 101.42, categories: this.categories, imagesCount: 5 },
-    { id: 2, name: 'Cascade', size: 1470, bedrooms: 3, bathrooms: 2.5, folder: 'cascade', basePrice: 101.42, categories: this.categories, imagesCount: 5 },
-    { id: 3, name: 'Estates', size: 1443, bedrooms: 3, bathrooms: 2, folder: 'estates', basePrice: 101.42, categories: this.categories, imagesCount: 5 },
-    { id: 4, name: 'Jewel', size: 1470, bedrooms: 3, bathrooms: 2, folder: 'jewel', basePrice: 101.42, categories: this.categories, imagesCount: 5 },
-    { id: 5, name: 'Pandora', size: 1400, bedrooms: 3, bathrooms: 2, folder: 'pandora', basePrice: 101.42, categories: this.categories, imagesCount: 1 },
+    { id: 1, name: 'Avalon', size: 1620, bedrooms: 4, bathrooms: 2, folder: 'avalon', categories: this.advancedCategories, imagesCount: 5 },
+    { id: 2, name: 'Cascade', size: 1470, bedrooms: 3, bathrooms: 2.5, folder: 'cascade', categories: this.advancedCategories, imagesCount: 5 },
+    { id: 3, name: 'Estates', size: 1443, bedrooms: 3, bathrooms: 2, folder: 'estates', categories: this.advancedCategories, imagesCount: 5 },
+    { id: 4, name: 'Jewel', size: 1470, bedrooms: 3, bathrooms: 2, folder: 'jewel', categories: this.advancedCategories, imagesCount: 5 },
+    { id: 5, name: 'Pandora', size: 1400, bedrooms: 3, bathrooms: 2, folder: 'pandora', categories: this.advancedCategories, imagesCount: 1 },
     {
       id: 999,
       name: 'Custom Build',
@@ -304,7 +307,6 @@ export class QuotesService {
       bedrooms: 3,
       bathrooms: 2,
       folder: 'custom',
-      basePrice: 0,
       categories: [],
       imagesCount: 1
     }
@@ -357,7 +359,7 @@ export class QuotesService {
   }
 
   getCategoriesByType(type: 'basic' | 'advanced'): QuoteCategory[] {
-    return type === 'basic' ? this.basicCategories : this.categories;
+    return type === 'basic' ? this.basicCategories : this.advancedCategories;
   }
 
   buildCustomCategory(): QuoteCategory[] {

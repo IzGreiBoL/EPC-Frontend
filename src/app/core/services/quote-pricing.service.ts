@@ -26,53 +26,35 @@ export class QuotePricingService {
     Object.values(userSelections).forEach(sel => {
       const [catOrSubcat, selName] = sel.split(': ').map(s => s.trim());
 
-      // Busca la categoría y la subcategoría (si aplica)
-      const cat = categories.find(c =>
-        c.options.some(o =>
-          this.isSub(o)
-            ? o.name === catOrSubcat
-            : c.name === catOrSubcat
-        )
-      );
+      // Busca la categoría
+      const cat = categories.find(c => c.name === catOrSubcat || c.options.some(o =>
+        this.isSub(o) ? o.name === catOrSubcat : false
+      ));
       if (!cat) { return; }
 
-      // Busca la subcategoría u opción
-      let subOpt;
-      if (cat.options.some(o => this.isSub(o) && o.name === catOrSubcat)) {
-        subOpt = cat.options.find(o => this.isSub(o) && o.name === catOrSubcat);
+      // Si la categoría tiene subcategorías (avanzado)
+      if (cat.options.some(o => this.isSub(o))) {
+        const subOpt = cat.options.find(o => this.isSub(o) && o.name === catOrSubcat);
+        if (subOpt && this.isSub(subOpt)) {
+          if (!counted.has(subOpt)) {
+            sum += (subOpt as any).basePrice ?? 0;
+            counted.add(subOpt);
+          }
+          const opt = subOpt.options.find(o => o.name === selName);
+          if (!opt) return;
+          if (typeof opt.price === 'number') sum += opt.price;
+          if (opt.price === '+c') hasCustom = true;
+        }
       } else {
-        subOpt = cat.options.find(o => !this.isSub(o) && cat.name === catOrSubcat);
-      }
-
-      if (subOpt && this.isSub(subOpt)) {
-        if (!counted.has(subOpt)) {
-          sum += (subOpt as any).basePrice ?? 0;
-          counted.add(subOpt);
-          // Debug
-          console.log(`+ basePrice subcat: ${subOpt.name} = ${(subOpt as any).basePrice ?? 0}`);
-        }
-        const opt = subOpt.options.find(o => o.name === selName);
-        if (!opt) return;
-        if (typeof opt.price === 'number') {
-          sum += opt.price;
-          // Debug
-          console.log(`+ option price: ${opt.name} = ${opt.price}`);
-        }
-        if (opt.price === '+c') hasCustom = true;
-      } else if (subOpt && !this.isSub(subOpt)) {
+        // Categoría básica: buscar opción por nombre
+        const opt = cat.options.find(o => o.name === selName);
         if (!counted.has(cat)) {
           sum += cat.basePrice ?? 0;
           counted.add(cat);
-          // Debug
-          console.log(`+ basePrice cat: ${cat.name} = ${cat.basePrice ?? 0}`);
         }
-        const opt = subOpt as Option;
-        if (typeof opt.price === 'number') {
-          sum += opt.price;
-          // Debug
-          console.log(`+ option price: ${opt.name} = ${opt.price}`);
-        }
-        if (opt.price === '+c') hasCustom = true;
+        // Solo sumar si opt es Option y tiene price
+        if (opt && 'price' in opt && typeof opt.price === 'number') sum += opt.price;
+        if (opt && 'price' in opt && opt.price === '+c') hasCustom = true;
       }
     });
 

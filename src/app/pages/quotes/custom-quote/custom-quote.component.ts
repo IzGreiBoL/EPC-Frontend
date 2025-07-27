@@ -54,11 +54,15 @@ export class CustomQuoteComponent implements OnInit {
       this.pricingAdapter = {
         calcStandard: (
           categories: QuoteCategory[],
-          userSelections: Record<string, string>,
-          basePrice: number
+          userSelections: Record<string, string>
         ) => {
           const size = this.item?.size && this.item.size > 0 ? this.item.size : 1;
-          const result = this.pricing.calcStandard(categories, userSelections, basePrice, size);
+          const result = this.pricing.calcStandard(
+            categories, 
+            userSelections, 
+            this.quotesService.CUSTOM_QUOTE_BASE_PRICE,
+            size
+          );
           return {
             pricePerFt: result.pricePerFt,
             hasCustom: result.hasCustom

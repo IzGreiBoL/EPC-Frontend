@@ -50,15 +50,18 @@ export class AdvancedQuoteComponent implements OnInit {
 
       this.categories = this.quotesService.getCategoriesByType('advanced');
 
-      // Adapter que siempre pasa size
       this.pricingAdapter = {
         calcStandard: (
           categories: QuoteCategory[],
           userSelections: Record<string, string>
         ) => {
           const size = this.item?.size && this.item.size > 0 ? this.item.size : 1;
-          const basePrice = this.item?.basePrice ?? 0; // <-- usa el basePrice del modelo
-          const result = this.pricing.calcStandard(categories, userSelections, basePrice, size);
+          const result = this.pricing.calcStandard(
+            categories, 
+            userSelections, 
+            this.quotesService.ADVANCED_QUOTE_BASE_PRICE,
+            size
+          );
           return {
             pricePerFt: result.pricePerFt,
             hasCustom: result.hasCustom

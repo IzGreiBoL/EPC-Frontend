@@ -5,7 +5,6 @@ export interface Quote {
   bedrooms?: number; // Optional number of bedrooms
   bathrooms?: number; // Optional number of bathrooms
   folder: string;
-  basePrice: number; // Optional base price for quotes
   categories: QuoteCategory[];
   imagesCount?: number; // Optional number of images
 }

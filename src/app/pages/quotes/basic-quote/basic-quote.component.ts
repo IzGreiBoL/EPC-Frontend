@@ -59,7 +59,7 @@ export class BasicQuoteComponent implements OnInit {
       this.item = this.quotesService.getItemById(id);
       if (!this.item) return;
 
-      this.basePrice = this.item.basePrice ?? 0;
+      this.basePrice = this.quotesService.BASIC_QUOTE_BASE_PRICE;
       const images = this.quotesService.getImagesFromFolder(this.item.folder);
       this.galleryItems = images.map(image => ({ image, title: this.item?.size ?? 0 }));
 
@@ -74,8 +74,12 @@ export class BasicQuoteComponent implements OnInit {
           userSelections: Record<string, string>
         ) => {
           const size = this.item?.size && this.item.size > 0 ? this.item.size : 1;
-          const basePrice = this.item?.basePrice ?? 0; // <-- usa el basePrice del modelo
-          const result = this.pricing.calcStandard(categories, userSelections, basePrice, size);
+          const result = this.pricing.calcStandard(
+            categories, 
+            userSelections, 
+            this.quotesService.BASIC_QUOTE_BASE_PRICE,
+            size
+          );
           return {
             pricePerFt: result.pricePerFt,
             hasCustom: result.hasCustom
@@ -110,11 +114,13 @@ export class BasicQuoteComponent implements OnInit {
   selectOption(event: { subIdx: number; optIdx: number }): void {
     const category = this.currentCategory;
     if (!category?.options) return;
-    const option = category.options[event.subIdx];
+
     Object.keys(this.userSelections).forEach(k => {
       if (k.startsWith(`${this.currentCategoryIndex}_`)) delete this.userSelections[k];
     });
-    this.userSelections[`${this.currentCategoryIndex}_${event.subIdx}`] = `${category.name}: ${option.name}`;
+
+    const option = category.options[event.optIdx];
+    this.userSelections[`${this.currentCategoryIndex}_${event.optIdx}`] = `${category.name}: ${option.name}`;
     this.updateFormattedSelections();
     this.calculateTotal();
   }
@@ -155,7 +161,7 @@ export class BasicQuoteComponent implements OnInit {
     const { pricePerFt, hasCustom } = this.pricing.calcStandard(
       this.categories,
       this.userSelections,
-      this.basePrice,
+      this.quotesService.BASIC_QUOTE_BASE_PRICE,
       this.item.size
     );
     const size = this.item.size ?? 0;
