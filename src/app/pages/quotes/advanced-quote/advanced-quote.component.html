@@ -1,0 +1,11 @@
+<app-quote-configurator
+  [item]="item"
+  [categories]="categories"
+  [galleryItems]="galleryItems"
+  [quoteType]="'advanced'"
+  [isMobile]="isMobile"
+  [gallerySize]="gallerySize"
+  [pricingService]="pricingAdapter"
+  [initialCategoryIndex]="initialCategoryIndex"
+  (requestQuote)="requestQuote()"
+></app-quote-configurator>

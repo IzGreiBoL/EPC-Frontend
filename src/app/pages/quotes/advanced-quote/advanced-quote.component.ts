@@ -18,6 +18,8 @@ import { QuoteModalComponent } from '../shared/quote-modal/quote-modal.component
     [isMobile]="isMobile"
     [gallerySize]="gallerySize"
     [pricingService]="pricingAdapter"
+    [initialCategoryIndex]="initialCategoryIndex"
+    [initialCustomValues]="customInitialValues"
     (requestQuote)="requestQuote()"
   ></app-quote-configurator>`,
   standalone: true,
@@ -30,6 +32,8 @@ export class AdvancedQuoteComponent implements OnInit {
   isMobile = false;
   gallerySize: 'small' | 'large' = 'large';
   pricingAdapter: any;
+  customInitialValues: Record<string, number> | undefined = undefined;
+  initialCategoryIndex = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -45,10 +49,32 @@ export class AdvancedQuoteComponent implements OnInit {
       this.item = this.quotesService.getItemById(id);
       if (!this.item) return;
 
+      this.route.queryParams.subscribe(queryParams => {
+        const fromCustomBuilder = queryParams['fromCustomBuilder'] === 'true';
+        
+        if (fromCustomBuilder) {
+          this.initialCategoryIndex = 1;
+          
+          this.customInitialValues = {
+            sqft: Number(queryParams['customSize']) || 1300,
+            bedrooms: Number(queryParams['customBedrooms']) || 3,
+            bathrooms: Number(queryParams['customBathrooms']) || 2.5,
+            garage: Number(queryParams['customGarage']) || 2
+          };
+          
+          if (this.item && queryParams['customSize']) {
+            this.item.size = Number(queryParams['customSize']);
+          }
+        }
+      });
+
       const images = this.quotesService.getImagesFromFolder(this.item.folder);
       this.galleryItems = images.map(image => ({ image, title: this.item?.size ?? 0 }));
 
-      this.categories = this.quotesService.getCategoriesByType('advanced');
+      const advancedCategories = this.quotesService.getCategoriesByType('advanced');
+      const customParamCategory = this.quotesService.buildCustomCategory()[0];
+      
+      this.categories = [customParamCategory, ...advancedCategories];
 
       this.pricingAdapter = {
         calcStandard: (

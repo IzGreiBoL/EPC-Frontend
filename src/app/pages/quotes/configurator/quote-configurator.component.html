@@ -21,8 +21,9 @@
                         }}/sqft
                     </div>
                 </div>
-                <button class="quote-btn"
-                    (click)="requestQuote()">Quote</button>
+                <!-- Update the top button to emit event rather than call method -->
+                <button class="quote-btn" 
+                    (click)="requestQuote.emit()">Quote</button>
             </div>
         </div>
 
@@ -68,6 +69,7 @@
         </div>
     </div>
 
+    <!-- Mobile content section -->
     <div class="mobile-content" *ngIf="isMobile">
         <div class="gallery-wrapper">
             <app-gallery [items]="galleryItems" [itemsPerPage]="1"
@@ -86,8 +88,81 @@
                 selections will affect both the appearance and the final cost.
             </p>
 
+            <!-- Campos custom-->
+            <div class="field-row" *ngIf="currentCategory.fields">
+                <ng-container *ngFor="let f of currentCategory.fields">
+                    <div class="field-container">
+                        <label>{{ f.label }}</label>
+                        <input [type]="f.type"
+                            [(ngModel)]="customValues[f.key]"
+                            [min]="f.min || 0"
+                            [max]="f.max || 10000"
+                            [step]="f.step || 1"
+                            (ngModelChange)="onCustomFieldChange({ key: f.key, value: $event })" />
+                        
+                        <!-- Validation messages for square footage -->
+                        <div *ngIf="f.key === 'sqft' && customValues['sqft'] < 1300" class="validation-error">
+                            Minimum square footage is 1300
+                        </div>
+                        
+                        <!-- Validation messages for bedrooms based on sqft -->
+                        <div *ngIf="f.key === 'bedrooms'" class="field-info">
+                            <div *ngIf="customValues['sqft'] < 1500 && customValues['bedrooms'] > 3" class="validation-error">
+                                For 4 bedrooms, a house of at least 1500 sqft is recommended.
+                                <div class="adjustment-options">
+                                    <a href="javascript:void(0)" (click)="adjustSquareFootage()">Increase square footage to 1500 sqft</a> or 
+                                    <a href="javascript:void(0)" (click)="adjustBedrooms()">Reduce to 3 bedrooms</a>
+                                </div>
+                            </div>
+                            <div *ngIf="customValues['sqft'] < 2200 && customValues['bedrooms'] > 4" class="validation-error">
+                                For 5 bedrooms, a house of at least 2200 sqft is recommended.
+                                <div class="adjustment-options">
+                                    <a href="javascript:void(0)" (click)="adjustSquareFootage()">Increase square footage to 2200 sqft</a> or 
+                                    <a href="javascript:void(0)" (click)="adjustBedrooms()">Reduce to 4 bedrooms</a>
+                                </div>
+                            </div>
+                            <div *ngIf="customValues['bedrooms'] > 5" class="validation-error">
+                                For houses with more than 6 bedrooms, please <a href="/contact">contact us</a> for a custom consultation.
+                            </div>
+                            <div class="recommendation-note">
+                                <small>
+                                    Bedroom recommendations:<br>
+                                    - Up to 3 bedrooms: 1300+ sqft<br>
+                                    - 4 bedrooms: 1500+ sqft<br>
+                                    - 5 bedrooms: 2200+ sqft
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <!-- Validation messages for bathrooms -->
+                        <div *ngIf="f.key === 'bathrooms'" class="field-info">
+                            <div *ngIf="customValues['sqft'] < 1500 && customValues['bathrooms'] > 2.5" class="validation-error">
+                                Houses under 1500 sqft typically have maximum 2.5 bathrooms.
+                                You may proceed with your selection, but we recommend <a href="javascript:void(0)" (click)="adjustBathrooms()">adjusting to 2.5 bathrooms</a>.
+                            </div>
+                            <div *ngIf="customValues['sqft'] >= 1500 && customValues['sqft'] < 2200 && customValues['bathrooms'] < 3" class="validation-error">
+                                Houses between 1500-2200 sqft typically require at least 3 bathrooms.
+                                You may proceed with your selection, or <a href="javascript:void(0)" (click)="adjustBathrooms()">adjust to 3 bathrooms</a>.
+                            </div>
+                            <div *ngIf="customValues['sqft'] >= 2200 && customValues['bathrooms'] < 4" class="validation-error">
+                                Houses over 2200 sqft typically require at least 4 bathrooms.
+                                You may proceed with your selection, or <a href="javascript:void(0)" (click)="adjustBathrooms()">adjust to 4 bathrooms</a>.
+                            </div>
+                            <div class="recommendation-note">
+                                <small>
+                                    Bathroom requirements:<br>
+                                    - Up to 1499 sqft: Up to 2.5 bathrooms<br>
+                                    - 1500-2199 sqft: Minimum 3 bathrooms<br>
+                                    - 2200+ sqft: Minimum 4 bathrooms
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            
             <!-- Opciones como botones grandes -->
-            <div class="button-row" *ngIf="!currentCategory.fields">
+            <div class="button-row" *ngIf="!currentCategory.fields && currentCategory.options">
                 <ng-container
                     *ngFor="let option of currentCategory.options; let subIndex = index">
                     <button *ngIf="!isSubcategory(option)"
@@ -117,16 +192,6 @@
                     </div>
                 </ng-container>
             </ng-container>
-
-            <!-- Campos custom -->
-            <div class="field-row" *ngIf="currentCategory.fields">
-                <ng-container *ngFor="let f of currentCategory.fields">
-                    <label>{{ f.label }}</label>
-                    <input [type]="f.type"
-                        [(ngModel)]="customValues[f.key]"
-                        (ngModelChange)="onCustomFieldChange({ key: f.key, value: $event })" />
-                </ng-container>
-            </div>
         </section>
     </div>
 
@@ -141,8 +206,9 @@
                     {{ pricePerSqFtNum | currency:'USD':'symbol':'1.2-2' }}/sqft
                 </span>
             </div>
-            <button class="mobile-quote-btn" (click)="requestQuote()">Get
-                Quote</button>
+            <!-- Update mobile footer button -->
+            <button class="mobile-quote-btn" 
+                (click)="requestQuote.emit()">Get Quote</button>
         </div>
     </div>
 
@@ -190,7 +256,65 @@
                 </p>
                 <div class="options">
                     <div class="option-group">
-                        <div class="button-row" *ngIf="!currentCategory.fields">
+                        <!-- Desktop form fields section - MOVED TO TOP -->
+                        <div class="field-row" *ngIf="currentCategory.fields">
+                            <ng-container
+                                *ngFor="let f of currentCategory.fields">
+                                <div class="field-container">
+                                    <label>{{ f.label }}</label>
+                                    <input [type]="f.type"
+                                        [(ngModel)]="customValues[f.key]"
+                                        [min]="f.min || 0"
+                                        [max]="f.max || 10000"
+                                        [step]="f.step || 1"
+                                        (ngModelChange)="onCustomFieldChange({ key: f.key, value: $event })" />
+                                    
+                                    <!-- Validation messages for square footage -->
+                                    <div *ngIf="f.key === 'sqft' && customValues['sqft'] < 1300" class="validation-error">
+                                        Minimum square footage is 1300
+                                    </div>
+                                    
+                                    <!-- Validation messages for bedrooms based on sqft -->
+                                    <div *ngIf="f.key === 'bedrooms'" class="field-info">
+                                        <div *ngIf="customValues['sqft'] < 1500 && customValues['bedrooms'] > 3" class="validation-error">
+                                            For 4 bedrooms, a house of at least 1500 sqft is recommended.
+                                            <div class="adjustment-options">
+                                                <a href="javascript:void(0)" (click)="adjustSquareFootage()">Increase square footage to 1500 sqft</a> or 
+                                                <a href="javascript:void(0)" (click)="adjustBedrooms()">Reduce to 3 bedrooms</a>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="customValues['sqft'] < 2200 && customValues['bedrooms'] > 4" class="validation-error">
+                                            For 5 bedrooms, a house of at least 2200 sqft is recommended.
+                                            <div class="adjustment-options">
+                                                <a href="javascript:void(0)" (click)="adjustSquareFootage()">Increase square footage to 2200 sqft</a> or 
+                                                <a href="javascript:void(0)" (click)="adjustBedrooms()">Reduce to 4 bedrooms</a>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="customValues['bedrooms'] > 5" class="validation-error">
+                                            For houses with more than 6 bedrooms, please <a href="/contact">contact us</a> for a custom consultation.
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Validation messages for bathrooms -->
+                                    <div *ngIf="f.key === 'bathrooms'" class="field-info">
+                                        <div *ngIf="customValues['sqft'] < 1500 && customValues['bathrooms'] > 2.5" class="validation-error">
+                                            Houses under 1500 sqft typically have maximum 2.5 bathrooms.
+                                            You may proceed with your selection, but we recommend <a href="javascript:void(0)" (click)="adjustBathrooms()">adjusting to 2.5 bathrooms</a>.
+                                        </div>
+                                        <div *ngIf="customValues['sqft'] >= 1500 && customValues['sqft'] < 2200 && customValues['bathrooms'] < 3" class="validation-error">
+                                            Houses between 1500-2200 sqft typically require at least 3 bathrooms.
+                                            You may proceed with your selection, or <a href="javascript:void(0)" (click)="adjustBathrooms()">adjust to 3 bathrooms</a>.
+                                        </div>
+                                        <div *ngIf="customValues['sqft'] >= 2200 && customValues['bathrooms'] < 4" class="validation-error">
+                                            Houses over 2200 sqft typically require at least 4 bathrooms.
+                                            You may proceed with your selection, or <a href="javascript:void(0)" (click)="adjustBathrooms()">adjust to 4 bathrooms</a>.
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                        
+                        <div class="button-row" *ngIf="!currentCategory.fields && currentCategory.options">
                             <ng-container
                                 *ngFor="let option of currentCategory.options; let subIndex = index">
                                 <button *ngIf="!isSubcategory(option)"
@@ -219,25 +343,23 @@
                                 </div>
                             </ng-container>
                         </ng-container>
-                        <div class="field-row" *ngIf="currentCategory.fields">
-                            <ng-container
-                                *ngFor="let f of currentCategory.fields">
-                                <label>{{ f.label }}</label>
-                                <input [type]="f.type"
-                                    [(ngModel)]="customValues[f.key]"
-                                (ngModelChange)="onCustomFieldChange({ key: f.key, value: $event })" />
-                            </ng-container>
-                        </div>
                     </div>
                 </div>
+                
+                <!-- Navigation buttons -->
                 <div class="navigation-buttons">
-                    <button (click)="previousCategory()"
-                        [disabled]="currentCategoryIndex === 0">Previous</button>
-                    <button (click)="nextCategory()"
-                        [disabled]="currentCategoryIndex === categories.length - 1">Next</button>
+                    <ng-container *ngIf="quoteType === 'custom'">
+                        <button (click)="personalizeQuote()">Personalize</button>
+                        <button (click)="requestQuote.emit()">Request Full Quote</button>
+                    </ng-container>
+                    <ng-container *ngIf="quoteType !== 'custom'">
+                        <button (click)="previousCategory()" [disabled]="currentCategoryIndex === 0">Previous</button>
+                        <button (click)="nextCategory()" [disabled]="currentCategoryIndex === categories.length - 1">Next</button>
+                    </ng-container>
                 </div>
             </section>
         </main>
+        
         <!-- ─── Panel derecho ─── -->
         <aside class="right-panel">
             <div class="price-breakdown">
@@ -291,8 +413,7 @@
                 <div class="per-sqft under-total">
                     {{ pricePerSqFtNum | currency:'USD':'symbol':'1.2-2' }}/sqft
                 </div>
-                <button class="quote-button"
-                    (click)="requestQuote()">Request Full Quote</button>
+                <button class="quote-button" (click)="requestQuote.emit()">Request Full Quote</button>
             </div>
         </aside>
     </div>

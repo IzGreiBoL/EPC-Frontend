@@ -363,21 +363,18 @@ export class QuotesService {
   }
 
   buildCustomCategory(): QuoteCategory[] {
-    //TODO: SQFT minimo 1300
+        //TODO: SQFT minimo 1300
+    //TODO: Agregarle otra opción de Garage space con opciones de 1, 2, 3 y 4.
     //TODO: BATHROOMS es decimal, pero solo en .5
     //TODO: BATHROOMS: Empieza en 2.5 pero a partir 3 se suman 10 dolares, pero a partir de 3.5 se suman 5 dólares.
-    //TODO: BEDROOMS: A partir de 1500 caben 4 cuartos. Si require 4 cuartos, una casa de 1500 sqft es recomendadable, si tienes preguntas, ponerle el link de contacto.
-    // hasta 2200 es cuando se pueden 5 cuartos.
+    //TODO: BEDROOMS: A partir de 1500 caben 4 cuartos. Poner como mensaje en rojo debajo del campo: Si require 4 cuartos, una casa de 1500 sqft es recomendadable, hasta 2200 es cuando se pueden 5 cuartos. si tienes preguntas, ponerle el link de contacto.
     //TODO: Si no caben los pinches cuartos en el sqft, pues ponerle un mensaje para darle la opción de cambio automático.
 
+    //RECORDATORIO:
     //1300 = 3 cuartos hasta 2.5 baños
-    //1500 = 4 cuartos, 3 baños (puede ponerle los que quiere)
-    //2200 = 5 cuartos, 4 baños (puede ponerle los que quiere)
-
-    //si requiere una casa de más de 6 cuartos, por favor contáctenos.
-
-
-    //Agregarle otra opción de Garage space con opciones de 1, 2, 3, 4.
+    //1500 = 4 cuartos, mínimo 3 baños pero puede ponerle los que quiera
+    //2200 = 5 cuartos, mínimo 4 baños pero puede ponerle los que quiera
+    //si requiere una casa de más de 6 cuartos, poner como mensaje por favor contáctenos.
 
     //Después de darle next, darle dos botones, uno con request y otro para personalizar. Si le da al personalizar
     //Pues le damos todas las categorías y opciones del avanzado, pero sin los precios base de cada opción y utilizando los
@@ -387,12 +384,23 @@ export class QuotesService {
       name: 'Custom parameters',
       icon: 'home',
       basePrice: 0,
-      options: [],
       fields: [
-        { key: 'sqft', label: 'Square footage', type: 'number' },
-        { key: 'bedrooms', label: 'Bedrooms', type: 'number' },
-        { key: 'bathrooms', label: 'Bathrooms', type: 'number' },
+        { key: 'sqft', label: 'Square footage (min: 1300)', type: 'number', min: 1300 },
+        { key: 'bedrooms', label: 'Bedrooms', type: 'number', min: 1, max: 6 },
+        { key: 'bathrooms', label: 'Bathrooms', type: 'number', step: 0.5, min: 1 },
       ],
+      options: [
+        {
+          name: 'Garage Space',
+          basePrice: 0,
+          options: [
+            { name: '1-Car Garage', price: 0 },
+            { name: '2-Car Garage', price: 5 },
+            { name: '3-Car Garage', price: 12 },
+            { name: '4-Car Garage', price: 20 }
+          ]
+        }
+      ]
     }];
   }
 

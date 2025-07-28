@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Quote, QuoteCategory, SubCategory } from '../../../core/models/quote.model';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -42,9 +42,15 @@ export class QuoteConfiguratorComponent {
     @Input() quoteType: 'basic' | 'advanced' | 'custom' | 'remodel' = 'basic';
     @Input() isMobile = false;
     @Input() gallerySize: 'small' | 'large' = 'large';
+    @Input() initialCategoryIndex = 0;
+    @Input() initialCustomValues?: Record<string, number>;
+
+    @Output() requestQuote = new EventEmitter<void>();
+    @Output() personalize = new EventEmitter<Record<string, number>>();
 
     userSelections: Record<string, string> = {};
-    customValues: Record<string, number> = { sqft: 100, bedrooms: 3, bathrooms: 2 }; //TODO: ponerle minimo 100, no menos en el html
+    customValues: Record<string, number> = { sqft: 1300, bedrooms: 3, bathrooms: 2.5, garage: 1 };
+    bathroomBasePricing: number = 0;
     currentCategoryIndex = 0;
     totalNumeric = 0;
     pricePerSqFtNum = 0;
@@ -56,11 +62,30 @@ export class QuoteConfiguratorComponent {
     private touched: Record<number, Set<number>> = {};
 
     ngOnInit(): void {
+        // Initialize with custom values if provided
+        if (this.initialCustomValues) {
+            // Apply initial custom values
+            Object.keys(this.initialCustomValues).forEach(key => {
+                if (key in this.customValues) {
+                    this.customValues[key] = this.initialCustomValues![key];
+                }
+            });
+
+            // Recalculate bathroom pricing based on the initial values
+            this.calculateBathroomPricing();
+        }
+
+        // Set the initial category index if provided
+        if (this.initialCategoryIndex > 0 && this.initialCategoryIndex < this.categories.length) {
+            this.currentCategoryIndex = this.initialCategoryIndex;
+        }
+
         if (this.quoteType === 'basic') {
             this.initPreSelectionsBasic();
         } else {
             this.initPreSelectionsAdvanced();
         }
+
         this.updateFormattedSelections();
         this.calculateTotal();
     }
@@ -169,25 +194,107 @@ export class QuoteConfiguratorComponent {
         this.formattedSelections = grouped;
     }
 
+    calculateBathroomPricing(): void {
+        const bathrooms = this.customValues['bathrooms'] || 0;
+        this.bathroomBasePricing = 0;
+
+        if (bathrooms > 2.5) {
+            if (bathrooms === 3) {
+                this.bathroomBasePricing = 10;
+            } else {
+                const halfBathsOver3 = Math.max(0, Math.round((bathrooms - 3) * 2));
+                this.bathroomBasePricing = 10 + (halfBathsOver3 * 5);
+            }
+        }
+    }
+
+    onCustomFieldChange(event: { key: string; value: number }): void {
+        // Only enforce minimum sqft - everything else is just warnings
+        if (event.key === 'sqft') {
+            // Enforce minimum sqft
+            event.value = Math.max(1300, event.value);
+        } else if (event.key === 'bathrooms') {
+            // Round to nearest 0.5 (this is just data cleaning, not enforcement)
+            event.value = Math.round(event.value * 2) / 2;
+        } else if (event.key === 'bedrooms') {
+            // Ensure it's a whole number (this is just data cleaning, not enforcement)
+            event.value = Math.round(event.value);
+        }
+
+        this.customValues[event.key] = Number(event.value);
+
+        // Calculate bathroom pricing adjustment
+        this.calculateBathroomPricing();
+
+        this.calculateTotal();
+        this.updateFormattedSelections();
+    }
+
+    adjustBedrooms(): void {
+        const sqft = this.customValues['sqft'] || 0;
+        const bedrooms = this.customValues['bedrooms'] || 0;
+
+        if (sqft < 1500 && bedrooms > 3) {
+            this.customValues['bedrooms'] = 3;
+        } else if (sqft < 2200 && bedrooms > 4) {
+            this.customValues['bedrooms'] = 4;
+        }
+
+        this.calculateTotal();
+        this.updateFormattedSelections();
+    }
+
+    adjustSquareFootage(): void {
+        const bedrooms = this.customValues['bedrooms'] || 0;
+
+        if (bedrooms > 3 && bedrooms <= 4 && this.customValues['sqft'] < 1500) {
+            this.customValues['sqft'] = 1500;
+        } else if (bedrooms > 4 && this.customValues['sqft'] < 2200) {
+            this.customValues['sqft'] = 2200;
+        }
+
+        this.calculateTotal();
+        this.updateFormattedSelections();
+    }
+
+    adjustBathrooms(): void {
+        const sqft = this.customValues['sqft'] || 0;
+
+        if (sqft >= 1500 && sqft < 2200) {
+            this.customValues['bathrooms'] = Math.max(this.customValues['bathrooms'], 3);
+        } else if (sqft >= 2200) {
+            this.customValues['bathrooms'] = Math.max(this.customValues['bathrooms'], 4);
+        }
+
+        this.calculateBathroomPricing();
+        this.calculateTotal();
+        this.updateFormattedSelections();
+    }
+
     calculateTotal(): void {
         if (!this.item || !this.pricingService) return;
         let result: { pricePerFt: number; hasCustom: boolean };
-        const size = this.item.size ?? 0;
+        const size = this.customValues['sqft'] || this.item.size || 0;
+
         if ('calcStandard' in this.pricingService) {
-            // Siempre pasa size como cuarto argumento
+            // Add bathroom pricing to base price
+            const adjustedBasePrice = this.basePrice + this.bathroomBasePricing;
+
             result = (this.pricingService as any).calcStandard(
                 this.categories,
                 this.userSelections,
-                this.basePrice,
+                adjustedBasePrice,
                 size
             );
+
+            const bathroomPricePerSqft = size > 0 ? this.bathroomBasePricing / size : 0;
+
+            this.totalNumeric = result.pricePerFt * size;
+            this.hasCustomOption = result.hasCustom;
+            this.pricePerSqFtNum = result.pricePerFt + bathroomPricePerSqft;
         } else {
             return;
         }
-        const total = result.pricePerFt * size;
-        this.totalNumeric = total;
-        this.hasCustomOption = result.hasCustom;
-        this.pricePerSqFtNum = result.pricePerFt;
     }
 
     toggleBreakdown(): void {
@@ -195,7 +302,7 @@ export class QuoteConfiguratorComponent {
         if (this.showBreakdown) this.updateBreakdown();
     }
 
-    requestQuote(): void {
+    openQuoteModal(): void {
         // Prepara los datos de la cotización a enviar al modal
         const quoteData = {
             quoteNo: this.item?.id ? String(this.item.id) : '',
@@ -215,10 +322,13 @@ export class QuoteConfiguratorComponent {
         modalRef.componentInstance.quoteData = quoteData;
     }
 
-    onCustomFieldChange(event: { key: string; value: number }): void {
-        this.customValues[event.key] = Number(event.value);
+    personalizeQuote(): void {
+        // Calculate bathroom pricing before emitting
+        this.calculateBathroomPricing();
         this.calculateTotal();
-        this.updateFormattedSelections();
+
+        // Pass the custom values to the parent component
+        this.personalize.emit(this.customValues);
     }
 
     updateBreakdown(): void {

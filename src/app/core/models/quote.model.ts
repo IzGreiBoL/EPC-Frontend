@@ -30,7 +30,10 @@ export interface Option {
 }
 
 export interface FieldDescriptor {
-  key: 'sqft' | 'bedrooms' | 'bathrooms';
+  key: string;
   label: string;
-  type: 'number' | 'text';
+  type: string;
+  min?: number;
+  max?: number;
+  step?: number;
 }
