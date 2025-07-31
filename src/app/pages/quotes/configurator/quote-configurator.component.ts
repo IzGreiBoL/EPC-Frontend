@@ -1,12 +1,13 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Quote, QuoteCategory, SubCategory } from '../../../core/models/quote.model';
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { GalleryComponent } from '../../../shared/components/gallery/gallery.component';
 import { QuotesService } from '../../../core/services/quotes.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QuoteModalComponent } from '../shared/quote-modal/quote-modal.component';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-quote-configurator',
@@ -17,6 +18,7 @@ import { QuoteModalComponent } from '../shared/quote-modal/quote-modal.component
     imports: [
         CommonModule,
         FormsModule,
+        ReactiveFormsModule,
         CurrencyPipe,
         LucideAngularModule,
         GalleryComponent
@@ -32,9 +34,20 @@ export class QuoteConfiguratorComponent {
         ) => { pricePerFt: number; hasCustom: boolean }
     };
 
-    constructor(private quotesService: QuotesService,
-        private modalService: NgbModal
-    ) { }
+    form: FormGroup;
+    private formSub?: Subscription;
+    constructor(
+        private quotesService: QuotesService,
+        private modalService: NgbModal,
+        private fb: FormBuilder
+    ) {
+        this.form = this.fb.group({
+            sqft: [1300, [Validators.required, Validators.min(1300)]],
+            bedrooms: [3, [Validators.required, Validators.min(1), Validators.max(6)]],
+            bathrooms: [2, [Validators.required, Validators.min(2)]],
+            garage: [1, [Validators.required, Validators.min(0), Validators.max(4)]]
+        });
+    }
 
     @Input() item?: Quote;
     @Input() categories: QuoteCategory[] = [];
@@ -84,6 +97,85 @@ export class QuoteConfiguratorComponent {
 
         this.updateFormattedSelections();
         this.calculateTotal();
+
+        // Inicializa el formulario dinámicamente según los campos de la categoría actual
+        this.initForm();
+    }
+
+    initForm(): void {
+        if (this.formSub) {
+            this.formSub.unsubscribe();
+        }
+        const fields = this.categories[this.currentCategoryIndex]?.fields;
+        const group: any = {};
+
+        // Siempre agrega los controles principales, aunque no estén en fields
+        group['sqft'] = [
+            (this.initialCustomValues && this.initialCustomValues['sqft'] !== undefined)
+                ? this.initialCustomValues['sqft']
+                : (this.customValues['sqft'] ?? 1300),
+            [Validators.required, Validators.min(1300)]
+        ];
+        group['bedrooms'] = [
+            (this.initialCustomValues && this.initialCustomValues['bedrooms'] !== undefined)
+                ? this.initialCustomValues['bedrooms']
+                : (this.customValues['bedrooms'] ?? 3),
+            [Validators.required, Validators.min(1), Validators.max(6)]
+        ];
+        group['bathrooms'] = [
+            (this.initialCustomValues && this.initialCustomValues['bathrooms'] !== undefined)
+                ? this.initialCustomValues['bathrooms']
+                : (this.customValues['bathrooms'] ?? 2),
+            [Validators.required, Validators.min(2)]
+        ];
+
+        // Agrega los campos de fields si existen y no son los principales
+        if (fields) {
+            fields.forEach(f => {
+                if (!group[f.key]) {
+                    group[f.key] = [
+                        (this.initialCustomValues && this.initialCustomValues[f.key] !== undefined)
+                            ? this.initialCustomValues[f.key]
+                            : (this.customValues[f.key] ?? f.min ?? 0),
+                        this.getValidatorsForField(f)
+                    ];
+                }
+            });
+        }
+
+        // Garage es especial, puede estar en options
+        if (this.categories[this.currentCategoryIndex]?.options) {
+            const garageOption = this.categories[this.currentCategoryIndex].options.find(opt => opt.name === 'Garage Space');
+            if (garageOption) {
+                group['garage'] = [
+                    (this.initialCustomValues && this.initialCustomValues['garage'] !== undefined)
+                        ? this.initialCustomValues['garage']
+                        : (this.customValues['garage'] ?? 1),
+                    [Validators.required, Validators.min(0), Validators.max(4)]
+                ];
+            }
+        }
+
+        this.form = this.fb.group(group);
+
+        if (this.initialCustomValues) {
+            this.form.patchValue(this.initialCustomValues);
+        }
+
+        this.formSub = this.form.valueChanges.subscribe(values => {
+            Object.assign(this.customValues, values);
+            this.calculateBathroomPricing();
+            this.calculateTotal();
+            this.updateFormattedSelections();
+        });
+    }
+
+    getValidatorsForField(f: any) {
+        const validators = [];
+        if (f.min !== undefined) validators.push(Validators.min(f.min));
+        if (f.max !== undefined) validators.push(Validators.max(f.max));
+        if (f.type === 'number') validators.push(Validators.required);
+        return validators;
     }
 
     get currentCategory(): QuoteCategory | undefined {
@@ -155,6 +247,7 @@ export class QuoteConfiguratorComponent {
     previousCategory(): void {
         if (this.currentCategoryIndex > 0) {
             this.currentCategoryIndex--;
+            this.initForm();
             this.updateFormattedSelections();
         }
     }
@@ -162,7 +255,14 @@ export class QuoteConfiguratorComponent {
     nextCategory(): void {
         if (this.currentCategoryIndex < this.categories.length - 1) {
             this.currentCategoryIndex++;
+            this.initForm();
             this.updateFormattedSelections();
+        }
+    }
+
+    ngOnDestroy(): void {
+        if (this.formSub) {
+            this.formSub.unsubscribe();
         }
     }
 
@@ -197,30 +297,14 @@ export class QuoteConfiguratorComponent {
         }
     }
 
-    onCustomFieldChange(event: { key: string; value: number }): void {
-        if (event.key === 'sqft') {
-            event.value = Math.max(1300, event.value);
-        } else if (event.key === 'bathrooms') {
-            event.value = Math.max(2, Math.round(event.value * 2) / 2);
-        } else if (event.key === 'bedrooms') {
-            event.value = Math.round(event.value);
-        }
-        this.customValues[event.key] = Number(event.value);
-
-        this.calculateBathroomPricing();
-
-        this.calculateTotal();
-        this.updateFormattedSelections();
-    }
-
     adjustBedrooms(): void {
-        const sqft = this.customValues['sqft'] || 0;
-        const bedrooms = this.customValues['bedrooms'] || 0;
+        const sqft = this.form.value.sqft || 0;
+        const bedrooms = this.form.value.bedrooms || 0;
 
         if (sqft < 1500 && bedrooms > 3) {
-            this.customValues['bedrooms'] = 3;
+            this.form.patchValue({ bedrooms: 3 });
         } else if (sqft < 2200 && bedrooms > 4) {
-            this.customValues['bedrooms'] = 4;
+            this.form.patchValue({ bedrooms: 4 });
         }
 
         this.calculateTotal();
@@ -228,12 +312,12 @@ export class QuoteConfiguratorComponent {
     }
 
     adjustSquareFootage(): void {
-        const bedrooms = this.customValues['bedrooms'] || 0;
+        const bedrooms = this.form.value.bedrooms || 0;
 
-        if (bedrooms > 3 && bedrooms <= 4 && this.customValues['sqft'] < 1500) {
-            this.customValues['sqft'] = 1500;
-        } else if (bedrooms > 4 && this.customValues['sqft'] < 2200) {
-            this.customValues['sqft'] = 2200;
+        if (bedrooms > 3 && bedrooms <= 4 && this.form.value.sqft < 1500) {
+            this.form.patchValue({ sqft: 1500 });
+        } else if (bedrooms > 4 && this.form.value.sqft < 2200) {
+            this.form.patchValue({ sqft: 2200 });
         }
 
         this.calculateTotal();
@@ -241,13 +325,17 @@ export class QuoteConfiguratorComponent {
     }
 
     adjustBathrooms(): void {
-        const sqft = this.customValues['sqft'] || 0;
+        const sqft = this.form.value.sqft || 0;
+        let newBathrooms = this.form.value.bathrooms || 0;
 
-        if (sqft >= 1500 && sqft < 2200) {
-            this.customValues['bathrooms'] = Math.max(this.customValues['bathrooms'], 3);
-        } else if (sqft >= 2200) {
-            this.customValues['bathrooms'] = Math.max(this.customValues['bathrooms'], 4);
+        if (sqft < 1500 && newBathrooms > 2.5) {
+            newBathrooms = 2.5;
+        } else if (sqft >= 1500 && sqft < 2200 && newBathrooms < 3) {
+            newBathrooms = 3;
+        } else if (sqft >= 2200 && newBathrooms < 4) {
+            newBathrooms = 4;
         }
+        this.form.patchValue({ bathrooms: newBathrooms });
 
         this.calculateBathroomPricing();
         this.calculateTotal();
@@ -285,11 +373,10 @@ export class QuoteConfiguratorComponent {
     }
 
     openQuoteModal(): void {
-        // Prepara los datos de la cotización a enviar al modal
         const quoteData = {
             quoteNo: this.item?.id ? String(this.item.id) : '',
             date: new Date().toLocaleDateString(),
-            clientName: '', // Se llenará en el modal
+            clientName: '',
             modelOfHouse: this.item?.name || '',
             selections: this.formattedSelections,
             pricePerSqft: this.pricePerSqFtNum,
@@ -298,18 +385,16 @@ export class QuoteConfiguratorComponent {
             hasCustomOption: this.hasCustomOption,
             customValues: this.customValues,
             item: this.item,
-            stampImageUrl: (this.galleryItems[0]?.image ?? '') // Usa la imagen principal del modelo
+            stampImageUrl: (this.galleryItems[0]?.image ?? '')
         };
         const modalRef = this.modalService.open(QuoteModalComponent, { centered: true });
         modalRef.componentInstance.quoteData = quoteData;
     }
 
     personalizeQuote(): void {
-        // Calculate bathroom pricing before emitting
         this.calculateBathroomPricing();
         this.calculateTotal();
 
-        // Pass the custom values to the parent component
         this.personalize.emit(this.customValues);
     }
 
@@ -328,10 +413,21 @@ export class QuoteConfiguratorComponent {
         const cat = this.item?.categories.find(c => c.name === name) || this.categories.find(c => c.name === name);
         const icon = cat ? this.quotesService.getIconByCategory(cat) : undefined;
         if (!icon || typeof icon === 'string') {
-            // Devuelve undefined para que lucide-angular no intente renderizar nada
             return undefined;
         }
-        // Si el icono es un array válido, lo retorna
         return icon as readonly object[];
+    }
+
+    hasBusinessWarnings(): boolean {
+        const v = this.form.value;
+        // Bedrooms warnings
+        if (v.sqft < 1500 && v.bedrooms > 3) return true;
+        if (v.sqft < 2200 && v.bedrooms > 4) return true;
+        if (v.bedrooms > 5) return true;
+        // Bathrooms warnings
+        if (v.sqft < 1500 && v.bathrooms > 2.5) return true;
+        if (v.sqft >= 1500 && v.sqft < 2200 && v.bathrooms < 3) return true;
+        if (v.sqft >= 2200 && v.bathrooms < 4) return true;
+        return false;
     }
 }
