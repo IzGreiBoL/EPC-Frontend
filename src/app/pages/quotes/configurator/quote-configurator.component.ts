@@ -57,6 +57,7 @@ export class QuoteConfiguratorComponent {
     @Input() gallerySize: 'small' | 'large' = 'large';
     @Input() initialCategoryIndex = 0;
     @Input() initialCustomValues?: Record<string, number>;
+    @Input() initialUserSelections?: Record<string, string>;
 
     @Output() requestQuote = new EventEmitter<void>();
     @Output() personalize = new EventEmitter<Record<string, number>>();
@@ -98,7 +99,6 @@ export class QuoteConfiguratorComponent {
         this.updateFormattedSelections();
         this.calculateTotal();
 
-        // Inicializa el formulario dinámicamente según los campos de la categoría actual
         this.initForm();
     }
 
@@ -109,7 +109,6 @@ export class QuoteConfiguratorComponent {
         const fields = this.categories[this.currentCategoryIndex]?.fields;
         const group: any = {};
 
-        // Siempre agrega los controles principales, aunque no estén en fields
         group['sqft'] = [
             (this.initialCustomValues && this.initialCustomValues['sqft'] !== undefined)
                 ? this.initialCustomValues['sqft']
@@ -129,7 +128,6 @@ export class QuoteConfiguratorComponent {
             [Validators.required, Validators.min(2)]
         ];
 
-        // Agrega los campos de fields si existen y no son los principales
         if (fields) {
             fields.forEach(f => {
                 if (!group[f.key]) {
@@ -143,7 +141,6 @@ export class QuoteConfiguratorComponent {
             });
         }
 
-        // Garage es especial, puede estar en options
         if (this.categories[this.currentCategoryIndex]?.options) {
             const garageOption = this.categories[this.currentCategoryIndex].options.find(opt => opt.name === 'Garage Space');
             if (garageOption) {
@@ -201,20 +198,29 @@ export class QuoteConfiguratorComponent {
     }
 
     initPreSelectionsAdvanced(): void {
-        this.userSelections = {};
+        if (this.initialUserSelections && Object.keys(this.initialUserSelections).length > 0) {
+            this.userSelections = { ...this.initialUserSelections };
+        } else {
+            this.userSelections = {};
+        }
+        
         this.categories.forEach((cat, catIdx) => {
             cat.options.forEach((opt, subIdx) => {
-                if (this.isSubcategory(opt)) {
-                    const firstSub = opt.options[0];
-                    if (firstSub) {
-                        this.userSelections[`${catIdx}_${subIdx}`] = `${opt.name}: ${firstSub.name}`;
-                    }
-                } else {
-                    if (
-                        !cat.options.some(o => this.isSubcategory(o))
-                        && subIdx === 0
-                    ) {
-                        this.userSelections[`${catIdx}_${subIdx}`] = `${cat.name}: ${opt.name}`;
+                const selectionKey = `${catIdx}_${subIdx}`;
+                
+                if (!this.userSelections[selectionKey]) {
+                    if (this.isSubcategory(opt)) {
+                        const firstSub = opt.options[0];
+                        if (firstSub) {
+                            this.userSelections[selectionKey] = `${opt.name}: ${firstSub.name}`;
+                        }
+                    } else {
+                        if (
+                            !cat.options.some(o => this.isSubcategory(o))
+                            && subIdx === 0
+                        ) {
+                            this.userSelections[selectionKey] = `${cat.name}: ${opt.name}`;
+                        }
                     }
                 }
             });
@@ -395,7 +401,30 @@ export class QuoteConfiguratorComponent {
         this.calculateBathroomPricing();
         this.calculateTotal();
 
-        this.personalize.emit(this.customValues);
+        const valuesWithGarage = { ...this.customValues };
+        
+        const garageSelection = Object.entries(this.userSelections).find(([, value]) => 
+            value.includes('Garage Space:')
+        );
+        
+        if (garageSelection) {
+            const [, selectionText] = garageSelection;
+            const garageName = selectionText.split(': ')[1];
+            
+            const garageOptions = [
+                'No garage space',
+                '1 car garage space', 
+                '2 car garage space',
+                '3 car garage space'
+            ];
+            
+            const garageIndex = garageOptions.findIndex(option => option === garageName);
+            if (garageIndex !== -1) {
+                valuesWithGarage['garage'] = garageIndex;
+            }
+        }
+
+        this.personalize.emit(valuesWithGarage);
     }
 
     updateBreakdown(): void {

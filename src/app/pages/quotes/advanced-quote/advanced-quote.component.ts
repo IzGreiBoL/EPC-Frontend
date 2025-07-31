@@ -20,6 +20,7 @@ import { QuoteModalComponent } from '../shared/quote-modal/quote-modal.component
     [pricingService]="pricingAdapter"
     [initialCategoryIndex]="initialCategoryIndex"
     [initialCustomValues]="customInitialValues"
+    [initialUserSelections]="initialUserSelections"
     (requestQuote)="requestQuote()"
   ></app-quote-configurator>`,
   standalone: true,
@@ -34,6 +35,7 @@ export class AdvancedQuoteComponent implements OnInit {
   pricingAdapter: any;
   customInitialValues: Record<string, number> | undefined = undefined;
   initialCategoryIndex = 0;
+  initialUserSelections: Record<string, string> = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -60,6 +62,10 @@ export class AdvancedQuoteComponent implements OnInit {
                     bathrooms: Number(queryParams['customBathrooms']) || 2.5,
                     garage: Number(queryParams['customGarage']) || 2
                 };
+                
+                const garageValue = Number(queryParams['customGarage']) || 1;
+                this.initialUserSelections['0_0'] = `Garage Space: ${this.getGarageOptionName(garageValue)}`;
+                
                 if (this.item && queryParams['customSize']) {
                     this.item.size = Number(queryParams['customSize']);
                 }
@@ -104,5 +110,15 @@ export class AdvancedQuoteComponent implements OnInit {
 
   requestQuote(): void {
     this.modalService.open(QuoteModalComponent, { centered: true });
+  }
+
+  private getGarageOptionName(garageValue: number): string {
+    const garageOptions = [
+      'No garage space',
+      '1 car garage space', 
+      '2 car garage space',
+      '3 car garage space'
+    ];
+    return garageOptions[garageValue] || '2 car garage space';
   }
 }
