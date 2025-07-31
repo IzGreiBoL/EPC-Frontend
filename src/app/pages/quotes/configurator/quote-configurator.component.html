@@ -136,6 +136,9 @@
                         
                         <!-- Validation messages for bathrooms -->
                         <div *ngIf="f.key === 'bathrooms'" class="field-info">
+                            <div *ngIf="customValues['bathrooms'] < 2" class="validation-error">
+                                Minimum bathrooms is 2.
+                            </div>
                             <div *ngIf="customValues['sqft'] < 1500 && customValues['bathrooms'] > 2.5" class="validation-error">
                                 Houses under 1500 sqft typically have maximum 2.5 bathrooms.
                                 You may proceed with your selection, but we recommend <a href="javascript:void(0)" (click)="adjustBathrooms()">adjusting to 2.5 bathrooms</a>.
@@ -151,6 +154,7 @@
                             <div class="recommendation-note">
                                 <small>
                                     Bathroom requirements:<br>
+                                    - Minimum: 2 bathrooms<br>
                                     - Up to 1499 sqft: Up to 2.5 bathrooms<br>
                                     - 1500-2199 sqft: Minimum 3 bathrooms<br>
                                     - 2200+ sqft: Minimum 4 bathrooms
@@ -297,6 +301,9 @@
                                     
                                     <!-- Validation messages for bathrooms -->
                                     <div *ngIf="f.key === 'bathrooms'" class="field-info">
+                                        <div *ngIf="customValues['bathrooms'] < 2" class="validation-error">
+                                            Minimum bathrooms is 2.
+                                        </div>
                                         <div *ngIf="customValues['sqft'] < 1500 && customValues['bathrooms'] > 2.5" class="validation-error">
                                             Houses under 1500 sqft typically have maximum 2.5 bathrooms.
                                             You may proceed with your selection, but we recommend <a href="javascript:void(0)" (click)="adjustBathrooms()">adjusting to 2.5 bathrooms</a>.

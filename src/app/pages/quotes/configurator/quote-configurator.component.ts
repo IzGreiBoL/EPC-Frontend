@@ -49,7 +49,7 @@ export class QuoteConfiguratorComponent {
     @Output() personalize = new EventEmitter<Record<string, number>>();
 
     userSelections: Record<string, string> = {};
-    customValues: Record<string, number> = { sqft: 1300, bedrooms: 3, bathrooms: 2.5, garage: 1 };
+    customValues: Record<string, number> = { sqft: 1300, bedrooms: 3, bathrooms: 2, garage: 1 };
     bathroomBasePricing: number = 0;
     currentCategoryIndex = 0;
     totalNumeric = 0;
@@ -62,20 +62,16 @@ export class QuoteConfiguratorComponent {
     private touched: Record<number, Set<number>> = {};
 
     ngOnInit(): void {
-        // Initialize with custom values if provided
         if (this.initialCustomValues) {
-            // Apply initial custom values
             Object.keys(this.initialCustomValues).forEach(key => {
                 if (key in this.customValues) {
                     this.customValues[key] = this.initialCustomValues![key];
                 }
             });
 
-            // Recalculate bathroom pricing based on the initial values
             this.calculateBathroomPricing();
         }
 
-        // Set the initial category index if provided
         if (this.initialCategoryIndex > 0 && this.initialCategoryIndex < this.categories.length) {
             this.currentCategoryIndex = this.initialCategoryIndex;
         }
@@ -102,7 +98,6 @@ export class QuoteConfiguratorComponent {
         return typeof option === 'object' && option !== null && 'name' in option && Array.isArray((option as { options?: unknown }).options);
     }
 
-    // Para versión básica: solo categorías con opciones simples
     initPreSelectionsBasic(): void {
         this.userSelections = {};
         this.categories.forEach((cat, catIdx) => {
@@ -113,21 +108,18 @@ export class QuoteConfiguratorComponent {
         });
     }
 
-    // Para versión avanzada: categorías con subcategorías y opciones dentro de subcategorías
     initPreSelectionsAdvanced(): void {
         this.userSelections = {};
         this.categories.forEach((cat, catIdx) => {
             cat.options.forEach((opt, subIdx) => {
                 if (this.isSubcategory(opt)) {
-                    // Preselecciona la primera opción de la subcategoría
                     const firstSub = opt.options[0];
                     if (firstSub) {
                         this.userSelections[`${catIdx}_${subIdx}`] = `${opt.name}: ${firstSub.name}`;
                     }
                 } else {
-                    // Si hay opciones simples, preselecciona la primera
                     if (
-                        !cat.options.some(o => this.isSubcategory(o)) // solo si no hay subcategorías
+                        !cat.options.some(o => this.isSubcategory(o))
                         && subIdx === 0
                     ) {
                         this.userSelections[`${catIdx}_${subIdx}`] = `${cat.name}: ${opt.name}`;
@@ -141,14 +133,11 @@ export class QuoteConfiguratorComponent {
         const category = this.currentCategory;
         if (!category?.options) return;
         const option = category.options[event.subIdx];
-        // Si es versión básica o remodel, solo puede haber una opción seleccionada por categoría
         if (this.quoteType === 'basic' || this.quoteType === 'remodel') {
-            // Elimina todas las selecciones de la categoría actual
             Object.keys(this.userSelections).forEach(k => {
                 if (k.startsWith(`${this.currentCategoryIndex}_`)) delete this.userSelections[k];
             });
         } else {
-            // Solo elimina la selección previa de este subíndice
             delete this.userSelections[`${this.currentCategoryIndex}_${event.subIdx}`];
         }
         if (this.isSubcategory(option)) {
@@ -209,21 +198,15 @@ export class QuoteConfiguratorComponent {
     }
 
     onCustomFieldChange(event: { key: string; value: number }): void {
-        // Only enforce minimum sqft - everything else is just warnings
         if (event.key === 'sqft') {
-            // Enforce minimum sqft
             event.value = Math.max(1300, event.value);
         } else if (event.key === 'bathrooms') {
-            // Round to nearest 0.5 (this is just data cleaning, not enforcement)
-            event.value = Math.round(event.value * 2) / 2;
+            event.value = Math.max(2, Math.round(event.value * 2) / 2);
         } else if (event.key === 'bedrooms') {
-            // Ensure it's a whole number (this is just data cleaning, not enforcement)
             event.value = Math.round(event.value);
         }
-
         this.customValues[event.key] = Number(event.value);
 
-        // Calculate bathroom pricing adjustment
         this.calculateBathroomPricing();
 
         this.calculateTotal();
@@ -277,7 +260,6 @@ export class QuoteConfiguratorComponent {
         const size = this.customValues['sqft'] || this.item.size || 0;
 
         if ('calcStandard' in this.pricingService) {
-            // Add bathroom pricing to base price
             const adjustedBasePrice = this.basePrice + this.bathroomBasePricing;
 
             result = (this.pricingService as any).calcStandard(

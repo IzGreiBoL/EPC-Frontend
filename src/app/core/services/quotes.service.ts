@@ -11,7 +11,7 @@ export class QuotesService {
   readonly BASIC_QUOTE_BASE_PRICE = 190;
   readonly ADVANCED_QUOTE_BASE_PRICE = 101.42;
   readonly REMODEL_QUOTE_BASE_PRICE = 0;
-  readonly CUSTOM_QUOTE_BASE_PRICE = 0;
+  readonly CUSTOM_QUOTE_BASE_PRICE = 190;
 
   private basicCategories: QuoteCategory[] = [
     {
@@ -303,7 +303,7 @@ export class QuotesService {
     {
       id: 999,
       name: 'Custom Build',
-      size: 2000,
+      size: 1300,
       bedrooms: 3,
       bathrooms: 2,
       folder: 'custom',
@@ -370,6 +370,8 @@ export class QuotesService {
     //TODO: BEDROOMS: A partir de 1500 caben 4 cuartos. Poner como mensaje en rojo debajo del campo: Si require 4 cuartos, una casa de 1500 sqft es recomendadable, hasta 2200 es cuando se pueden 5 cuartos. si tienes preguntas, ponerle el link de contacto.
     //TODO: Si no caben los pinches cuartos en el sqft, pues ponerle un mensaje para darle la opción de cambio automático.
 
+    //TODO: Garage: por 1 20, por 2 37 y por 3 55
+
     //RECORDATORIO:
     //1300 = 3 cuartos hasta 2.5 baños
     //1500 = 4 cuartos, mínimo 3 baños pero puede ponerle los que quiera
@@ -394,10 +396,10 @@ export class QuotesService {
           name: 'Garage Space',
           basePrice: 0,
           options: [
-            { name: '1-Car Garage', price: 0 },
-            { name: '2-Car Garage', price: 5 },
-            { name: '3-Car Garage', price: 12 },
-            { name: '4-Car Garage', price: 20 }
+            { name: 'No garage space', price: 0 },
+            { name: '1 car garage space', price: 5 },
+            { name: '2 car garage space', price: 12 },
+            { name: '3 car garage space', price: 20 }
           ]
         }
       ]

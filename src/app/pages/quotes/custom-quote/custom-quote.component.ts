@@ -102,15 +102,15 @@ export class CustomQuoteComponent implements OnInit {
   }
 
   personalizeQuote(customValues: Record<string, number>): void {
-    // Navigate to advanced quote with the custom parameters
+    // Navega usando el nuevo mínimo de baños
     this.router.navigate(['/quotes/detail', this.item?.id, 'advanced'], { 
-      queryParams: { 
-        customSize: customValues['sqft'],
-        customBedrooms: customValues['bedrooms'],
-        customBathrooms: customValues['bathrooms'],
-        customGarage: customValues['garage'],
-        fromCustomBuilder: true
-      } 
+        queryParams: { 
+            customSize: customValues['sqft'],
+            customBedrooms: customValues['bedrooms'],
+            customBathrooms: Math.max(2, customValues['bathrooms']),
+            customGarage: customValues['garage'],
+            fromCustomBuilder: true
+        } 
     });
   }
 }
