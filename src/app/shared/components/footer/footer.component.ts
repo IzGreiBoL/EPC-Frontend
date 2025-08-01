@@ -20,7 +20,7 @@ export class FooterComponent {
     event.preventDefault();
     this.router.navigate(['/']).then(() => {
       setTimeout(() => {
-        this.router.navigate(['/'], { fragment: 'contactus' }).then(() => {
+        this.router.navigate(['/'], { fragment: 'contact' }).then(() => {
           this.scrollToContactUs();
         });
       }, 100); // Pequeño retraso para asegurar que la navegación se complete
@@ -28,7 +28,7 @@ export class FooterComponent {
   }
 
   private scrollToContactUs(): void {
-    const element = document.getElementById('contactus');
+    const element = document.getElementById('contact');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }

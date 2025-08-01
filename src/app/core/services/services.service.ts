@@ -67,7 +67,8 @@ export class ServicesService {
       text: 'EPC Development is a premier general contracting option specializing in custom home construction and luxury remodeling services across the USA. With a focus on precision, quality, and attention to detail, we manage every aspect of your project—from planning and design to execution and completion—ensuring a seamless and stress-free experience. Our team of skilled professionals combines innovative techniques, high-end materials, and expert craftsmanship to deliver exceptional results tailored to your vision. Whether building a custom home or transforming an existing space, we prioritize transparency, timely delivery, and superior workmanship to bring your dream project to life. Trust EPC Development to handle the complexities of construction while you enjoy the journey to your perfect home.',
       quoteButtonText: 'Free Quote',
       category: 'other-services',
-      showInHeader: true
+      showInHeader: true,
+      redirectUrl: '/#contact'
     },
     {
       slug: 'remodeling-and-additions-services',
@@ -86,7 +87,8 @@ export class ServicesService {
       text: 'Our team oversees every aspect of construction, from securing permits to coordinating contractors, ensuring timely completion and adherence to the highest quality standards. We keep you informed throughout the process and make sure every detail is executed as planned.',
       quoteButtonText: 'Free Quote',
       category: 'other-services',
-      showInHeader: true
+      showInHeader: true,
+      redirectUrl: '/quotes/custom'
     },
     {
       slug: 'investor-services-and-turnkey-projects',
@@ -95,7 +97,8 @@ export class ServicesService {
       text: 'With an eye for detail, we offer custom interior design services to make your home feel uniquely yours. From cabinetry and flooring to lighting and color schemes, we work with you to select the perfect finishes that align with your vision.',
       quoteButtonText: 'Free Quote',
       category: 'other-services',
-      showInHeader: true
+      showInHeader: true,
+      redirectUrl: '/#contact'
     }
   ];
 

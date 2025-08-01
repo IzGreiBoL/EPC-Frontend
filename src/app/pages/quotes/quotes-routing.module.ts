@@ -8,10 +8,11 @@ import { RemodelQuoteComponent } from './remodel-quote/remodel-quote.component';
 
 const routes: Routes = [
   { path: '', component: QuotesComponent },
+  { path: 'custom', component: CustomQuoteComponent },
+  { path: 'advanced', component: AdvancedQuoteComponent },
+  { path: 'remodel', component: RemodelQuoteComponent },
   { path: 'detail/:id/basic', component: BasicQuoteComponent },
   { path: 'detail/:id/advanced', component: AdvancedQuoteComponent },
-  { path: 'detail/:id/custom', component: CustomQuoteComponent },
-  { path: 'remodel', component: RemodelQuoteComponent },
 ];
 
 @NgModule({

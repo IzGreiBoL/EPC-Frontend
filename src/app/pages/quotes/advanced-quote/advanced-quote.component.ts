@@ -47,12 +47,28 @@ export class AdvancedQuoteComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-        const id = Number(params.get('id'));
-        this.item = this.quotesService.getItemById(id);
-        if (!this.item) return;
-
+        const id = params.get('id');
+        
         this.route.queryParams.subscribe(queryParams => {
             const fromCustomBuilder = queryParams['fromCustomBuilder'] === 'true';
+
+            if (id) {
+                this.item = this.quotesService.getItemById(Number(id));
+                if (!this.item) return;
+            } else if (fromCustomBuilder) {
+                this.item = {
+                    id: 999,
+                    name: 'Custom Build',
+                    size: Number(queryParams['customSize']) || 1300,
+                    bedrooms: Number(queryParams['customBedrooms']) || 3,
+                    bathrooms: Number(queryParams['customBathrooms']) || 2.5,
+                    folder: 'custom',
+                    categories: [],
+                    imagesCount: 1
+                };
+            } else {
+                return;
+            }
 
             if (fromCustomBuilder) {
                 this.initialCategoryIndex = 1;

@@ -26,7 +26,7 @@ declare const Email: {
 })
 export class HomeComponent implements OnInit, AfterViewInit {
   @ViewChild('projects') projectsSection!: ElementRef;
-  @ViewChild('contactus') contactUsSection!: ElementRef;
+  @ViewChild('contact') contactUsSection!: ElementRef;
 
   isSidebarOpen = false; // Estado del sidebar
   isTransparent = false;
@@ -53,7 +53,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       if (fragment === 'projects') {
         this.scrollToProjects();
       }
-      if (fragment === 'contact-us') {
+      if (fragment === 'contact') {
         this.scrollToContactUs();
       }
     });

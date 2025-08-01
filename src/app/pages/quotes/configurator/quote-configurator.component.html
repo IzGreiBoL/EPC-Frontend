@@ -191,7 +191,7 @@
 
             <!-- Opciones como botones grandes -->
             <div class="button-row"
-                *ngIf="!currentCategory.fields && currentCategory.options">
+                *ngIf="currentCategory.options && currentCategory.options.length > 0">
                 <ng-container
                     *ngFor="let option of currentCategory?.options; let subIndex = index">
                     <button *ngIf="!isSubcategory(option)"
@@ -213,7 +213,7 @@
                             <button
                                 *ngFor="let opt of option.options; let optIndex = index"
                                 #optBtn
-                                [class.selected]="userSelections[currentCategoryIndex + '_' + subIndex] && userSelections[currentCategoryIndex + '_' + subIndex].includes(opt.name)"
+                                [class.selected]="isOptionSelected(currentCategoryIndex, subIndex, optIndex)"
                                 (click)="selectOption({ subIdx: subIndex, optIdx: optIndex }); optBtn.blur()">
                                 <span class="option-title">{{ opt.name }}</span>
                             </button>
@@ -222,9 +222,9 @@
                 </ng-container>
             </ng-container>
 
-            <!-- Validación para remodel selections -->
+            <!-- Validación para remodel configuration -->
             <div class="validation-error"
-                *ngIf="quoteType === 'remodel' && currentCategory.name === 'Remodel selections' && !isRemodelSelectionsValid()">
+                *ngIf="quoteType === 'remodel' && currentCategory.name === 'Remodel Configuration' && !isRemodelSelectionsValid()">
                 Please select at least 2 remodel options.
             </div>
         </section>
@@ -314,7 +314,8 @@
                                             <!-- Mensajes personalizados según el campo -->
                                             <span
                                                 *ngIf="f.key === 'sqft' && form.get('sqft')?.errors?.['min']">Minimum
-                                                square footage is 1300</span>
+                                                square footage is {{ quoteType === 'remodel'
+                                                ? '300' : '1300' }}</span>
                                             <span
                                                 *ngIf="f.key === 'bathrooms' && form.get('bathrooms')?.errors?.['min']">Minimum
                                                 bathrooms is 2</span>
@@ -405,7 +406,7 @@
                         </form>
 
                         <div class="button-row"
-                            *ngIf="!currentCategory.fields && currentCategory.options">
+                            *ngIf="currentCategory.options && currentCategory.options.length > 0">
                             <ng-container
                                 *ngFor="let option of currentCategory.options; let subIndex = index">
                                 <button *ngIf="!isSubcategory(option)"
@@ -425,7 +426,7 @@
                                     <div class="subcategory-buttons">
                                         <button
                                             *ngFor="let opt of option.options; let optIndex = index"
-                                            [class.selected]="userSelections[currentCategoryIndex + '_' + subIndex] && userSelections[currentCategoryIndex + '_' + subIndex].includes(opt.name)"
+                                            [class.selected]="isOptionSelected(currentCategoryIndex, subIndex, optIndex)"
                                             (click)="selectOption({ subIdx: subIndex, optIdx: optIndex })">
                                             <span class="option-title">{{
                                                 opt.name }}</span>
@@ -438,7 +439,7 @@
                 </div>
 
                 <div class="validation-error"
-                    *ngIf="quoteType === 'remodel' && currentCategory.name === 'Remodel selections' && !isRemodelSelectionsValid()">
+                    *ngIf="quoteType === 'remodel' && currentCategory.name === 'Remodel Configuration' && !isRemodelSelectionsValid()">
                     Please select at least 2 remodel options.
                 </div>
 

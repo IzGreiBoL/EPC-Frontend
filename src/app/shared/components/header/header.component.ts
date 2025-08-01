@@ -138,7 +138,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.isSidebarOpen = false;
     this.router.navigate(['/']).then(() => {
       setTimeout(() => {
-        this.router.navigate(['/'], { fragment: 'contact-us' }).then(() => {
+        this.router.navigate(['/'], { fragment: 'contact' }).then(() => {
           this.scrollToContactUs();
         });
       }, 100);
@@ -146,7 +146,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   private scrollToContactUs(): void {
-    const element = document.getElementById('contact-us');
+    const element = document.getElementById('contact');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }

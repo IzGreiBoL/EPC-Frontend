@@ -4,7 +4,7 @@
       <div class="custom-card d-flex flex-column flex-lg-row align-items-center">
         <!-- Imagen -->
         <div class="image-container">
-          <a [routerLink]="['/quotes/detail', item.id, item.id === 999 ? 'custom' : 'basic']">
+          <a [routerLink]="item.id === 999 ? ['/quotes/custom'] : ['/quotes/detail', item.id, 'basic']">
             <img [src]="getFirstImage(item.folder)" class="card-img-top"
               alt="Image">
           </a>
@@ -33,7 +33,7 @@
               [routerLink]="['/quotes/detail', item.id, 'basic']">Basic
               Quote</button>
             <button class="button-primary"
-              [routerLink]="['/quotes/detail', item.id, item.id === 999 ? 'custom' : 'advanced']">
+              [routerLink]="item.id === 999 ? ['/quotes/custom'] : ['/quotes/detail', item.id, 'advanced']">
               {{ item.id === 999 ? 'Custom Quote' : 'Advanced Quote' }}
             </button>
           </div>

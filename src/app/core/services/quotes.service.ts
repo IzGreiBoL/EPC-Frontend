@@ -410,28 +410,26 @@ export class QuotesService {
     return [
       {
         id: 1001,
-        name: 'Sq ft',
+        name: 'Remodel Configuration',
         icon: 'home',
         basePrice: 0,
-        options: [],
         fields: [
           { key: 'sqft', label: 'Sq ft', type: 'number', min: 300 }
-        ]
-      },
-      {
-        //TODO: debe seleccionar los primeros dos, y al menos dos
-        id: 1002,
-        name: 'Remodel selections',
-        icon: 'grid',
-        basePrice: 0,
+        ],
         options: [
-          { name: 'Foundation', price: 38 },
-          { name: 'Framing and crafts', price: 38 },
-          { name: 'Sheet rock', price: 38 },
-          { name: 'Bathrooms', price: 38 },
-          { name: 'Finishes', price: 38 }
+          {
+            name: 'Remodel Selections',
+            basePrice: 0,
+            options: [
+              { name: 'Foundation', price: 38 },
+              { name: 'Framing and crafts', price: 38 },
+              { name: 'Sheet rock', price: 38 },
+              { name: 'Bathrooms', price: 38 },
+              { name: 'Finishes', price: 38 }
+            ]
+          }
         ]
-      },
+      }
     ];
   }
 }

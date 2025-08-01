@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ServicesService } from '../../../core/services/services.service';
 import { Service } from '../../../core/models/service.model';
 
@@ -13,11 +14,18 @@ import { Service } from '../../../core/models/service.model';
 export class CustomHomeDesignComponent implements OnInit {
   services: Service[] = [];
 
-  constructor(private servicesService: ServicesService) {}
+  constructor(
+    private servicesService: ServicesService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.services = this.servicesService.getServices().filter(
       s => s.category === 'custom-home-design'
     );
+  }
+
+  navigateToCustomQuote(): void {
+    this.router.navigate(['/quotes/custom']);
   }
 }

@@ -13,7 +13,12 @@
           </h2>
           <p class="service-desc mb-4 text-light">{{ service.text }}</p>
           <div class="d-flex gap-3">
-            <button class="button-primary" [routerLink]="service.redirectUrl">{{ service.quoteButtonText }}</button>
+            <button class="button-primary" 
+                    *ngIf="service.redirectUrl" 
+                    (click)="navigateToUrl(service.redirectUrl)">{{ service.quoteButtonText }}</button>
+            <button class="button-primary" 
+                    *ngIf="!service.redirectUrl" 
+                    [routerLink]="'/quotes'">{{ service.quoteButtonText }}</button>
           </div>
         </div>
         <div class="col-12 col-lg-6 d-flex justify-content-center">
