@@ -3,7 +3,7 @@
     <header class="topbar desktop-only" *ngIf="!isMobile">
         <div class="topbar-inner">
             <div class="title-group">
-                <h2>House Configuration</h2>
+                <h2>House configuration</h2>
                 <small>Step {{ currentCategoryIndex + 1 }}: {{
                     categories[currentCategoryIndex].name }}</small>
             </div>
@@ -24,7 +24,8 @@
                 <!-- Update the top button to emit event rather than call method -->
                 <button class="quote-btn"
                     (click)="requestQuote.emit()"
-                    [disabled]="form.invalid || hasBusinessWarnings()">Quote</button>
+                    [disabled]="form.invalid || hasBusinessWarnings()">Request
+                    quote</button>
             </div>
         </div>
 
@@ -105,7 +106,8 @@
                                 class="validation-error">
                                 <span
                                     *ngIf="f.key === 'sqft' && form.get('sqft')?.errors?.['min']">Minimum
-                                    square footage is 1300</span>
+                                    square footage is {{ quoteType === 'remodel'
+                                    ? '300' : '1300' }}</span>
                                 <span
                                     *ngIf="f.key === 'bathrooms' && form.get('bathrooms')?.errors?.['min']">Minimum
                                     bathrooms is 2</span>
@@ -219,6 +221,12 @@
                     </div>
                 </ng-container>
             </ng-container>
+
+            <!-- Validación para remodel selections -->
+            <div class="validation-error"
+                *ngIf="quoteType === 'remodel' && currentCategory.name === 'Remodel selections' && !isRemodelSelectionsValid()">
+                Please select at least 2 remodel options.
+            </div>
         </section>
     </div>
 
@@ -236,7 +244,8 @@
             <!-- Update mobile footer button -->
             <button class="mobile-quote-btn"
                 (click)="requestQuote.emit()"
-                [disabled]="form.invalid || hasBusinessWarnings()">Get Quote</button>
+                [disabled]="form.invalid || hasBusinessWarnings() || !isRemodelSelectionsValid()">Get
+                Quote</button>
         </div>
     </div>
 
@@ -428,20 +437,34 @@
                     </div>
                 </div>
 
+                <div class="validation-error"
+                    *ngIf="quoteType === 'remodel' && currentCategory.name === 'Remodel selections' && !isRemodelSelectionsValid()">
+                    Please select at least 2 remodel options.
+                </div>
+
                 <!-- Navigation buttons -->
                 <div class="navigation-buttons">
                     <ng-container *ngIf="quoteType === 'custom'">
                         <button
                             (click)="personalizeQuote()">Personalize</button>
                         <button (click)="requestQuote.emit()"
-                            [disabled]="form.invalid || hasBusinessWarnings()">Request Full
-                            Quote</button>
+                            [disabled]="form.invalid || hasBusinessWarnings() || !isRemodelSelectionsValid()">Request
+                            quote</button>
                     </ng-container>
                     <ng-container *ngIf="quoteType !== 'custom'">
                         <button (click)="previousCategory()"
                             [disabled]="currentCategoryIndex === 0">Previous</button>
-                        <button (click)="nextCategory()"
-                            [disabled]="currentCategoryIndex === categories.length - 1">Next</button>
+
+                        <button
+                            *ngIf="currentCategoryIndex < categories.length - 1"
+                            (click)="nextCategory()"
+                            [disabled]="!isRemodelSelectionsValid()">Next</button>
+
+                        <button
+                            *ngIf="currentCategoryIndex === categories.length - 1"
+                            (click)="requestQuote.emit()"
+                            [disabled]="form.invalid || hasBusinessWarnings() || !isRemodelSelectionsValid()">Request
+                            quote</button>
                     </ng-container>
                 </div>
             </section>
@@ -501,7 +524,7 @@
                     {{ pricePerSqFtNum | currency:'USD':'symbol':'1.2-2' }}/sqft
                 </div>
                 <button class="quote-button" (click)="requestQuote.emit()"
-                    [disabled]="form.invalid || hasBusinessWarnings()">Request Full Quote</button>
+                    [disabled]="form.invalid || hasBusinessWarnings()">Request quote</button>
             </div>
         </aside>
     </div>

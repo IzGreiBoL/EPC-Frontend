@@ -76,6 +76,10 @@ export class QuoteConfiguratorComponent {
     private touched: Record<number, Set<number>> = {};
 
     ngOnInit(): void {
+        if (this.quoteType === 'remodel' && this.customValues['sqft'] === 1300) {
+            this.customValues['sqft'] = 300;
+        }
+
         if (this.initialCustomValues) {
             Object.keys(this.initialCustomValues).forEach(key => {
                 if (key in this.customValues) {
@@ -92,6 +96,8 @@ export class QuoteConfiguratorComponent {
 
         if (this.quoteType === 'basic') {
             this.initPreSelectionsBasic();
+        } else if (this.quoteType === 'remodel') {
+            this.initPreSelectionsRemodel();
         } else {
             this.initPreSelectionsAdvanced();
         }
@@ -109,11 +115,15 @@ export class QuoteConfiguratorComponent {
         const fields = this.categories[this.currentCategoryIndex]?.fields;
         const group: any = {};
 
+        const sqftField = fields?.find(f => f.key === 'sqft');
+        const sqftMin = sqftField?.min ?? (this.quoteType === 'remodel' ? 300 : 1300);
+        const sqftDefault = sqftField?.min ?? (this.quoteType === 'remodel' ? 300 : 1300);
+
         group['sqft'] = [
             (this.initialCustomValues && this.initialCustomValues['sqft'] !== undefined)
                 ? this.initialCustomValues['sqft']
-                : (this.customValues['sqft'] ?? 1300),
-            [Validators.required, Validators.min(1300)]
+                : (this.customValues['sqft'] ?? sqftDefault),
+            [Validators.required, Validators.min(sqftMin)]
         ];
         group['bedrooms'] = [
             (this.initialCustomValues && this.initialCustomValues['bedrooms'] !== undefined)
@@ -227,25 +237,70 @@ export class QuoteConfiguratorComponent {
         });
     }
 
+    initPreSelectionsRemodel(): void {
+        this.userSelections = {};
+        this.categories.forEach((cat, catIdx) => {
+            if (cat.name === 'Remodel selections') {
+                // Pre-seleccionar las primeras dos opciones para remodel selections
+                cat.options.forEach((opt, subIdx) => {
+                    if (subIdx < 2) { // Solo las primeras dos opciones
+                        this.userSelections[`${catIdx}_${subIdx}`] = `${cat.name}: ${opt.name}`;
+                    }
+                });
+            } else {
+                // Para otras categorías, usar la lógica normal
+                if (cat.options.length) {
+                    const opt = cat.options[0];
+                    this.userSelections[`${catIdx}_0`] = `${cat.name}: ${opt.name}`;
+                }
+            }
+        });
+    }
+
     selectOption(event: { subIdx: number; optIdx: number }): void {
         const category = this.currentCategory;
         if (!category?.options) return;
         const option = category.options[event.subIdx];
-        if (this.quoteType === 'basic' || this.quoteType === 'remodel') {
+        
+        const selectionKey = `${this.currentCategoryIndex}_${event.subIdx}`;
+        
+        if (this.quoteType === 'remodel' && category.name === 'Remodel selections') {
+            // Para remodel selections, permitir selección múltiple
+            if (this.userSelections[selectionKey]) {
+                // Si ya está seleccionado, deseleccionar
+                delete this.userSelections[selectionKey];
+            } else {
+                // Si no está seleccionado, seleccionar
+                this.userSelections[selectionKey] = `${category.name}: ${option.name}`;
+            }
+        } else if (this.quoteType === 'basic') {
+            // Para basic, limpiar todas las selecciones de la categoría actual
             Object.keys(this.userSelections).forEach(k => {
                 if (k.startsWith(`${this.currentCategoryIndex}_`)) delete this.userSelections[k];
             });
-        } else {
-            delete this.userSelections[`${this.currentCategoryIndex}_${event.subIdx}`];
-        }
-        if (this.isSubcategory(option)) {
-            const subOpt = option.options[event.optIdx];
-            if (subOpt) {
-                this.userSelections[`${this.currentCategoryIndex}_${event.subIdx}`] = `${option.name}: ${subOpt.name}`;
+            
+            if (this.isSubcategory(option)) {
+                const subOpt = option.options[event.optIdx];
+                if (subOpt) {
+                    this.userSelections[selectionKey] = `${option.name}: ${subOpt.name}`;
+                }
+            } else {
+                this.userSelections[selectionKey] = `${category.name}: ${option.name}`;
             }
         } else {
-            this.userSelections[`${this.currentCategoryIndex}_${event.subIdx}`] = `${category.name}: ${option.name}`;
+            // Para advanced, permitir selección individual por subcategoría
+            delete this.userSelections[selectionKey];
+            
+            if (this.isSubcategory(option)) {
+                const subOpt = option.options[event.optIdx];
+                if (subOpt) {
+                    this.userSelections[selectionKey] = `${option.name}: ${subOpt.name}`;
+                }
+            } else {
+                this.userSelections[selectionKey] = `${category.name}: ${option.name}`;
+            }
         }
+        
         this.updateFormattedSelections();
         this.calculateTotal();
     }
@@ -395,6 +450,26 @@ export class QuoteConfiguratorComponent {
         };
         const modalRef = this.modalService.open(QuoteModalComponent, { centered: true });
         modalRef.componentInstance.quoteData = quoteData;
+    }
+
+    // Función para contar selecciones de remodel
+    getRemodelSelectionsCount(): number {
+        if (this.quoteType !== 'remodel') return 0;
+        
+        const remodelCategory = this.categories.find(cat => cat.name === 'Remodel selections');
+        if (!remodelCategory) return 0;
+        
+        const remodelCategoryIndex = this.categories.indexOf(remodelCategory);
+        
+        return Object.keys(this.userSelections).filter(key => 
+            key.startsWith(`${remodelCategoryIndex}_`)
+        ).length;
+    }
+
+    // Función para validar que al menos 2 opciones estén seleccionadas en remodel
+    isRemodelSelectionsValid(): boolean {
+        if (this.quoteType !== 'remodel') return true;
+        return this.getRemodelSelectionsCount() >= 2;
     }
 
     personalizeQuote(): void {

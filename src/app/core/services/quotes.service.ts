@@ -415,7 +415,7 @@ export class QuotesService {
         basePrice: 0,
         options: [],
         fields: [
-          { key: 'sqft', label: 'Sq ft', type: 'text' }
+          { key: 'sqft', label: 'Sq ft', type: 'number', min: 300 }
         ]
       },
       {
