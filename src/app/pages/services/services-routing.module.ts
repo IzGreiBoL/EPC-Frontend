@@ -7,7 +7,7 @@ import { CustomHomeDesignComponent } from './custom-home-design/custom-home-desi
 const routes: Routes = [
   { path: '', component: ServicesComponent },
   { path: 'custom-home-design', component: CustomHomeDesignComponent },
-  { path: ':slug', component: OtherServices },
+  { path: 'other-services', component: OtherServices },
 ];
 
 @NgModule({

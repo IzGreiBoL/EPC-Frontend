@@ -46,11 +46,11 @@
               ngbDropdownMenu
               aria-labelledby="servicesDropdown"
             >
-              <li>
+              <!-- <li>
                 <a class="dropdown-item" href="/services">All Services</a>
-              </li>
+              </li> -->
               <li *ngFor="let service of services">
-                <a class="dropdown-item" [routerLink]="['/services', service.slug]" (click)="navigateToService(service.slug)">
+                <a class="dropdown-item" href="#" (click)="navigateToService(service.slug); $event.preventDefault()">
                   {{ service.title }}
                 </a>
               </li>
@@ -87,8 +87,7 @@
               </div>
               <ul class="submenu no-bullets" [ngClass]="{'submenu-open': isSubmenuOpen}">
                 <li *ngFor="let service of services">
-                  <a [routerLink]="['/services', service.slug]"
-                    (click)="navigateToService(service.slug)">
+                  <a href="#" (click)="navigateToService(service.slug); $event.preventDefault()">
                     {{ service.title }}
                   </a>
                 </li>

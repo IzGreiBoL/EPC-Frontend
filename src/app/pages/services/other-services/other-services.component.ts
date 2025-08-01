@@ -21,11 +21,24 @@ export class OtherServices implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.route.fragment.subscribe(fragment => {
+      if (fragment) {
+        setTimeout(() => {
+          if (typeof document !== 'undefined') {
+            const element = document.getElementById(fragment);
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }
+        }, 100);
+      }
+    });
+
     this.route.paramMap.subscribe(params => {
-      const slug = params.get('slug'); // Obtiene el slug de la URL
+      const slug = params.get('slug');
       if (slug) {
         setTimeout(() => {
-          if (typeof document !== 'undefined' && document.getElementById(slug)) {
+          if (typeof document !== 'undefined') {
             const element = document.getElementById(slug);
             if (element) {
               element.scrollIntoView({ behavior: 'smooth', block: 'start' });

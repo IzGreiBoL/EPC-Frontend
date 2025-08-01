@@ -46,7 +46,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      // Solo ejecuta en el cliente
       this.checkMobile();
       this.resizeListener = this.checkMobile.bind(this);
       window.addEventListener('resize', this.resizeListener);
@@ -56,7 +55,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (isPlatformBrowser(this.platformId)) {
-      // Limpia el listener en el cliente
       window.removeEventListener('resize', this.resizeListener);
     }
     if (this.routerSubscription) {
@@ -93,7 +91,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   navigateToService(slug: string): void {
-    this.router.navigate(['/services', slug]);
+    const service = this.servicesService.getServiceBySlug(slug);
+    
+    if (service?.category === 'other-services') {
+      this.router.navigate(['/services/other-services'], { fragment: slug });
+    } else {
+      this.router.navigate(['/services', slug]);
+    }
+    
     this.isSidebarOpen = false;
   }
 
