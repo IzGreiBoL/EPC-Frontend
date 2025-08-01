@@ -397,9 +397,9 @@ export class QuotesService {
           basePrice: 0,
           options: [
             { name: 'No garage space', price: 0 },
-            { name: '1 car garage space', price: 5 },
-            { name: '2 car garage space', price: 12 },
-            { name: '3 car garage space', price: 20 }
+            { name: '1 car garage space', price: 20 },
+            { name: '2 car garage space', price: 37 },
+            { name: '3 car garage space', price: 55 }
           ]
         }
       ]
