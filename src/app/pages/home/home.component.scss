@@ -183,6 +183,41 @@
     color: #484546;
 }
 
+// Social Media Styles for Home Contact Section
+.social-media-home {
+    padding-left: 12px; // Align with other contact items
+}
+
+.social-link-home {
+    color: #ECECEC;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background-color: transparent;
+    
+    &:hover {
+        color: #C49538;
+        background-color: rgba(196, 149, 56, 0.1);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(196, 149, 56, 0.2);
+    }
+}
+
+.social-icon-home {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s ease;
+    
+    .social-link-home:hover & {
+        transform: scale(1.1);
+    }
+}
+
 @media (max-width: 1024px) {
     .main-content {
         justify-items: center;

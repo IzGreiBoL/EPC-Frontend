@@ -4,6 +4,7 @@ import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { isPlatformBrowser } from '@angular/common';
 import { ServicesService } from '../../../core/services/services.service';
+import { ConfigService } from '../../../core/services/config.service';
 import { Service } from '../../../core/models/service.model';
 import { Subscription } from 'rxjs';
 
@@ -25,6 +26,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isSubmenuOpen: boolean = true;
   services: Service[] = [];
   private routerSubscription!: Subscription;
+  
+  // Company info from config
+  get companyName(): string {
+    return this.config.companyName;
+  }
 
   private resizeListener!: () => void;
 
@@ -32,7 +38,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private location: Location,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: object,
-    private servicesService: ServicesService
+    private servicesService: ServicesService,
+    private config: ConfigService
   ) {
     // Detecta si estás en la página de inicio
     this.router.events.subscribe((event) => {

@@ -1,3 +1,5 @@
+const BACKEND_CONFIG = require('./config');
+
 // Genera el objeto replacements para la plantilla HTML de cotización
 // quoteData: { quoteNo, date, clientName, modelOfHouse, selections, pricePerSqft, sqftTotal, total }
 function buildQuoteReplacements(quoteData) {
@@ -10,7 +12,11 @@ function buildQuoteReplacements(quoteData) {
     sqftTotal: quoteData.sqftTotal || '',
     total: quoteData.total || '',
     stampImageUrl: quoteData.stampImageUrl || quoteData.image || '', // usa el campo correcto
-    modelSelectionsRows: ''
+    modelSelectionsRows: '',
+    // Company information from config
+    COMPANY_NAME: BACKEND_CONFIG.company.name,
+    COMPANY_TAGLINE: BACKEND_CONFIG.company.tagline,
+    COMPANY_EMAIL: BACKEND_CONFIG.company.email
   };
   if (Array.isArray(quoteData.selections)) {
     // [{category, subcategories: [opción, opción, ...]}]

@@ -8,3 +8,55 @@
     color: white;
     text-align: center;
 }
+
+// Social Media Styles - Horizontal layout
+.social-media-container {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+}
+
+.social-link {
+    color: #ECECEC;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background-color: transparent;
+    
+    &:hover {
+        color: #C49538; // Color primario del tema
+        background-color: rgba(196, 149, 56, 0.1);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(196, 149, 56, 0.2);
+    }
+}
+
+.social-icon {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+    
+    .social-link:hover & {
+        transform: scale(1.1);
+    }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+    .social-link {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .social-icon {
+        width: 16px;
+        height: 16px;
+    }
+}

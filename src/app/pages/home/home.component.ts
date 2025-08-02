@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { QuotesService } from '../../core/services/quotes.service';
 import { Quote } from '../../core/models/quote.model';
 import { GalleryComponent } from "../../shared/components/gallery/gallery.component";
+import { ConfigService } from '../../core/services/config.service';
 
 declare const Email: {
   send: (options: {
@@ -37,7 +38,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   constructor(
     @Inject(PLATFORM_ID) private platformId: object,
     private route: ActivatedRoute,
-    private quotesService: QuotesService
+    private quotesService: QuotesService,
+    public config: ConfigService
   ) { }
 
   ngOnInit(): void {

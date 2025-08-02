@@ -1,0 +1,39 @@
+/**
+ * Variables de configuración de colores y estilos
+ * Modificar estos valores para personalizar el tema
+ */
+
+// === COLORES PRINCIPALES ===
+$gold: #C49538 !default;
+$gold-dark: #B7832C !default;
+
+// === COLORES DE FONDO ===
+$dark-1: #1C1C1F !default;
+$dark-2: #161619 !default;
+$dark-3: #333335 !default;
+
+// === COLORES DE TEXTO ===
+$text-light: #ECECEC !default;
+$text-secondary: #B0B0B0 !default;
+$text-accent: #6FA3FF !default;
+
+// === COLORES DE COMPONENTES ===
+$card-background: #242428 !default;
+$modal-background: #1e1e1e !default;
+
+// === ESPACIADO ===
+$base-padding: 1rem !default;
+$base-margin: 1rem !default;
+
+// === TIPOGRAFÍA ===
+$primary-font: "Montserrat", serif !default;
+$base-font-size: 1rem !default;
+$base-font-weight: 300 !default;
+
+// === BORDES Y SOMBRAS ===
+$base-border-radius: 8px !default;
+$base-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !default;
+
+// === TRANSICIONES ===
+$base-transition: 0.3s ease !default;
+$color-transition: background-color 0.3s ease, color 0.3s ease !default;

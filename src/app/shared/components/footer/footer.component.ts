@@ -1,17 +1,20 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ConfigService } from '../../../core/services/config.service';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss'
 })
 export class FooterComponent {
 
   constructor(
-    private router: Router
+    private router: Router,
+    public config: ConfigService
   ) {
 
   }

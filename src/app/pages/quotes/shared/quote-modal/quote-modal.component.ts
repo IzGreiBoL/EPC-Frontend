@@ -60,12 +60,12 @@ export class QuoteModalComponent {
     };
     this.mailService.sendMail(mailData).subscribe({
       next: () => {
-        this.successMsg = '¡Solicitud enviada correctamente!';
+        this.successMsg = 'Your request has been sent successfully!';
         this.loading = false;
         this.quoteForm.reset();
       },
       error: () => {
-        this.errorMsg = 'Error al enviar la solicitud. Intenta de nuevo.';
+        this.errorMsg = 'Error sending request. Please try again.';
         this.loading = false;
       }
     });

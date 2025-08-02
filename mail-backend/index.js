@@ -6,6 +6,7 @@ const path = require('path');
 const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
 const puppeteer = require('puppeteer');
 const environment = require('../environment');
+const BACKEND_CONFIG = require('./config');
 
 const app = express();
 app.use(express.json());

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import type { Option } from '../models/quote.model';
 import { QuoteCategory } from '../models/quote.model';
+import { ConfigService } from './config.service';
 
 export interface CustomInput {
   sqft: number;
@@ -12,6 +13,8 @@ export interface CustomInput {
 @Injectable({ providedIn: 'root' })
 export class QuotePricingService {
 
+  constructor(private config: ConfigService) { }
+
   calcStandard(
     categories: QuoteCategory[],
     userSelections: Record<string, string>,
@@ -21,7 +24,7 @@ export class QuotePricingService {
 
     let sum = 0;
     let hasCustom = false;
-    const counted = new Set<any>();
+    const counted = new Set<unknown>();
 
     Object.values(userSelections).forEach(sel => {
       const [catOrSubcat, selName] = sel.split(': ').map(s => s.trim());
@@ -37,7 +40,7 @@ export class QuotePricingService {
         const subOpt = cat.options.find(o => this.isSub(o) && o.name === catOrSubcat);
         if (subOpt && this.isSub(subOpt)) {
           if (!counted.has(subOpt)) {
-            sum += (subOpt as any).basePrice ?? 0;
+            sum += (subOpt as unknown as { basePrice?: number }).basePrice ?? 0;
             counted.add(subOpt);
           }
           const opt = subOpt.options.find(o => o.name === selName);
@@ -71,8 +74,8 @@ export class QuotePricingService {
   calcCustom(i: CustomInput): { total: number; pricePerFt: number } {
     const pricePerFt = i.basePrice;
     const total = pricePerFt * i.sqft
-      + (i.bedrooms - 3) * 7500
-      + (i.bathrooms - 2) * 6000;
+      + (i.bedrooms - this.config.defaultBedrooms) * this.config.bedroomExtraPrice
+      + (i.bathrooms - this.config.defaultBathrooms) * this.config.bathroomExtraPrice;
     return { total, pricePerFt };
   }
 
