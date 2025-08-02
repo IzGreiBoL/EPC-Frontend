@@ -41,7 +41,6 @@ export class CustomQuoteComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Custom quote siempre usa un item por defecto sin depender de ID
     this.item = {
       id: 999,
       name: 'Custom Build',
@@ -58,7 +57,6 @@ export class CustomQuoteComponent implements OnInit {
     
     this.categories = this.quotesService.buildCustomCategory();
 
-    // Adaptador para cumplir la firma esperada
     this.pricingAdapter = {
       calcStandard: (
         categories: QuoteCategory[],
@@ -70,7 +68,7 @@ export class CustomQuoteComponent implements OnInit {
         const result = this.pricing.calcStandard(
           categories, 
           userSelections, 
-          this.quotesService.CUSTOM_QUOTE_BASE_PRICE,
+          basePrice,
           size
         );
         return {

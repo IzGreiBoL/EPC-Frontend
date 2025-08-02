@@ -76,10 +76,10 @@ export class AdvancedQuoteComponent implements OnInit {
                     sqft: Number(queryParams['customSize']) || 1300,
                     bedrooms: Number(queryParams['customBedrooms']) || 3,
                     bathrooms: Number(queryParams['customBathrooms']) || 2.5,
-                    garage: Number(queryParams['customGarage']) || 2
+                    garage: Number(queryParams['customGarage']) || 0
                 };
                 
-                const garageValue = Number(queryParams['customGarage']) || 1;
+                const garageValue = Number(queryParams['customGarage']) || 0;
                 this.initialUserSelections['0_0'] = `Garage Space: ${this.getGarageOptionName(garageValue)}`;
                 
                 if (this.item && queryParams['customSize']) {
@@ -101,13 +101,14 @@ export class AdvancedQuoteComponent implements OnInit {
             this.pricingAdapter = {
                 calcStandard: (
                     categories: QuoteCategory[],
-                    userSelections: Record<string, string>
+                    userSelections: Record<string, string>,
+                    basePrice: number
                 ) => {
                     const size = this.item?.size && this.item.size > 0 ? this.item.size : 1;
                     const result = this.pricing.calcStandard(
                         categories, 
                         userSelections, 
-                        this.quotesService.ADVANCED_QUOTE_BASE_PRICE,
+                        basePrice,
                         size
                     );
                     return {

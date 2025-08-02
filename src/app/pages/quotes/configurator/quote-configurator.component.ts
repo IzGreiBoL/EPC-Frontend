@@ -45,7 +45,7 @@ export class QuoteConfiguratorComponent {
             sqft: [1300, [Validators.required, Validators.min(1300)]],
             bedrooms: [3, [Validators.required, Validators.min(1), Validators.max(6)]],
             bathrooms: [2, [Validators.required, Validators.min(2)]],
-            garage: [1, [Validators.required, Validators.min(0), Validators.max(4)]]
+            garage: [0, [Validators.required, Validators.min(0), Validators.max(4)]]
         });
     }
 
@@ -63,7 +63,7 @@ export class QuoteConfiguratorComponent {
     @Output() personalize = new EventEmitter<Record<string, number>>();
 
     userSelections: Record<string, string> = {};
-    customValues: Record<string, number> = { sqft: 1300, bedrooms: 3, bathrooms: 2, garage: 1 };
+    customValues: Record<string, number> = { sqft: 1300, bedrooms: 3, bathrooms: 2, garage: 0 };
     bathroomBasePricing: number = 0;
     currentCategoryIndex = 0;
     totalNumeric = 0;
@@ -76,6 +76,17 @@ export class QuoteConfiguratorComponent {
     private touched: Record<number, Set<number>> = {};
 
     ngOnInit(): void {
+        // Establecer el basePrice según el tipo de quote
+        if (this.quoteType === 'custom') {
+            this.basePrice = this.quotesService.CUSTOM_QUOTE_BASE_PRICE;
+        } else if (this.quoteType === 'advanced') {
+            this.basePrice = this.quotesService.ADVANCED_QUOTE_BASE_PRICE;
+        } else if (this.quoteType === 'basic') {
+            this.basePrice = this.quotesService.BASIC_QUOTE_BASE_PRICE;
+        } else if (this.quoteType === 'remodel') {
+            this.basePrice = this.quotesService.REMODEL_QUOTE_BASE_PRICE;
+        }
+
         if (this.quoteType === 'remodel' && this.customValues['sqft'] === 1300) {
             this.customValues['sqft'] = 300;
         }
@@ -157,7 +168,7 @@ export class QuoteConfiguratorComponent {
                 group['garage'] = [
                     (this.initialCustomValues && this.initialCustomValues['garage'] !== undefined)
                         ? this.initialCustomValues['garage']
-                        : (this.customValues['garage'] ?? 1),
+                        : (this.customValues['garage'] ?? 0),
                     [Validators.required, Validators.min(0), Validators.max(4)]
                 ];
             }
@@ -351,6 +362,20 @@ export class QuoteConfiguratorComponent {
                 grouped.push({ category: cat.name, subcategories });
             }
         });
+
+        if ((this.quoteType === 'custom' || (this.quoteType === 'advanced' && this.initialCustomValues)) && this.bathroomBasePricing > 0) {
+            const bathroomGroup = grouped.find(g => g.category === 'Custom parameters');
+            if (bathroomGroup) {
+                const bathrooms = this.customValues['bathrooms'] || 0;
+                bathroomGroup.subcategories.push(`Additional Bathrooms: ${bathrooms} bathrooms (+$${this.bathroomBasePricing} per sq ft)`);
+            } else {
+                grouped.push({
+                    category: 'Custom parameters',
+                    subcategories: [`Additional Bathrooms: ${this.customValues['bathrooms'] || 0} bathrooms (+$${this.bathroomBasePricing} per sq ft)`]
+                });
+            }
+        }
+
         this.formattedSelections = grouped;
     }
 
@@ -428,11 +453,9 @@ export class QuoteConfiguratorComponent {
                 size
             );
 
-            const bathroomPricePerSqft = size > 0 ? this.bathroomBasePricing / size : 0;
-
-            this.totalNumeric = result.pricePerFt * size;
+            this.totalNumeric = Math.round((result.pricePerFt * size) * 100) / 100;
             this.hasCustomOption = result.hasCustom;
-            this.pricePerSqFtNum = result.pricePerFt + bathroomPricePerSqft;
+            this.pricePerSqFtNum = Math.round(result.pricePerFt * 100) / 100;
         } else {
             return;
         }
