@@ -1,9 +1,5 @@
 module.exports = {
     // SMTP configuration
-    SMTP_HOST: 'sandbox.smtp.mailtrap.io',
-    SMTP_PORT: 2525,
-    SMTP_USER: 'e7b074e9d2d621',
-    SMTP_PASS: '53afc0df1dbec7',
 
     // Email sending configuration
     EMAIL_SENDER: '"EPC Developments" <hello@demomailtrap.co>',

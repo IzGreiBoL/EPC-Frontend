@@ -17,10 +17,6 @@ export const environment = {
   // Email/SMTP Configuration (development - Mailtrap)
   email: {
     smtp: {
-      host: 'sandbox.smtp.mailtrap.io',
-      port: 2525,
-      user: 'e7b074e9d2d621',
-      pass: '53afc0df1dbec7'
     },
     sender: '"EPC Developments" <hello@demomailtrap.co>',
     pdfFilename: 'quote.pdf'
