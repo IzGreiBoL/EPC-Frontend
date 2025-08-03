@@ -5,10 +5,6 @@
 module.exports = {
     // === CONFIGURACIÓN SMTP/EMAIL ===
     // Para desarrollo (Mailtrap)
-    SMTP_HOST: 'sandbox.smtp.mailtrap.io',
-    SMTP_PORT: 2525,
-    SMTP_USER: 'e7b074e9d2d621',
-    SMTP_PASS: '53afc0df1dbec7',
 
     // Para producción (ejemplo con Gmail -  cambiar)
     // SMTP_HOST: 'smtp.gmail.com',

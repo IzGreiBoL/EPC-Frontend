@@ -84,7 +84,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     const message = (document.getElementById('message') as HTMLInputElement).value;
 
     Email.send({
-      SecureToken: "YOUR_SECURE_TOKEN", // Genera uno en https://smtpjs.com/
+      SecureToken: "YOUR_SECURE_TOKEN",
       To: 'jesusgreibol@gmail.com',
       From: email,
       Subject: `Nuevo mensaje de ${name}`,
