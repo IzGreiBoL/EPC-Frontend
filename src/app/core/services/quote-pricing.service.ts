@@ -61,9 +61,6 @@ export class QuotePricingService {
       }
     });
 
-    // Debug
-    console.log(`basePrice modelo: ${basePrice}, sum: ${sum}, size: ${size}`);
-
     const pricePerFt = basePrice + sum;
     const total = size * pricePerFt;
 

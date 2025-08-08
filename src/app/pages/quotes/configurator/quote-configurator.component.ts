@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectorRef, OnDestroy, AfterViewInit } from '@angular/core';
 import { Quote, QuoteCategory, SubCategory } from '../../../core/models/quote.model';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -8,6 +8,10 @@ import { QuotesService } from '../../../core/services/quotes.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QuoteModalComponent } from '../shared/quote-modal/quote-modal.component';
 import { Subscription } from 'rxjs';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { ConfigService } from '../../../core/services/config.service';
+import { ScrollUtils } from '../../../core/utils/scroll.utils';
 
 @Component({
     selector: 'app-quote-configurator',
@@ -25,21 +29,26 @@ import { Subscription } from 'rxjs';
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class QuoteConfiguratorComponent {
+export class QuoteConfiguratorComponent implements OnDestroy, AfterViewInit {
     @Input() pricingService?: {
         calcStandard: (
             categories: QuoteCategory[],
             userSelections: Record<string, string>,
-            basePrice: number
-        ) => { pricePerFt: number; hasCustom: boolean }
+            basePrice: number,
+            size: number
+        ) => { total: number; pricePerFt: number; hasCustom: boolean }
     };
 
     form: FormGroup;
     private formSub?: Subscription;
+    private routerSubscription?: Subscription;
     constructor(
         private quotesService: QuotesService,
         private modalService: NgbModal,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private cdr: ChangeDetectorRef,
+        private configService: ConfigService,
+        private router: Router
     ) {
         this.form = this.fb.group({
             sqft: [1300, [Validators.required, Validators.min(1300)]],
@@ -76,6 +85,12 @@ export class QuoteConfiguratorComponent {
     private touched: Record<number, Set<number>> = {};
 
     ngOnInit(): void {
+        ScrollUtils.forceScrollToTop();
+
+        setTimeout(() => {
+            ScrollUtils.forceScrollToTop();
+        }, 0);
+
         // Establecer el basePrice según el tipo de quote
         if (this.quoteType === 'custom') {
             this.basePrice = this.quotesService.CUSTOM_QUOTE_BASE_PRICE;
@@ -117,6 +132,23 @@ export class QuoteConfiguratorComponent {
         this.calculateTotal();
 
         this.initForm();
+    }
+
+    ngAfterViewInit(): void {
+        // Segundo reset de scroll después de que la vista esté completamente inicializada
+        setTimeout(() => {
+            ScrollUtils.forceScrollToTop();
+        }, 50);
+
+        // Suscripción a eventos de navegación del router para manejar el botón "atrás" del navegador
+        this.routerSubscription = this.router.events
+            .pipe(filter(event => event instanceof NavigationEnd))
+            .subscribe(() => {
+                // Scroll al top cuando se navega, incluyendo con el botón atrás
+                setTimeout(() => {
+                    ScrollUtils.forceScrollToTop();
+                }, 0);
+            });
     }
 
     initForm(): void {
@@ -224,11 +256,11 @@ export class QuoteConfiguratorComponent {
         } else {
             this.userSelections = {};
         }
-        
+
         this.categories.forEach((cat, catIdx) => {
             cat.options.forEach((opt, subIdx) => {
                 const selectionKey = `${catIdx}_${subIdx}`;
-                
+
                 if (!this.userSelections[selectionKey]) {
                     if (this.isSubcategory(opt)) {
                         const firstSub = opt.options[0];
@@ -275,9 +307,9 @@ export class QuoteConfiguratorComponent {
         const category = this.currentCategory;
         if (!category?.options) return;
         const option = category.options[event.subIdx];
-        
+
         const selectionKey = `${this.currentCategoryIndex}_${event.subIdx}`;
-        
+
         if (this.quoteType === 'remodel' && category.name === 'Remodel Configuration') {
             if (this.isSubcategory(option)) {
                 const subOpt = option.options[event.optIdx];
@@ -300,7 +332,7 @@ export class QuoteConfiguratorComponent {
             Object.keys(this.userSelections).forEach(k => {
                 if (k.startsWith(`${this.currentCategoryIndex}_`)) delete this.userSelections[k];
             });
-            
+
             if (this.isSubcategory(option)) {
                 const subOpt = option.options[event.optIdx];
                 if (subOpt) {
@@ -311,7 +343,7 @@ export class QuoteConfiguratorComponent {
             }
         } else {
             delete this.userSelections[selectionKey];
-            
+
             if (this.isSubcategory(option)) {
                 const subOpt = option.options[event.optIdx];
                 if (subOpt) {
@@ -321,9 +353,11 @@ export class QuoteConfiguratorComponent {
                 this.userSelections[selectionKey] = `${category.name}: ${option.name}`;
             }
         }
-        
+
         this.updateFormattedSelections();
         this.calculateTotal();
+
+        this.cdr.detectChanges();
     }
 
     previousCategory(): void {
@@ -345,6 +379,9 @@ export class QuoteConfiguratorComponent {
     ngOnDestroy(): void {
         if (this.formSub) {
             this.formSub.unsubscribe();
+        }
+        if (this.routerSubscription) {
+            this.routerSubscription.unsubscribe();
         }
     }
 
@@ -440,8 +477,16 @@ export class QuoteConfiguratorComponent {
 
     calculateTotal(): void {
         if (!this.item || !this.pricingService) return;
-        let result: { pricePerFt: number; hasCustom: boolean };
-        const size = this.customValues['sqft'] || this.item.size || 0;
+        let result: { total: number; pricePerFt: number; hasCustom: boolean };
+
+        // Para quotes custom/advanced con customValues, usar el sqft personalizado
+        // Para quotes basic/predefinidos, usar el tamaño del modelo
+        let size: number;
+        if (this.quoteType === 'custom' || (this.quoteType === 'advanced' && this.initialCustomValues)) {
+            size = this.customValues['sqft'] || 1300;
+        } else {
+            size = this.item.size || 1300;
+        }
 
         if ('calcStandard' in this.pricingService) {
             const adjustedBasePrice = this.basePrice + this.bathroomBasePricing;
@@ -453,7 +498,7 @@ export class QuoteConfiguratorComponent {
                 size
             );
 
-            this.totalNumeric = Math.round((result.pricePerFt * size) * 100) / 100;
+            this.totalNumeric = Math.round(result.total * 100) / 100;
             this.hasCustomOption = result.hasCustom;
             this.pricePerSqFtNum = Math.round(result.pricePerFt * 100) / 100;
         } else {
@@ -467,33 +512,68 @@ export class QuoteConfiguratorComponent {
     }
 
     openQuoteModal(): void {
+        // Determinar el sqft correcto según el tipo de quote
+        let sqftToUse: number;
+        if (this.quoteType === 'custom' || (this.quoteType === 'advanced' && this.initialCustomValues)) {
+            sqftToUse = this.customValues['sqft'] || 1300;
+        } else {
+            sqftToUse = this.item?.size || 1300;
+        }
+
         const quoteData = {
             quoteNo: this.item?.id ? String(this.item.id) : '',
             date: new Date().toLocaleDateString(),
             clientName: '',
             modelOfHouse: this.item?.name || '',
+            houseModel: this.item?.name || '', // Compatibilidad con PHP
             selections: this.formattedSelections,
             pricePerSqft: this.pricePerSqFtNum,
-            sqftTotal: this.item?.size || '',
+            sqftTotal: sqftToUse,
+            sqft: sqftToUse, // Compatibilidad con PHP
             total: this.totalNumeric,
+            totalPrice: this.totalNumeric, // Compatibilidad con PHP
+            bedrooms: this.customValues['bedrooms'] || 3,
+            bathrooms: this.customValues['bathrooms'] || 2,
             hasCustomOption: this.hasCustomOption,
             customValues: this.customValues,
             item: this.item,
-            stampImageUrl: (this.galleryItems[0]?.image ?? '')
+            stampImageUrl: this.createAbsoluteImageUrl(this.galleryItems[0]?.image || `images/${(this.item?.name || 'custom').toLowerCase()}/image1.jpg`)
         };
+
         const modalRef = this.modalService.open(QuoteModalComponent, { centered: true });
         modalRef.componentInstance.quoteData = quoteData;
+    }
+
+    // Función para crear URLs absolutas de imágenes
+    private createAbsoluteImageUrl(imagePath: string): string {
+        const baseUrl = this.configService.apiBaseUrl;
+
+        // Limpiar la ruta de imagen
+        let cleanPath = imagePath;
+
+        // Remover barras iniciales si las tiene
+        if (cleanPath.startsWith('/')) {
+            cleanPath = cleanPath.substring(1);
+        }
+
+        // Asegurar que la ruta no empiece con el dominio
+        if (cleanPath.startsWith(baseUrl)) {
+            return cleanPath;
+        }
+
+        // Construir la URL completa asegurando que hay un / entre el dominio y la ruta
+        return `${baseUrl}/${cleanPath}`;
     }
 
     // Función para contar selecciones de remodel
     getRemodelSelectionsCount(): number {
         if (this.quoteType !== 'remodel') return 0;
-        
+
         const remodelCategory = this.categories.find(cat => cat.name === 'Remodel Configuration');
         if (!remodelCategory) return 0;
-        
+
         const remodelCategoryIndex = this.categories.indexOf(remodelCategory);
-        
+
         return Object.keys(this.userSelections).filter(key => {
             const parts = key.split('_');
             return parts.length === 3 && parts[0] === remodelCategoryIndex.toString();
@@ -511,22 +591,22 @@ export class QuoteConfiguratorComponent {
         this.calculateTotal();
 
         const valuesWithGarage = { ...this.customValues };
-        
-        const garageSelection = Object.entries(this.userSelections).find(([, value]) => 
+
+        const garageSelection = Object.entries(this.userSelections).find(([, value]) =>
             value.includes('Garage Space:')
         );
-        
+
         if (garageSelection) {
             const [, selectionText] = garageSelection;
             const garageName = selectionText.split(': ')[1];
-            
+
             const garageOptions = [
                 'No garage space',
-                '1 car garage space', 
+                '1 car garage space',
                 '2 car garage space',
                 '3 car garage space'
             ];
-            
+
             const garageIndex = garageOptions.findIndex(option => option === garageName);
             if (garageIndex !== -1) {
                 valuesWithGarage['garage'] = garageIndex;
@@ -550,26 +630,36 @@ export class QuoteConfiguratorComponent {
     isOptionSelected(categoryIndex: number, subIndex: number, optIndex: number): boolean {
         if (this.quoteType === 'remodel') {
             const key = `${categoryIndex}_${subIndex}_${optIndex}`;
-            return !!this.userSelections[key];
+            const isSelected = !!this.userSelections[key];
+            return isSelected;
         }
-        
+
         const altKey = `${categoryIndex}_${subIndex}`;
         const selection = this.userSelections[altKey];
-        
+
         if (!selection) return false;
-        
+
         const currentCategory = this.categories[categoryIndex];
         if (!currentCategory?.options) return false;
-        
+
         const option = currentCategory.options[subIndex];
         if (!option) return false;
-        
+
         if (this.isSubcategory(option) && option.options && option.options[optIndex]) {
             const subOptionName = option.options[optIndex].name;
             return selection.includes(subOptionName);
         }
-        
+
         return selection.includes(option.name);
+    }
+
+    isMainOptionSelected(categoryIndex: number, subIndex: number): boolean {
+        if (this.quoteType === 'remodel') {
+            const key = `${categoryIndex}_${subIndex}`;
+            return !!this.userSelections[key];
+        }
+
+        return !!this.userSelections[`${categoryIndex}_${subIndex}`];
     }
 
     getIconByCategory(name: string): readonly any[] | undefined {

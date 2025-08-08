@@ -235,14 +235,21 @@ h4 {
             font-weight: 500;
           }
 
-          &.selected,
-          &:hover {
-            background: $gold;
-            color: $dark-1;
-            border-color: $gold;
+          &.selected {
+            background: $gold !important;
+            color: $dark-1 !important;
+            border-color: $gold !important;
 
             .option-price {
-              color: $dark-1;
+              color: $dark-1 !important;
+            }
+          }
+          
+          // Solo aplicar hover en dispositivos que lo soporten (no móvil)
+          @media (hover: hover) {
+            &:hover:not(.selected) {
+              background: rgba($gold, 0.1);
+              border-color: rgba($gold, 0.3);
             }
           }
         }

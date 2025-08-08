@@ -7,6 +7,7 @@ import { Quote, QuoteCategory } from '../../../core/models/quote.model';
 import { QuoteConfiguratorComponent } from "../configurator/quote-configurator.component";
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QuoteModalComponent } from '../shared/quote-modal/quote-modal.component';
+import { ScrollUtils } from '../../../core/utils/scroll.utils';
 
 @Component({
   selector: 'app-advanced-quote',
@@ -46,6 +47,9 @@ export class AdvancedQuoteComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Reset scroll position when component loads
+    ScrollUtils.scrollToTop();
+    
     this.route.paramMap.subscribe(params => {
         const id = params.get('id');
         
@@ -102,9 +106,9 @@ export class AdvancedQuoteComponent implements OnInit {
                 calcStandard: (
                     categories: QuoteCategory[],
                     userSelections: Record<string, string>,
-                    basePrice: number
+                    basePrice: number,
+                    size: number
                 ) => {
-                    const size = this.item?.size && this.item.size > 0 ? this.item.size : 1;
                     const result = this.pricing.calcStandard(
                         categories, 
                         userSelections, 
@@ -112,6 +116,7 @@ export class AdvancedQuoteComponent implements OnInit {
                         size
                     );
                     return {
+                        total: result.total,
                         pricePerFt: result.pricePerFt,
                         hasCustom: result.hasCustom
                     };

@@ -7,7 +7,12 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:EPC-Frontend": "node dist/epc-frontend/server/server.mjs"
+    "serve:ssr:EPC-Frontend": "node dist/epc-frontend/server/server.mjs",
+    "deploy:prepare": "npm run build && npm run deploy:copy && npm run deploy:config && npm run deploy:mail-backend",
+    "deploy:copy": "xcopy \"dist\\epc-frontend\\browser\\*\" \"deploy-ionos\\\" /E /Y",
+    "deploy:config": "copy \".htaccess\" \"deploy-ionos\\.htaccess\" && copy \"deploy-ionos\\index.csr.html\" \"deploy-ionos\\index.html\"",
+    "deploy:mail-backend": "if not exist \"deploy-ionos\\mail-backend\" mkdir \"deploy-ionos\\mail-backend\" && copy \"mail-backend\\send-email-with-templates.php\" \"deploy-ionos\\mail-backend\\\" && copy \"mail-backend\\quote-template.html\" \"deploy-ionos\\mail-backend\\\" && copy \"mail-backend\\quote-template-pdf.html\" \"deploy-ionos\\mail-backend\\\"",
+    "deploy:clean": "rmdir /s /q deploy-ionos && mkdir deploy-ionos"
   },
   "private": true,
   "dependencies": {

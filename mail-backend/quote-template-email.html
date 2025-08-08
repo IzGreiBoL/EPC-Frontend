@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Quote Template</title>
+  </head>
+  <body style="background:#f6f6f6;color:#365b6d;font-family:Arial,sans-serif;margin:0;padding:0;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f6f6f6;padding:24px 0;">
+      <tr>
+        <td align="center">
+          <table width="816" cellpadding="0" cellspacing="0" style="background:#fff;margin:0 auto;border:1px solid #e0e0e0;">
+            <tr>
+              <td style="padding:96px;">
+                <table width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td width="526" valign="top">
+                      <!-- Contenido principal izquierdo -->
+                      <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td align="center" style="padding-bottom:24px;">
+                            <img src="{{IMAGE_QUOTE}}" alt="Quote" style="width:240px;height:auto;display:block;">
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="font-size:20px;letter-spacing:2px;margin:24px 0 18px 0;padding:24px 0 18px 0;">
+                            QUOTE NO. <span style="font-weight:normal;">´quoteNo´</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding-bottom:18px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                              <tr>
+                                <td style="font-size:16px;">Quote from</td>
+                                <td align="right">
+                                  <div style="font-size:16px;font-weight:bold;text-align:right;letter-spacing:1px;">{{COMPANY_NAME}}</div>
+                                  <div style="font-size:13px;letter-spacing:2px;text-align:right;margin-top:2px;font-weight:400;">{{COMPANY_TAGLINE}}</div>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div style="font-weight:bold;font-size:18px;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase;">Model Selections</div>
+                            <div style="margin-bottom:12px;">
+                              ´modelSelectionsRows´
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding-top:18px;">
+                            <table width="100%" cellpadding="8" cellspacing="0" style="font-size:16px;border-collapse:collapse;">
+                              <tr style="background:#1d4355;">
+                                <th style="color:#f7f7f7;font-weight:600;letter-spacing:1px;padding:8px 18px;text-align:left;border:none;">Price Per sqft</th>
+                                <td style="text-align:right;color:#f7f7f7;padding:8px 18px;border:none;">$´pricePerSqft´</td>
+                              </tr>
+                              <tr style="background:#1d4355;">
+                                <th style="color:#f7f7f7;font-weight:600;letter-spacing:1px;padding:8px 18px;text-align:left;border:none;">Sqft Total</th>
+                                <td style="text-align:right;color:#f7f7f7;padding:8px 18px;border:none;">´sqftTotal´</td>
+                              </tr>
+                              <tr style="background:#f2f1ec;">
+                                <td colspan="2" style="color:#365b6d;font-size:22px;font-weight:bold;border-top:2px solid #22313f;text-align:right;padding:8px 18px;border-left:none;border-right:none;border-bottom:none;">
+                                  Total: $´total´
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td width="40">&nbsp;</td>
+                    <td width="190" valign="top">
+                      <!-- Contenido derecho -->
+                      <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td align="center" style="padding-bottom:12px;">
+                            <img src="{{IMAGE_LOGO}}" alt="EPC Logo" style="width:80px;display:block;">
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <table width="100%" cellpadding="10" cellspacing="0" style="background:#fff;border:1.5px solid #e6d7c1;">
+                              <tr>
+                                <td align="center" style="font-weight:bold;font-size:17px;letter-spacing:1px;padding:12px 10px 18px 10px;text-transform:uppercase;">
+                                  ´date´
+                                </td>
+                              </tr>
+                              <tr>
+                                <td align="center" style="padding:0 10px 18px 10px;">
+                                  <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
+                                    <tr>
+                                      <td style="width:120px;height:150px;position:relative;background:#dedad4;border-radius:4px;text-align:center;vertical-align:middle;">
+                                        <img src="´stampImageUrl´" alt="Stamp" style="width:100px;height:130px;border-radius:8px;margin:10px;display:block;">
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="font-size:15px;padding:10px;">
+                                  <strong style="display:block;margin-bottom:2px;font-size:15px;font-weight:bold;">Quote to:</strong>
+                                  <div style="font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">´clientName´</div>
+                                  <div style="font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">´modelOfHouse´</div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="font-size:13px;font-weight:400;padding:14px 10px 56px 10px;">
+                                  *This quote will expire
+                                  <strong style="display:block;font-size:15px;font-weight:bold;margin-top:4px;text-transform:uppercase;">30 DAYS AFTER THE DAY IT WAS MADE</strong>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td align="center" style="border-top:1px solid #22313f;padding-top:10px;">
+                                  <img src="{{IMAGE_THANK_YOU}}" alt="Thank You" style="width:180px;height:auto;display:block;">
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+                
+                <!-- Footer -->
+                <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;border-top:1px solid #22313f;padding-top:24px;">
+                  <tr>
+                    <td width="33%" style="font-size:14px;vertical-align:top;">
+                      <strong style="display:block;font-weight:bold;margin-bottom:2px;font-size:13px;letter-spacing:1px;text-transform:uppercase;">EMAIL</strong>
+                      <a href="mailto:{{COMPANY_EMAIL}}" style="color:#365b6d;text-decoration:none;">{{COMPANY_EMAIL}}</a>
+                    </td>
+                    <td width="33%" style="font-size:14px;vertical-align:top;text-align:center;">
+                      <strong style="display:block;font-weight:bold;margin-bottom:2px;font-size:13px;letter-spacing:1px;text-transform:uppercase;">MOBILE</strong>
+                      {{COMPANY_PHONE}}
+                    </td>
+                    <td width="33%" style="font-size:14px;vertical-align:top;text-align:right;">
+                      <strong style="display:block;font-weight:bold;margin-bottom:2px;font-size:13px;letter-spacing:1px;text-transform:uppercase;">WEBSITE</strong>
+                      <a href="{{WEBSITE_URL}}" style="color:#365b6d;text-decoration:none;">{{WEBSITE_DISPLAY}}</a>
+                    </td>
+                  </tr>
+                </table>
+                
+                <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;border-top:1px solid #22313f;padding-top:12px;">
+                  <tr>
+                    <td style="font-size:12px;text-align:center;letter-spacing:0.5px;">
+                      <span style="font-weight:bold;font-size:13px;display:block;text-transform:uppercase;margin-bottom:8px;">*THIS QUOTE IS VALID FOR 30 DAYS FROM THE DATE OF ISSUE.</span>
+                      <div style="font-size:10px;font-weight:400;text-align:left;">
+                        THIS QUOTE IS AN ESTIMATE ONLY AND DOES NOT CONSTITUTE A CONTRACT.
+                        PRICES, MATERIALS, AND TIMELINES ARE SUBJECT TO CHANGE BASED ON FINAL
+                        SELECTIONS, SITE CONDITIONS, AND PERMITTING. FINAL TERMS WILL BE
+                        CONFIRMED IN A SIGNED CONSTRUCTION AGREEMENT.
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { APP_SETTINGS } from '../config/app-settings.config';
+import { AppConfigService } from './app-config.service';
 import { Service } from '../models/service.model';
 
 /**
@@ -10,210 +10,211 @@ import { Service } from '../models/service.model';
   providedIn: 'root'
 })
 export class ConfigService {
-  private readonly settings = APP_SETTINGS;
+  
+  constructor(private appConfig: AppConfigService) {}
 
   // === COMPANY INFO ===
   get companyName(): string {
-    return this.settings.company.name;
+    return this.appConfig.company.name;
   }
 
   get companyTagline(): string {
-    return this.settings.company.tagline;
+    return this.appConfig.company.tagline;
   }
 
   get displayPhone(): string {
-    return this.settings.company.phone.display;
+    return this.appConfig.company.phone.display;
   }
 
   get businessPhone(): string {
-    return this.settings.company.phone.business;
+    return this.appConfig.company.phone.business;
   }
 
   get companyEmail(): string {
-    return this.settings.company.email;
+    return this.appConfig.company.email;
   }
 
   get companyWebsite(): string {
-    return this.settings.company.website.url;
+    return this.appConfig.company.website.url;
   }
 
   get companyWebsiteDisplay(): string {
-    return this.settings.company.website.display;
+    return this.appConfig.company.website.display;
   }
 
   get companyLocation(): string {
-    return this.settings.company.location;
+    return this.appConfig.company.location;
   }
 
   get serviceArea(): string {
-    return this.settings.company.serviceArea;
+    return this.appConfig.company.serviceArea;
   }
 
   // === ABOUT US CONTENT ===
   get aboutUsWelcome(): string {
-    return this.settings.company.aboutUs.welcome;
+    return this.appConfig.company.aboutUs.welcome;
   }
 
   get aboutUsCommitment(): string {
-    return this.settings.company.aboutUs.commitment;
+    return this.appConfig.company.aboutUs.commitment;
   }
 
   get aboutUsClosing(): string {
-    return this.settings.company.aboutUs.closing;
+    return this.appConfig.company.aboutUs.closing;
   }
 
   // === SOCIAL MEDIA ===
   get socialMediaInstagram() {
-    return this.settings.company.socialMedia.instagram;
+    return this.appConfig.company.socialMedia.instagram;
   }
 
   get socialMediaLinkedin() {
-    return this.settings.company.socialMedia.linkedin;
+    return this.appConfig.company.socialMedia.linkedin;
   }
 
   get showInstagram(): boolean {
-    return this.settings.company.socialMedia.instagram.show;
+    return this.appConfig.company.socialMedia.instagram.show;
   }
 
   get showLinkedin(): boolean {
-    return this.settings.company.socialMedia.linkedin.show;
+    return this.appConfig.company.socialMedia.linkedin.show;
   }
 
   // === API CONFIGURATION ===
   get apiBaseUrl(): string {
-    return this.settings.api.baseUrl;
+    return this.appConfig.apiBaseUrl;
   }
 
   get mailApiUrl(): string {
-    return `${this.settings.api.baseUrl}${this.settings.api.endpoints.sendEmail}`;
+    return this.appConfig.getEmailSendUrl();
   }
 
   get quotePdfUrl(): string {
-    return `${this.settings.api.baseUrl}${this.settings.api.endpoints.quotePdf}`;
+    return this.appConfig.getPdfUrl();
   }
 
   // === PRICING ===
   get basicQuoteBasePrice(): number {
-    return this.settings.pricing.basePerSqft.basic;
+    return this.appConfig.pricing.basePerSqft.basic;
   }
 
   get advancedQuoteBasePrice(): number {
-    return this.settings.pricing.basePerSqft.advanced;
+    return this.appConfig.pricing.basePerSqft.advanced;
   }
 
   get remodelQuoteBasePrice(): number {
-    return this.settings.pricing.basePerSqft.remodel;
+    return this.appConfig.pricing.basePerSqft.remodel;
   }
 
   get customQuoteBasePrice(): number {
-    return this.settings.pricing.basePerSqft.custom;
+    return this.appConfig.pricing.basePerSqft.custom;
   }
 
   get bedroomExtraPrice(): number {
-    return this.settings.pricing.customPricing.bedroomPricePerExtra;
+    return this.appConfig.pricing.customPricing.bedroomPricePerExtra;
   }
 
   get bathroomExtraPrice(): number {
-    return this.settings.pricing.customPricing.bathroomPricePerExtra;
+    return this.appConfig.pricing.customPricing.bathroomPricePerExtra;
   }
 
   get defaultBedrooms(): number {
-    return this.settings.pricing.customPricing.defaultBedrooms;
+    return this.appConfig.pricing.customPricing.defaultBedrooms;
   }
 
   get defaultBathrooms(): number {
-    return this.settings.pricing.customPricing.defaultBathrooms;
+    return this.appConfig.pricing.customPricing.defaultBathrooms;
   }
 
   // === GARAGE PRICING ===
   get garageOneCarPrice(): number {
-    return this.settings.pricing.garage.oneCar;
+    return this.appConfig.pricing.garage.oneCar;
   }
 
   get garageTwoCarPrice(): number {
-    return this.settings.pricing.garage.twoCar;
+    return this.appConfig.pricing.garage.twoCar;
   }
 
   get garageThreeCarPrice(): number {
-    return this.settings.pricing.garage.threeCar;
+    return this.appConfig.pricing.garage.threeCar;
   }
 
   // === DEFAULT VALUES ===
   get defaultCustomSqft(): number {
-    return this.settings.defaults.custom.sqft;
+    return this.appConfig.defaults.custom.sqft;
   }
 
   get minCustomSqft(): number {
-    return this.settings.defaults.custom.minSqft;
+    return this.appConfig.defaults.custom.minSqft;
   }
 
   get defaultRemodelSqft(): number {
-    return this.settings.defaults.remodel.sqft;
+    return this.appConfig.defaults.remodel.sqft;
   }
 
   get minRemodelSqft(): number {
-    return this.settings.defaults.remodel.minSqft;
+    return this.appConfig.defaults.remodel.minSqft;
   }
 
   get maxBedrooms(): number {
-    return this.settings.defaults.custom.maxBedrooms;
+    return this.appConfig.defaults.custom.maxBedrooms;
   }
 
   get minBedrooms(): number {
-    return this.settings.defaults.custom.minBedrooms;
+    return this.appConfig.defaults.custom.minBedrooms;
   }
 
   get minBathrooms(): number {
-    return this.settings.defaults.custom.minBathrooms;
+    return this.appConfig.defaults.custom.minBathrooms;
   }
 
   get bathroomStep(): number {
-    return this.settings.defaults.custom.bathroomStep;
+    return this.appConfig.defaults.custom.bathroomStep;
   }
 
   // === BUSINESS RULES ===
   get quoteValidityDays(): number {
-    return this.settings.business.quoteValidityDays;
+    return this.appConfig.business.quoteValidityDays;
   }
 
   // === THEME COLORS ===
   get primaryColor(): string {
-    return this.settings.theme.colors.primary;
+    return this.appConfig.theme.colors.primary;
   }
 
   get primaryDarkColor(): string {
-    return this.settings.theme.colors.primaryDark;
+    return this.appConfig.theme.colors.primaryDark;
   }
 
   // === LEGAL TEXTS ===
   get quoteDisclaimer(): string {
-    return this.settings.legal.quoteDisclaimer;
+    return this.appConfig.legal.quoteDisclaimer;
   }
 
   get quoteValidityText(): string {
-    return this.settings.legal.quoteValidityText;
+    return this.appConfig.legal.quoteValidityText;
   }
 
   get quoteExpirationText(): string {
-    return this.settings.legal.quoteExpirationText;
+    return this.appConfig.legal.quoteExpirationText;
   }
 
   // === EMAIL CONFIGURATION ===
   get emailPdfFilename(): string {
-    return this.settings.email.pdfFilename;
+    return this.appConfig.emailConfig.pdfFilename;
   }
 
   // === IMAGES ===
   get logoImage(): string {
-    return this.settings.images.logo;
+    return this.appConfig.images.logo;
   }
 
   get thankYouImage(): string {
-    return this.settings.images.thankYou;
+    return this.appConfig.images.thankYou;
   }
 
   get quoteLogoImage(): string {
-    return this.settings.images.quoteLogo;
+    return this.appConfig.images.quoteLogo;
   }
 
   // === MÉTODOS HELPER ===
@@ -260,12 +261,12 @@ export class ConfigService {
    * Obtiene la configuración completa (para casos especiales)
    */
   getAllSettings() {
-    return this.settings;
+    return this.appConfig;
   }
 
   // === HOUSE MODELS ===
   getHouseModels() {
-    return JSON.parse(JSON.stringify(this.settings.houseModels));
+    return JSON.parse(JSON.stringify(this.appConfig.houseModels));
   }
 
   getHouseModelById(id: number) {
@@ -275,19 +276,19 @@ export class ConfigService {
 
   // === QUOTE CATEGORIES ===
   getBasicCategories() {
-    return JSON.parse(JSON.stringify(this.settings.basicCategories));
+    return JSON.parse(JSON.stringify(this.appConfig.basicCategories));
   }
 
   getAdvancedCategories() {
-    return JSON.parse(JSON.stringify(this.settings.advancedCategories));
+    return JSON.parse(JSON.stringify(this.appConfig.advancedCategories));
   }
 
   getCustomCategories() {
-    return JSON.parse(JSON.stringify(this.settings.customCategories));
+    return JSON.parse(JSON.stringify(this.appConfig.customCategories));
   }
 
   getRemodelCategories() {
-    return JSON.parse(JSON.stringify(this.settings.remodelCategories));
+    return JSON.parse(JSON.stringify(this.appConfig.remodelCategories));
   }
 
   getCategoriesByType(type: 'basic' | 'advanced' | 'custom' | 'remodel') {
@@ -302,11 +303,11 @@ export class ConfigService {
 
   // === SERVICES ===
   getServices() {
-    return JSON.parse(JSON.stringify(this.settings.services));
+    return JSON.parse(JSON.stringify(this.appConfig.services));
   }
 
   getServicesSlugs(): string[] {
-    return this.settings.services.filter(s => s.showInHeader).map(service => service.slug);
+    return this.appConfig.services.filter(s => s.showInHeader).map(service => service.slug);
   }
 
   getServiceBySlug(slug: string): Service | undefined {

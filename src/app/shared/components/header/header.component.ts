@@ -117,6 +117,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
+  navigateToQuotes(event: Event): void {
+    event.preventDefault();
+    this.isSidebarOpen = false;
+    this.router.navigate(['/quotes']);
+  }
+
   private scrollToTop(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

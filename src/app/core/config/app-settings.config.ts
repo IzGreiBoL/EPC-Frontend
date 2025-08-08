@@ -1,20 +1,21 @@
 /**
  * Configuración centralizada de la aplicación
- * Este archivo contiene todas las configuraciones que el puede necesitar modificar
+ * Solo configuraciones de negocio, pricing, modelos, etc. (NO configuraciones de entorno)
  */
 export const APP_SETTINGS = {
   // === INFORMACIÓN DE CONTACTO ===
   company: {
     name: 'EPC DEVELOPMENTS',
     tagline: 'CUSTOM BUILDER',
+    fullName: 'EPC Developments',
     phone: {
       display: '+832-931-0425',      // Teléfono mostrado en la página principal
       business: '+832-931-0425'    // Teléfono de contacto comercial (templates)
     },
-    email: 'EPCDEVELOPMENTS@GMAIL.COM',
+    email: 'quotes@epcde.com',
     website: {
-      display: 'EPCBI.COM',
-      url: 'https://epcbi.com'
+      display: 'EPCDE.COM',
+      url: 'https://epcde.com'
     },
     location: 'San Antonio, Texas',
     serviceArea: 'San Antonio to Austin area',
@@ -37,13 +38,29 @@ export const APP_SETTINGS = {
     }
   },
 
-  // === CONFIGURACIÓN DE API/BACKEND ===
-  api: {
-    baseUrl: 'http://localhost:3001',
-    endpoints: {
-      sendEmail: '/send-email',
-      quotePdf: '/quote-template-pdf.html'
+  // === CONFIGURACIÓN BUSINESS ===
+  business: {
+    quoteValidityDays: 30,
+    minimumRoomsBySize: {
+      1300: { bedrooms: 3, bathrooms: 2.5 },
+      1500: { bedrooms: 4, bathrooms: 3 },
+      2200: { bedrooms: 5, bathrooms: 4 }
     }
+  },
+
+  // === CONFIGURACIÓN EMAIL (CONTENIDO) ===
+  email: {
+    pdfFilename: 'EPC_Quote.pdf',
+    footerText: 'Este email fue generado automáticamente desde epcde.com',
+    signature: 'EPC Developments - Custom builder'
+  },
+
+  // === RUTAS DE IMÁGENES ===
+  images: {
+    logo: '/images/mail-images/epc-logo.png',
+    quote: '/images/mail-images/quote.png',
+    quoteLogo: '/images/mail-images/quote.png', // Alias para compatibilidad
+    thankYou: '/images/mail-images/thank-you.png'
   },
 
   // === PRECIOS BASE ===
@@ -85,16 +102,6 @@ export const APP_SETTINGS = {
     }
   },
 
-  // === BUSINESS RULES ===
-  business: {
-    quoteValidityDays: 30,
-    minimumRoomsBySize: {
-      1300: { bedrooms: 3, bathrooms: 2.5 },
-      1500: { bedrooms: 4, bathrooms: 3 },
-      2200: { bedrooms: 5, bathrooms: 4 }
-    }
-  },
-
   // === CONFIGURACIÓN VISUAL ===
   theme: {
     colors: {
@@ -117,21 +124,6 @@ export const APP_SETTINGS = {
     quoteDisclaimer: 'THIS QUOTE IS AN ESTIMATE ONLY AND DOES NOT CONSTITUTE A CONTRACT. PRICES, MATERIALS, AND TIMELINES ARE SUBJECT TO CHANGE BASED ON FINAL SELECTIONS, SITE CONDITIONS, AND PERMITTING. FINAL TERMS WILL BE CONFIRMED IN A SIGNED CONSTRUCTION AGREEMENT.',
     quoteValidityText: 'THIS QUOTE IS VALID FOR 30 DAYS FROM THE DATE OF ISSUE.',
     quoteExpirationText: 'This quote will expire 30 DAYS AFTER THE DAY IT WAS MADE'
-  },
-
-  // === CONFIGURACIÓN DE EMAIL ===
-  email: {
-    pdfFilename: 'quote.pdf',
-    templates: {
-      sender: '"EPC Developments" <hello@demomailtrap.co>'
-    }
-  },
-
-  // === CONFIGURACIÓN DE IMÁGENES ===
-  images: {
-    logo: '/images/mail-images/epc-logo.png',
-    thankYou: '/images/mail-images/thank-you.png',
-    quoteLogo: '/images/mail-images/quote.png'
   },
 
   // === CONFIGURACIÓN DE MODELOS DE CASAS ===
@@ -587,4 +579,4 @@ export type PricingConfig = typeof APP_SETTINGS.pricing;
 export type DefaultValues = typeof APP_SETTINGS.defaults;
 
 // Helper para crear copias mutables de las configuraciones
-export const getMutableConfig = () => JSON.parse(JSON.stringify(APP_SETTINGS)) as any;
+export const getMutableConfig = () => JSON.parse(JSON.stringify(APP_SETTINGS)) as AppSettings;

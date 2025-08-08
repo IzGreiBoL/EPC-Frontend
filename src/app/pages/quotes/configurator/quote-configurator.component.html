@@ -23,7 +23,7 @@
                 </div>
                 <!-- Update the top button to emit event rather than call method -->
                 <button class="quote-btn"
-                    (click)="requestQuote.emit()"
+                    (click)="openQuoteModal()"
                     [disabled]="form.invalid || hasBusinessWarnings()">Request
                     quote</button>
             </div>
@@ -196,7 +196,7 @@
                     *ngFor="let option of currentCategory?.options; let subIndex = index">
                     <button *ngIf="!isSubcategory(option)"
                         #optBtn
-                        [class.selected]="userSelections[currentCategoryIndex + '_' + subIndex]"
+                        [class.selected]="isMainOptionSelected(currentCategoryIndex, subIndex)"
                         (click)="selectOption({ subIdx: subIndex, optIdx: 0 }); optBtn.blur()">
                         <span class="option-title">{{ option.name }}</span>
                     </button>
@@ -213,7 +213,8 @@
                             <button
                                 *ngFor="let opt of option.options; let optIndex = index"
                                 #optBtn
-                                [class.selected]="isOptionSelected(currentCategoryIndex, subIndex, optIndex)"
+                                [ngClass]="{ 'selected': isOptionSelected(currentCategoryIndex, subIndex, optIndex) }"
+                                [attr.data-debug]="'key=' + currentCategoryIndex + '_' + subIndex + '_' + optIndex + ',selected=' + isOptionSelected(currentCategoryIndex, subIndex, optIndex)"
                                 (click)="selectOption({ subIdx: subIndex, optIdx: optIndex }); optBtn.blur()">
                                 <span class="option-title">{{ opt.name }}</span>
                             </button>
@@ -243,7 +244,7 @@
             </div>
             <!-- Update mobile footer button -->
             <button class="mobile-quote-btn"
-                (click)="requestQuote.emit()"
+                (click)="openQuoteModal()"
                 [disabled]="form.invalid || hasBusinessWarnings() || !isRemodelSelectionsValid()">Get
                 Quote</button>
         </div>
@@ -410,7 +411,7 @@
                             <ng-container
                                 *ngFor="let option of currentCategory.options; let subIndex = index">
                                 <button *ngIf="!isSubcategory(option)"
-                                    [class.selected]="userSelections[currentCategoryIndex + '_' + subIndex]"
+                                    [class.selected]="isMainOptionSelected(currentCategoryIndex, subIndex)"
                                     (click)="selectOption({ subIdx: subIndex, optIdx: 0 })">
                                     <span class="option-title">{{ option.name
                                         }}</span>
@@ -448,7 +449,7 @@
                     <ng-container *ngIf="quoteType === 'custom'">
                         <button
                             (click)="personalizeQuote()">Personalize</button>
-                        <button (click)="requestQuote.emit()"
+                        <button (click)="openQuoteModal()"
                             [disabled]="form.invalid || hasBusinessWarnings() || !isRemodelSelectionsValid()">Request
                             quote</button>
                     </ng-container>
@@ -463,7 +464,7 @@
 
                         <button
                             *ngIf="currentCategoryIndex === categories.length - 1"
-                            (click)="requestQuote.emit()"
+                            (click)="openQuoteModal()"
                             [disabled]="form.invalid || hasBusinessWarnings() || !isRemodelSelectionsValid()">Request
                             quote</button>
                     </ng-container>
@@ -524,7 +525,7 @@
                 <div class="per-sqft under-total">
                     {{ pricePerSqFtNum | currency:'USD':'symbol':'1.2-2' }}/sqft
                 </div>
-                <button class="quote-button" (click)="requestQuote.emit()"
+                <button class="quote-button" (click)="openQuoteModal()"
                     [disabled]="form.invalid || hasBusinessWarnings()">Request quote</button>
             </div>
         </aside>

@@ -7,6 +7,7 @@ import { Quote, QuoteCategory } from '../../../core/models/quote.model';
 import { QuoteConfiguratorComponent } from "../configurator/quote-configurator.component";
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QuoteModalComponent } from '../shared/quote-modal/quote-modal.component';
+import { ScrollUtils } from '../../../core/utils/scroll.utils';
 
 @Component({
   selector: 'app-custom-quote',
@@ -41,6 +42,9 @@ export class CustomQuoteComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Reset scroll position when component loads
+    ScrollUtils.scrollToTop();
+    
     this.item = {
       id: 999,
       name: 'Custom Build',
@@ -72,6 +76,7 @@ export class CustomQuoteComponent implements OnInit {
           size
         );
         return {
+          total: result.total,
           pricePerFt: result.pricePerFt,
           hasCustom: result.hasCustom
         };

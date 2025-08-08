@@ -7,6 +7,7 @@ import { QuotesService } from '../../../core/services/quotes.service';
 import { QuotePricingService } from '../../../core/services/quote-pricing.service';
 import { Quote, QuoteCategory } from '../../../core/models/quote.model';
 import { QuoteConfiguratorComponent } from "../configurator/quote-configurator.component";
+import { ScrollUtils } from '../../../core/utils/scroll.utils';
 
 @Component({
   selector: 'app-basic-quote',
@@ -54,6 +55,9 @@ export class BasicQuoteComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Reset scroll position when component loads
+    ScrollUtils.scrollToTop();
+    
     this.route.paramMap.subscribe(params => {
       const id = Number(params.get('id'));
       this.item = this.quotesService.getItemById(id);
@@ -71,16 +75,18 @@ export class BasicQuoteComponent implements OnInit {
       this.pricingAdapter = {
         calcStandard: (
           categories: QuoteCategory[],
-          userSelections: Record<string, string>
+          userSelections: Record<string, string>,
+          basePrice: number,
+          size: number
         ) => {
-          const size = this.item?.size && this.item.size > 0 ? this.item.size : 1;
           const result = this.pricing.calcStandard(
             categories, 
             userSelections, 
-            this.quotesService.BASIC_QUOTE_BASE_PRICE,
+            basePrice,
             size
           );
           return {
+            total: result.total,
             pricePerFt: result.pricePerFt,
             hasCustom: result.hasCustom
           };

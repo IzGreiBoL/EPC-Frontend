@@ -52,17 +52,23 @@ export class QuoteModalComponent {
       html: `<b>Nombre:</b> ${name}<br><b>Correo:</b> ${email}<br><b>Teléfono:</b> ${phone}<br><b>Mensaje:</b> ${message}`,
       quote: {
         ...this.quoteData,
-        clientName: name,
-        clientEmail: email,
-        clientPhone: phone,
-        clientMessage: message
+        customerName: name,
+        customerEmail: email,
+        customerPhone: phone,
+        customerMessage: message
       }
     };
     this.mailService.sendMail(mailData).subscribe({
-      next: () => {
-        this.successMsg = 'Your request has been sent successfully!';
-        this.loading = false;
-        this.quoteForm.reset();
+      next: (response: any) => {
+        // Verificar que el response sea exitoso
+        if (response && response.ok) {
+          this.successMsg = 'Your request has been sent successfully! We will contact you within 24 hours.';
+          this.loading = false;
+          this.quoteForm.reset();
+        } else {
+          this.errorMsg = 'Error sending request: ' + (response?.error || 'Unknown error');
+          this.loading = false;
+        }
       },
       error: () => {
         this.errorMsg = 'Error sending request. Please try again.';

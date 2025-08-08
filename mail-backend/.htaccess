@@ -1,0 +1,42 @@
+# .htaccess para mail-backend directory
+# Permitir acceso a archivos PHP y HTML
+
+# Habilitar rewrite engine
+RewriteEngine On
+
+# Permitir CORS para el dominio
+Header always set Access-Control-Allow-Origin "https://epcde.com"
+Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type"
+
+# Redirigir index a send-email.php para compatibilidad
+RewriteRule ^index$ send-email.php [L]
+RewriteRule ^send-email$ send-email.php [L]
+
+# Asegurar que los archivos PHP se ejecuten correctamente
+<Files "*.php">
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+# Permitir acceso a archivos HTML
+<Files "*.html">
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+# Seguridad: Ocultar archivos sensibles
+<Files "*.js">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+<Files "package.json">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+<Files "*.json">
+    Order Deny,Allow
+    Deny from all
+</Files>

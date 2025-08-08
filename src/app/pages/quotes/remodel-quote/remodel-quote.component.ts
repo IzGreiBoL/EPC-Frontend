@@ -6,6 +6,7 @@ import { Quote, QuoteCategory } from '../../../core/models/quote.model';
 import { QuoteConfiguratorComponent } from "../configurator/quote-configurator.component";
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QuoteModalComponent } from '../shared/quote-modal/quote-modal.component';
+import { ScrollUtils } from '../../../core/utils/scroll.utils';
 
 @Component({
   selector: 'app-remodel-quote',
@@ -47,6 +48,9 @@ export class RemodelQuoteComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Reset scroll position when component loads
+    ScrollUtils.scrollToTop();
+    
     this.categories = this.quotesService.buildRemodelCategory();
     this.galleryItems = this.quotesService.getImagesFromFolder(this.item.folder)
       .map(image => ({ image, title: this.item.size }));
@@ -56,15 +60,17 @@ export class RemodelQuoteComponent implements OnInit {
       calcStandard: (
         categories: QuoteCategory[],
         userSelections: Record<string, string>,
+        basePrice: number,
+        size: number
       ) => {
-        const size = this.item?.size && this.item.size > 0 ? this.item.size : 1;
         const result = this.pricing.calcStandard(
           categories, 
           userSelections, 
-          this.quotesService.REMODEL_QUOTE_BASE_PRICE,
+          basePrice,
           size
         );
         return {
+          total: result.total,
           pricePerFt: result.pricePerFt,
           hasCustom: result.hasCustom
         };
