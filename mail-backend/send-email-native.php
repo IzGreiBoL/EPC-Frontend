@@ -1,25 +1,16 @@
 <?php
 // Sistema de email simplificado para IONOS - Solo PHP nativo
-error_log("=== EMAIL SYSTEM START ===");
+ini_set('display_errors', 1);
+ini_set('error_reporting', E_ALL);
+ini_set('log_errors', 1);
+ini_set('error_log', 'php_errors.log');
 
-try {
-    require_once 'config.php';
-    error_log("config.php loaded successfully");
-} catch (Exception $e) {
-    error_log("Error loading config.php: " . $e->getMessage());
-    http_response_code(500);
-    echo json_encode(['ok' => false, 'error' => 'Configuration error']);
-    exit;
-}
+error_log("=== EMAIL SYSTEM START ===");
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
-
-// Log de debug
-ini_set('log_errors', 1);
-ini_set('error_log', 'php_errors.log');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
@@ -32,7 +23,25 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
+    require_once 'config.php';
+    error_log("config.php loaded successfully");
+} catch (ParseError $e) {
+    error_log("Parse Error in config.php: " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'error' => 'Configuration parse error: ' . $e->getMessage()]);
+    exit;
+} catch (Exception $e) {
+    error_log("Error loading config.php: " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'error' => 'Configuration error: ' . $e->getMessage()]);
+    exit;
+}
+
+try {
     error_log("=== EMAIL SYSTEM NATIVE PHP START ===");
+    
+    // Initialize base URL
+    $baseUrl = BASE_URL;
     
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
@@ -143,7 +152,6 @@ try {
     
     // Agregar placeholders de la empresa
     global $TEMPLATE_PLACEHOLDERS;
-    
     $quoteData = array_merge($quoteData, $TEMPLATE_PLACEHOLDERS);
 
     // ===== 1. EMAIL PARA LA EMPRESA (Notificación) =====
@@ -303,23 +311,30 @@ try {
     // Respuesta exitosa
     $result = [
         'ok' => true,
-        'message' => 'Emails enviados correctamente (PHP nativo con imágenes absolutas)',
-        'company_sent' => $company_sent,
-        'customer_sent' => $customer_sent,
-        'quote_number' => $quoteNumber,
+        'message' => 'Emails enviados correctamente (PHP nativo)',
+        'quote_number' => $quoteNumber ?? 'TEST',
         'system' => 'PHP Native (no dependencies)',
         'debug' => [
-            'template_loaded' => $customerTemplate !== false,
-            'company_email' => $to_company,
-            'customer_email' => $to_customer,
-            'timestamp' => date('Y-m-d H:i:s'),
-            'base_url' => $baseUrl
+            'base_url' => $baseUrl,
+            'timestamp' => date('Y-m-d H:i:s')
         ]
     ];
 
     error_log("Final result: " . print_r($result, true));
     echo json_encode($result);
 
+} catch (ParseError $e) {
+    $error_message = 'Parse error: ' . $e->getMessage() . ' in line ' . $e->getLine();
+    error_log("PARSE ERROR: " . $error_message);
+    
+    http_response_code(500);
+    echo json_encode([
+        'ok' => false, 
+        'error' => $error_message,
+        'type' => 'ParseError',
+        'file' => $e->getFile(),
+        'line' => $e->getLine()
+    ]);
 } catch (Exception $e) {
     $error_message = 'Server error: ' . $e->getMessage() . ' in line ' . $e->getLine();
     error_log("EXCEPTION: " . $error_message);
@@ -329,9 +344,21 @@ try {
     echo json_encode([
         'ok' => false, 
         'error' => $error_message,
+        'type' => 'Exception',
         'file' => $e->getFile(),
-        'line' => $e->getLine(),
-        'system' => 'PHP Native'
+        'line' => $e->getLine()
+    ]);
+} catch (Error $e) {
+    $error_message = 'Fatal error: ' . $e->getMessage() . ' in line ' . $e->getLine();
+    error_log("FATAL ERROR: " . $error_message);
+    
+    http_response_code(500);
+    echo json_encode([
+        'ok' => false, 
+        'error' => $error_message,
+        'type' => 'FatalError',
+        'file' => $e->getFile(),
+        'line' => $e->getLine()
     ]);
 }
 ?>

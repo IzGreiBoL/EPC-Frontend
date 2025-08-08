@@ -23,6 +23,7 @@ define('COMPANY_PHONE', '+832-931-0425');
 define('COMPANY_LOCATION', 'San Antonio, Texas');
 define('COMPANY_WEBSITE', 'https://epcde.com');
 define('COMPANY_WEBSITE_DISPLAY', 'EPCDE.COM');
+define('WEBSITE_DISPLAY', COMPANY_WEBSITE_DISPLAY);
 
 // === CONFIGURACIÓN SMTP (DINÁMICO SEGÚN ENTORNO) ===
 if ($isProduction) {
@@ -48,6 +49,7 @@ if ($isProduction) {
 // === CONFIGURACIÓN DE EMAIL ===
 define('EMAIL_FROM', '"' . COMPANY_FULL_NAME . '" <' . COMPANY_EMAIL_SENDER . '>');
 define('EMAIL_TO', COMPANY_EMAIL);
+define('COMPANY_EMAIL_FULL', EMAIL_FROM);
 define('EMAIL_PDF_FILENAME', 'EPC_Quote.pdf');
 define('EMAIL_FOOTER_TEXT', 'Este email fue generado automáticamente desde epcde.com');
 define('EMAIL_SIGNATURE', COMPANY_FULL_NAME . ' - Custom builder');
@@ -82,11 +84,19 @@ $TEMPLATE_PLACEHOLDERS = [
 /**
  * Función para reemplazar todos los placeholders en un template
  * @param string $template El contenido del template
+ * @param array $additionalData Datos adicionales para reemplazar
  * @return string Template con placeholders reemplazados
  */
-function replacePlaceholders($template) {
+function replacePlaceholders($template, $additionalData = []) {
     global $TEMPLATE_PLACEHOLDERS;
-    return str_replace(array_keys($TEMPLATE_PLACEHOLDERS), array_values($TEMPLATE_PLACEHOLDERS), $template);
+    
+    $allPlaceholders = array_merge($TEMPLATE_PLACEHOLDERS, $additionalData);
+    
+    foreach ($allPlaceholders as $placeholder => $value) {
+        $template = str_replace($placeholder, $value, $template);
+    }
+    
+    return $template;
 }
 
 /**
@@ -149,19 +159,6 @@ function debugConfig() {
 
 // Llamar debug si se solicita
 debugConfig();
-
-?>
-function replacePlaceholders($template, $additionalData = []) {
-    global $TEMPLATE_PLACEHOLDERS;
-    
-    $allPlaceholders = array_merge($TEMPLATE_PLACEHOLDERS, $additionalData);
-    
-    foreach ($allPlaceholders as $placeholder => $value) {
-        $template = str_replace($placeholder, $value, $template);
-    }
-    
-    return $template;
-}
 
 /**
  * Función para generar URLs absolutas de imágenes

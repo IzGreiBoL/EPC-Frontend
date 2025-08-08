@@ -47,7 +47,7 @@ export const environment = {
 
   // === CONFIGURACIÓN DEL SERVIDOR ===
   server: {
-    port: process.env['PORT'] || 3001,
+    port: 3001,
     publicImagesPath: '../public/images'
   }
 };
