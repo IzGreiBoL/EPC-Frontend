@@ -113,7 +113,7 @@
                                     bathrooms is 2</span>
                             </div>
                             <!-- Mensajes para bedrooms -->
-                            <div *ngIf="f.key === 'bedrooms'"
+                            <div *ngIf="f.key === 'bedrooms' && quoteType !== 'remodel'"
                                 class="field-info">
                                 <div
                                     *ngIf="form.value.sqft < 1500 && form.value.bedrooms > 3"
@@ -151,7 +151,7 @@
                                 </div>
                             </div>
                             <!-- Mensajes para bathrooms -->
-                            <div *ngIf="f.key === 'bathrooms'"
+                            <div *ngIf="f.key === 'bathrooms' && quoteType !== 'remodel'"
                                 class="field-info">
                                 <div
                                     *ngIf="form.value.sqft < 1500 && form.value.bathrooms > 2.5"
@@ -322,7 +322,7 @@
                                                 bathrooms is 2</span>
                                         </div>
                                         <!-- Mensajes para bedrooms -->
-                                        <div *ngIf="f.key === 'bedrooms'"
+                                        <div *ngIf="f.key === 'bedrooms' && quoteType !== 'remodel'"
                                             class="field-info">
                                             <div
                                                 *ngIf="form.value.sqft < 1500 && form.value.bedrooms > 3"
@@ -364,7 +364,7 @@
                                             </div>
                                         </div>
                                         <!-- Mensajes para bathrooms -->
-                                        <div *ngIf="f.key === 'bathrooms'"
+                                        <div *ngIf="f.key === 'bathrooms' && quoteType !== 'remodel'"
                                             class="field-info">
                                             <div
                                                 *ngIf="form.value.sqft < 1500 && form.value.bathrooms > 2.5"

@@ -481,8 +481,11 @@ export class QuoteConfiguratorComponent implements OnDestroy, AfterViewInit {
 
         // Para quotes custom/advanced con customValues, usar el sqft personalizado
         // Para quotes basic/predefinidos, usar el tamaño del modelo
+        // Para remodel, siempre usar el sqft del form
         let size: number;
-        if (this.quoteType === 'custom' || (this.quoteType === 'advanced' && this.initialCustomValues)) {
+        if (this.quoteType === 'remodel') {
+            size = this.customValues['sqft'] || 300;  // Para remodel usar sqft del form
+        } else if (this.quoteType === 'custom' || (this.quoteType === 'advanced' && this.initialCustomValues)) {
             size = this.customValues['sqft'] || 1300;
         } else {
             size = this.item.size || 1300;
@@ -525,13 +528,13 @@ export class QuoteConfiguratorComponent implements OnDestroy, AfterViewInit {
             date: new Date().toLocaleDateString(),
             clientName: '',
             modelOfHouse: this.item?.name || '',
-            houseModel: this.item?.name || '', // Compatibilidad con PHP
+            houseModel: this.item?.name || '',
             selections: this.formattedSelections,
             pricePerSqft: this.pricePerSqFtNum,
             sqftTotal: sqftToUse,
-            sqft: sqftToUse, // Compatibilidad con PHP
+            sqft: sqftToUse,
             total: this.totalNumeric,
-            totalPrice: this.totalNumeric, // Compatibilidad con PHP
+            totalPrice: this.totalNumeric,
             bedrooms: this.customValues['bedrooms'] || 3,
             bathrooms: this.customValues['bathrooms'] || 2,
             hasCustomOption: this.hasCustomOption,
@@ -548,20 +551,16 @@ export class QuoteConfiguratorComponent implements OnDestroy, AfterViewInit {
     private createAbsoluteImageUrl(imagePath: string): string {
         const baseUrl = this.configService.apiBaseUrl;
 
-        // Limpiar la ruta de imagen
         let cleanPath = imagePath;
 
-        // Remover barras iniciales si las tiene
         if (cleanPath.startsWith('/')) {
             cleanPath = cleanPath.substring(1);
         }
 
-        // Asegurar que la ruta no empiece con el dominio
         if (cleanPath.startsWith(baseUrl)) {
             return cleanPath;
         }
 
-        // Construir la URL completa asegurando que hay un / entre el dominio y la ruta
         return `${baseUrl}/${cleanPath}`;
     }
 
@@ -672,6 +671,8 @@ export class QuoteConfiguratorComponent implements OnDestroy, AfterViewInit {
     }
 
     hasBusinessWarnings(): boolean {
+        if (this.quoteType === 'remodel') return false;
+        
         const v = this.form.value;
         // Bedrooms warnings
         if (v.sqft < 1500 && v.bedrooms > 3) return true;
