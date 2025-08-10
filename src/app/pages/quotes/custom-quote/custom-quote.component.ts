@@ -50,7 +50,7 @@ export class CustomQuoteComponent implements OnInit {
       name: 'Custom Build',
       size: 1300,
       bedrooms: 3,
-      bathrooms: 2,
+      bathrooms: 2.5,
       folder: 'custom',
       categories: [],
       imagesCount: 1
@@ -98,7 +98,7 @@ export class CustomQuoteComponent implements OnInit {
       queryParams: { 
         customSize: customValues['sqft'],
         customBedrooms: customValues['bedrooms'],
-        customBathrooms: Math.max(2, customValues['bathrooms']),
+        customBathrooms: Math.max(2.5, customValues['bathrooms']),
         customGarage: customValues['garage'],
         fromCustomBuilder: true
       } 

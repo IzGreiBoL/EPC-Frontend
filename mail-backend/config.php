@@ -17,7 +17,7 @@ $isProduction = (
 define('COMPANY_NAME', 'EPC DEVELOPMENTS');
 define('COMPANY_TAGLINE', 'CUSTOM BUILDER');
 define('COMPANY_FULL_NAME', 'EPC Developments');
-define('COMPANY_EMAIL', 'quotes@epcde.com');
+define('COMPANY_EMAIL', 'info@epcde.com');
 define('COMPANY_EMAIL_SENDER', 'info@epcde.com');
 define('COMPANY_PHONE', '+832-931-0425');
 define('COMPANY_LOCATION', 'San Antonio, Texas');

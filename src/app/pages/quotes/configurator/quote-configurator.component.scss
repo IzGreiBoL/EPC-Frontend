@@ -244,7 +244,7 @@ h4 {
               color: $dark-1 !important;
             }
           }
-          
+
           // Solo aplicar hover en dispositivos que lo soporten (no móvil)
           @media (hover: hover) {
             &:hover:not(.selected) {
@@ -323,6 +323,29 @@ h4 {
         color: $text-light;
         opacity: .85;
         margin-top: 2px;
+      }
+    }
+
+    .mobile-buttons-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .mobile-personalize-btn {
+      flex: 1;
+      padding: 0.9rem 1.6rem;
+      border-radius: 8px;
+      border: 2px solid #C49538;
+      background: #1C1C1F;
+      color: #C49538;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background: rgba($gold, 0.25);
+        border-color: rgba($gold, 0.5);
       }
     }
 
@@ -794,14 +817,9 @@ h4 {
           justify-content: center;
           background: rgba($gold, .10);
           border-radius: 6px;
-          width: 24px;
-          height: 24px;
+          width: 28px;
+          height: 28px;
           margin-right: 2px;
-
-          lucide-angular {
-            width: 18px;
-            height: 18px;
-          }
         }
 
         .category-name {
@@ -869,6 +887,20 @@ h4 {
         text-decoration: underline;
       }
     }
+  }
+}
+
+.validation-container {
+  min-height: 2rem;
+  margin-bottom: 0.5rem;
+  
+  .validation-error {
+    color: #ff6b6b;
+    font-size: 0.9rem;
+    background: rgba(255, 107, 107, 0.1);
+    padding: 0.5rem;
+    border-radius: 6px;
+    border-left: 3px solid #ff6b6b;
   }
 }
 

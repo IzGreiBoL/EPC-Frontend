@@ -12,7 +12,7 @@ export const APP_SETTINGS = {
       display: '+832-931-0425',      // Teléfono mostrado en la página principal
       business: '+832-931-0425'    // Teléfono de contacto comercial (templates)
     },
-    email: 'quotes@epcde.com',
+    email: 'info@epcde.com',
     website: {
       display: 'EPCDE.COM',
       url: 'https://epcde.com'
@@ -73,9 +73,9 @@ export const APP_SETTINGS = {
     },
     customPricing: {
       bedroomPricePerExtra: 7500,    // (bedrooms - 3) * 7500
-      bathroomPricePerExtra: 6000,   // (bathrooms - 2) * 6000
+      bathroomPricePerExtra: 6000,   // (bathrooms - 2.5) * 6000
       defaultBedrooms: 3,
-      defaultBathrooms: 2
+      defaultBathrooms: 2.5
     },
     garage: {
       oneCar: 20,
@@ -92,8 +92,8 @@ export const APP_SETTINGS = {
       bedrooms: 3,
       minBedrooms: 1,
       maxBedrooms: 6,
-      bathrooms: 2,
-      minBathrooms: 1,
+      bathrooms: 2.5,
+      minBathrooms: 2.5,
       bathroomStep: 0.5
     },
     remodel: {
@@ -133,7 +133,7 @@ export const APP_SETTINGS = {
     { id: 3, name: 'Estates', size: 1443, bedrooms: 3, bathrooms: 2, folder: 'estates', imagesCount: 5 },
     { id: 4, name: 'Jewel', size: 1470, bedrooms: 3, bathrooms: 2, folder: 'jewel', imagesCount: 5 },
     { id: 5, name: 'Pandora', size: 1400, bedrooms: 3, bathrooms: 2, folder: 'pandora', imagesCount: 5 },
-    { id: 999, name: 'Custom Build', size: 1300, bedrooms: 3, bathrooms: 2, folder: 'custom', imagesCount: 1 }
+    { id: 999, name: 'Custom Build', size: 1300, bedrooms: 3, bathrooms: 2.5, folder: 'custom', imagesCount: 1 }
   ],
 
   // === CONFIGURACIÓN DE CATEGORÍAS BÁSICAS ===
@@ -430,7 +430,7 @@ export const APP_SETTINGS = {
       fields: [
         { key: 'sqft', label: 'Square footage (min: 1300)', type: 'number', min: 1300 },
         { key: 'bedrooms', label: 'Bedrooms', type: 'number', min: 1, max: 6 },
-        { key: 'bathrooms', label: 'Bathrooms', type: 'number', step: 0.5, min: 1 }
+        { key: 'bathrooms', label: 'Bathrooms', type: 'number', step: 0.5, min: 2.5 }
       ],
       options: [
         {

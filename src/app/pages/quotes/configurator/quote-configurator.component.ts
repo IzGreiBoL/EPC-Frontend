@@ -53,7 +53,7 @@ export class QuoteConfiguratorComponent implements OnDestroy, AfterViewInit {
         this.form = this.fb.group({
             sqft: [1300, [Validators.required, Validators.min(1300)]],
             bedrooms: [3, [Validators.required, Validators.min(1), Validators.max(6)]],
-            bathrooms: [2, [Validators.required, Validators.min(2)]],
+            bathrooms: [2.5, [Validators.required, Validators.min(2.5)]],
             garage: [0, [Validators.required, Validators.min(0), Validators.max(4)]]
         });
     }
@@ -72,7 +72,7 @@ export class QuoteConfiguratorComponent implements OnDestroy, AfterViewInit {
     @Output() personalize = new EventEmitter<Record<string, number>>();
 
     userSelections: Record<string, string> = {};
-    customValues: Record<string, number> = { sqft: 1300, bedrooms: 3, bathrooms: 2, garage: 0 };
+    customValues: Record<string, number> = { sqft: 1300, bedrooms: 3, bathrooms: 2.5, garage: 0 };
     bathroomBasePricing: number = 0;
     currentCategoryIndex = 0;
     totalNumeric = 0;
@@ -177,8 +177,8 @@ export class QuoteConfiguratorComponent implements OnDestroy, AfterViewInit {
         group['bathrooms'] = [
             (this.initialCustomValues && this.initialCustomValues['bathrooms'] !== undefined)
                 ? this.initialCustomValues['bathrooms']
-                : (this.customValues['bathrooms'] ?? 2),
-            [Validators.required, Validators.min(2)]
+                : (this.customValues['bathrooms'] ?? 2.5),
+            [Validators.required, Validators.min(2.5)]
         ];
 
         if (fields) {
@@ -536,7 +536,7 @@ export class QuoteConfiguratorComponent implements OnDestroy, AfterViewInit {
             total: this.totalNumeric,
             totalPrice: this.totalNumeric,
             bedrooms: this.customValues['bedrooms'] || 3,
-            bathrooms: this.customValues['bathrooms'] || 2,
+            bathrooms: this.customValues['bathrooms'] || 2.5,
             hasCustomOption: this.hasCustomOption,
             customValues: this.customValues,
             item: this.item,

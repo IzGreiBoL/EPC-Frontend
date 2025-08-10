@@ -32,7 +32,7 @@ export class BasicQuoteComponent implements OnInit {
   categories: QuoteCategory[] = [];
   galleryItems: { image: string; title: number }[] = [];
   userSelections: Record<string, string> = {};
-  customValues = { sqft: 2000, bedrooms: 3, bathrooms: 2 };
+  customValues = { sqft: 2000, bedrooms: 3, bathrooms: 2.5 };
   currentCategoryIndex = 0;
   isMobile = false;
   gallerySize: 'small' | 'large' = 'large';

@@ -183,9 +183,9 @@
     color: #484546;
 }
 
-// Social Media Styles for Home Contact Section
 .social-media-home {
-    padding-left: 12px; // Align with other contact items
+    gap: .5rem;
+    padding-left: 12px;
 }
 
 .social-link-home {
@@ -238,11 +238,60 @@
         gap: 10px;
     }
 
-    .contact-item p {
-        font-size: 0.8rem;
+    .contact-item {
+        display: flex !important;
+        align-items: center !important;
+        margin-bottom: 1rem;
+        
+        .white-icon {
+            font-size: 18px !important;
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            margin-right: 0.75rem !important;
+            padding: 0 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        p {
+            margin: 0 !important;
+            font-size: 0.8rem !important;
+            flex-grow: 1;
+            line-height: 1.2;
+        }
     }
 
-    .white-icon {
-        font-size: 18px;
+    .row.d-flex.flex-row.flex-nowrap {
+        display: flex !important;
+        align-items: center !important;
+        margin-bottom: 1rem;
+
+        p {
+                margin-bottom: 0;
+        }
+    }
+
+    .social-media-home {
+        padding-left: 1rem !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0;
+        
+        .social-link-home {
+            width: 24px !important;
+            height: 24px !important;
+            margin-right: 0.75rem !important;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .social-icon-home {
+            width: 18px !important;
+            height: 18px !important;
+        }
     }
 }

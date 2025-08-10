@@ -25,7 +25,7 @@ export const environment = {
       requireTLS: false
     },
     sender: '"EPC Developments" <hello@demomailtrap.co>',
-    recipient: 'quotes@epcde.com'
+    recipient: 'info@epcde.com'
   },
 
   // === CONFIGURACIÓN PDF ===

@@ -110,7 +110,7 @@
                                     ? '300' : '1300' }}</span>
                                 <span
                                     *ngIf="f.key === 'bathrooms' && form.get('bathrooms')?.errors?.['min']">Minimum
-                                    bathrooms is 2</span>
+                                    bathrooms is 2.5</span>
                             </div>
                             <!-- Mensajes para bedrooms -->
                             <div *ngIf="f.key === 'bedrooms' && quoteType !== 'remodel'"
@@ -223,10 +223,12 @@
                 </ng-container>
             </ng-container>
 
-            <!-- Validación para remodel configuration -->
-            <div class="validation-error"
-                *ngIf="quoteType === 'remodel' && currentCategory.name === 'Remodel Configuration' && !isRemodelSelectionsValid()">
-                Please select at least 2 remodel options.
+            <!-- Validación para remodel configuration con altura fija -->
+            <div class="validation-container">
+                <div class="validation-error"
+                    *ngIf="quoteType === 'remodel' && currentCategory.name === 'Remodel Configuration' && !isRemodelSelectionsValid()">
+                    Please select at least 2 remodel options.
+                </div>
             </div>
         </section>
     </div>
@@ -242,11 +244,15 @@
                     {{ pricePerSqFtNum | currency:'USD':'symbol':'1.2-2' }}/sqft
                 </span>
             </div>
-            <!-- Update mobile footer button -->
-            <button class="mobile-quote-btn"
-                (click)="openQuoteModal()"
-                [disabled]="form.invalid || hasBusinessWarnings() || !isRemodelSelectionsValid()">Get
-                Quote</button>
+            <div class="mobile-buttons-group">
+                <button *ngIf="quoteType === 'custom'" 
+                        class="mobile-personalize-btn"
+                        (click)="personalizeQuote()">Personalize</button>
+                <button class="mobile-quote-btn"
+                    (click)="openQuoteModal()"
+                    [disabled]="form.invalid || hasBusinessWarnings() || !isRemodelSelectionsValid()">Get
+                    Quote</button>
+            </div>
         </div>
     </div>
 
@@ -319,7 +325,7 @@
                                                 ? '300' : '1300' }}</span>
                                             <span
                                                 *ngIf="f.key === 'bathrooms' && form.get('bathrooms')?.errors?.['min']">Minimum
-                                                bathrooms is 2</span>
+                                                bathrooms is 2.5</span>
                                         </div>
                                         <!-- Mensajes para bedrooms -->
                                         <div *ngIf="f.key === 'bedrooms' && quoteType !== 'remodel'"
@@ -439,9 +445,11 @@
                     </div>
                 </div>
 
-                <div class="validation-error"
-                    *ngIf="quoteType === 'remodel' && currentCategory.name === 'Remodel Configuration' && !isRemodelSelectionsValid()">
-                    Please select at least 2 remodel options.
+                <div class="validation-container">
+                    <div class="validation-error"
+                        *ngIf="quoteType === 'remodel' && currentCategory.name === 'Remodel Configuration' && !isRemodelSelectionsValid()">
+                        Please select at least 2 remodel options.
+                    </div>
                 </div>
 
                 <!-- Navigation buttons -->

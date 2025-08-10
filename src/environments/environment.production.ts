@@ -25,7 +25,7 @@ export const environment = {
       pass: '' // Será configurado en el servidor
     },
     sender: '"EPC Developments" <info@epcde.com>',
-    recipient: 'quotes@epcde.com'
+    recipient: 'info@epcde.com'
   },
 
   // === CONFIGURACIÓN PDF ===
