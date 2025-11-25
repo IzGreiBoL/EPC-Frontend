@@ -31,26 +31,23 @@ export class PdfGeneratorService {
         let pdfContainer: HTMLElement | null = null;
         
         try {
-            // Carga dinámica de librerías para reducir bundle size
             const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
                 import('jspdf'),
                 import('html2canvas')
             ]);
 
-            // Crear un contenedor temporal con el HTML del PDF
             pdfContainer = this.createPDFTemplate(quoteData);
             
-            // Agregar al DOM temporalmente
             document.body.appendChild(pdfContainer);
             
-            // Configurar html2canvas para mejor calidad pero menor tamaño
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
             const canvas = await html2canvas(pdfContainer, {
-                scale: 1.5,
+                scale: 2,
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
-                width: 816,
-                height: 1056
+                logging: false
             });
             
             const pdf = new jsPDF({
@@ -59,18 +56,54 @@ export class PdfGeneratorService {
                 format: 'a4'
             });
             
-            const imgData = canvas.toDataURL('image/jpeg', 0.9); // JPEG con 90% calidad
-            const imgWidth = 210; // A4 width en mm
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+            const pageWidth = 210; // A4 width en mm
+            const pageHeight = 297; // A4 height en mm
             
-            pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+            const imgWidth = pageWidth;
+            const imgHeightMM = (canvas.height * pageWidth) / canvas.width;
             
-            // Retornar como Blob
+            if (imgHeightMM <= pageHeight) {
+                pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeightMM);
+            } else {
+                let yOffset = 0;
+                
+                while (yOffset < imgHeightMM) {
+                    if (yOffset > 0) {
+                        pdf.addPage();
+                    }
+                    
+                    const sourceY = (yOffset / imgHeightMM) * canvas.height;
+                    const sourceHeight = Math.min(
+                        (pageHeight / imgHeightMM) * canvas.height,
+                        canvas.height - sourceY
+                    );
+                    
+                    const pageCanvas = document.createElement('canvas');
+                    pageCanvas.width = canvas.width;
+                    pageCanvas.height = sourceHeight;
+                    
+                    const pageContext = pageCanvas.getContext('2d');
+                    if (pageContext) {
+                        pageContext.drawImage(
+                            canvas,
+                            0, sourceY, canvas.width, sourceHeight,
+                            0, 0, canvas.width, sourceHeight
+                        );
+                        
+                        const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.95);
+                        const pageImgHeight = (sourceHeight * pageWidth) / canvas.width;
+                        pdf.addImage(pageImgData, 'JPEG', 0, 0, imgWidth, pageImgHeight);
+                    }
+                    
+                    yOffset += pageHeight;
+                }
+            }
+            
             const blob = pdf.output('blob');
             return blob;
             
         } finally {
-            // Limpiar: remover el elemento temporal del DOM
             if (pdfContainer && document.body.contains(pdfContainer)) {
                 document.body.removeChild(pdfContainer);
             }
@@ -85,23 +118,17 @@ export class PdfGeneratorService {
         container.style.position = 'absolute';
         container.style.left = '-9999px';
         container.style.width = '816px';
-        container.style.height = '1056px';
         
         container.innerHTML = `
             <div style="
                 width: 816px;
-                height: 1056px;
                 padding: 96px;
                 box-sizing: border-box;
                 color: #365b6d;
                 font-family: 'Montserrat', Arial, sans-serif;
                 background: white;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
             ">
                 <div style="
-                    flex: 1;
                     display: grid;
                     grid-template-columns: 1fr 190px;
                     gap: 0 40px;
@@ -239,9 +266,9 @@ export class PdfGeneratorService {
                     </div>
                 </div>
                 
-                <hr style="border: none; border-top: 1px solid #22313f; margin: 12px 0;" />
+                <hr style="border: none; border-top: 1px solid #22313f; margin: 24px 0 12px 0;" />
                 
-                <div style="font-size: 14px; display: flex; justify-content: space-around; gap: 60px;">
+                <div style="font-size: 14px; display: flex; justify-content: space-around; gap: 60px; margin-bottom: 12px;">
                     <div>
                         <strong style="display: block; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px;">EMAIL</strong>
                         <a href="mailto:${APP_SETTINGS.company.email}" style="color: #365b6d; text-decoration: none;">${APP_SETTINGS.company.email}</a>

@@ -10,6 +10,7 @@ export const environment = {
     baseUrl: 'http://localhost:4200',
     endpoints: {
       sendEmail: '/mail-backend/send-email-native.php',
+      sendEmailWithPdf: '/mail-backend/send-email-with-pdf.php'
     }
   },
 
@@ -25,22 +26,6 @@ export const environment = {
     },
     sender: '"EPC Developments" <hello@demomailtrap.co>',
     recipient: 'info@epcde.com'
-  },
-
-  pdf: {
-    renderUrl: 'http://localhost:4200/quote-template-pdf.html',
-    format: 'A4',
-    printBackground: true,
-    margin: { 
-      top: '20px', 
-      bottom: '20px', 
-      left: '20px', 
-      right: '20px' 
-    },
-    puppeteer: {
-      headless: 'new',
-      waitUntil: 'networkidle0'
-    }
   },
 
   // === CONFIGURACIÓN DEL SERVIDOR ===
