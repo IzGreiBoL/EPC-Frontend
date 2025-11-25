@@ -32,10 +32,6 @@ export class AppConfigService {
     };
   }
 
-  get pdfConfig() {
-    return environment.pdf;
-  }
-
   get serverConfig() {
     return environment.server;
   }
@@ -108,13 +104,6 @@ export class AppConfigService {
    */
   getEmailSendUrl(): string {
     return this.getApiUrl(this.apiEndpoints.sendEmail);
-  }
-
-  /**
-   * Obtiene la URL completa para generar PDFs
-   */
-  getPdfUrl(): string {
-    return this.getApiUrl(this.apiEndpoints.quotePdf);
   }
 
   /**

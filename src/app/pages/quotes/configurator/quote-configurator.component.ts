@@ -135,16 +135,13 @@ export class QuoteConfiguratorComponent implements OnDestroy, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        // Segundo reset de scroll después de que la vista esté completamente inicializada
         setTimeout(() => {
             ScrollUtils.forceScrollToTop();
         }, 50);
 
-        // Suscripción a eventos de navegación del router para manejar el botón "atrás" del navegador
         this.routerSubscription = this.router.events
             .pipe(filter(event => event instanceof NavigationEnd))
             .subscribe(() => {
-                // Scroll al top cuando se navega, incluyendo con el botón atrás
                 setTimeout(() => {
                     ScrollUtils.forceScrollToTop();
                 }, 0);
@@ -479,12 +476,9 @@ export class QuoteConfiguratorComponent implements OnDestroy, AfterViewInit {
         if (!this.item || !this.pricingService) return;
         let result: { total: number; pricePerFt: number; hasCustom: boolean };
 
-        // Para quotes custom/advanced con customValues, usar el sqft personalizado
-        // Para quotes basic/predefinidos, usar el tamaño del modelo
-        // Para remodel, siempre usar el sqft del form
         let size: number;
         if (this.quoteType === 'remodel') {
-            size = this.customValues['sqft'] || 300;  // Para remodel usar sqft del form
+            size = this.customValues['sqft'] || 300;
         } else if (this.quoteType === 'custom' || (this.quoteType === 'advanced' && this.initialCustomValues)) {
             size = this.customValues['sqft'] || 1300;
         } else {
@@ -515,7 +509,6 @@ export class QuoteConfiguratorComponent implements OnDestroy, AfterViewInit {
     }
 
     openQuoteModal(): void {
-        // Determinar el sqft correcto según el tipo de quote
         let sqftToUse: number;
         if (this.quoteType === 'custom' || (this.quoteType === 'advanced' && this.initialCustomValues)) {
             sqftToUse = this.customValues['sqft'] || 1300;
@@ -527,8 +520,9 @@ export class QuoteConfiguratorComponent implements OnDestroy, AfterViewInit {
             quoteNo: this.item?.id ? String(this.item.id) : '',
             date: new Date().toLocaleDateString(),
             clientName: '',
-            modelOfHouse: this.item?.name || '',
+            modelOfHouse: this.item?.name || 'Custom Home',
             houseModel: this.item?.name || '',
+            formattedSelections: this.formattedSelections,
             selections: this.formattedSelections,
             pricePerSqft: this.pricePerSqFtNum,
             sqftTotal: sqftToUse,

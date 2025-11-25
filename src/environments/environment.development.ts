@@ -10,7 +10,6 @@ export const environment = {
     baseUrl: 'http://localhost:4200',
     endpoints: {
       sendEmail: '/mail-backend/send-email-native.php',
-      quotePdf: '/mail-backend/quote-template-pdf.html'
     }
   },
 
@@ -28,7 +27,6 @@ export const environment = {
     recipient: 'info@epcde.com'
   },
 
-  // === CONFIGURACIÓN PDF ===
   pdf: {
     renderUrl: 'http://localhost:4200/quote-template-pdf.html',
     format: 'A4',

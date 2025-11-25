@@ -10,7 +10,7 @@ export const environment = {
     baseUrl: 'https://epcde.com',
     endpoints: {
       sendEmail: '/mail-backend/send-email-native.php',
-      quotePdf: '/mail-backend/quote-template-pdf.html'
+      sendEmailWithPdf: '/mail-backend/send-email-with-pdf.php'
     }
   },
 
@@ -26,23 +26,6 @@ export const environment = {
     },
     sender: '"EPC Developments" <info@epcde.com>',
     recipient: 'info@epcde.com'
-  },
-
-  // === CONFIGURACIÓN PDF ===
-  pdf: {
-    renderUrl: 'https://epcde.com/quote-template-pdf.html',
-    format: 'A4',
-    printBackground: true,
-    margin: { 
-      top: '20px', 
-      bottom: '20px', 
-      left: '20px', 
-      right: '20px' 
-    },
-    puppeteer: {
-      headless: 'new',
-      waitUntil: 'networkidle0'
-    }
   },
 
   // === CONFIGURACIÓN DEL SERVIDOR ===

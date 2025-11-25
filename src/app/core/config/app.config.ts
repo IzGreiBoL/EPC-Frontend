@@ -4,6 +4,7 @@ import { provideRouter, withViewTransitions } from '@angular/router';
 import { routes } from '../routes/app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient } from '@angular/common/http';
+import { PdfGeneratorService } from '../../shared/services/pdf-generator.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +14,7 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions()
     ), 
     provideClientHydration(), 
-    provideHttpClient()
+    provideHttpClient(),
+    PdfGeneratorService
   ]
 };

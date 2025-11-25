@@ -135,8 +135,21 @@ try {
         return $template;
     }
     
+    // Función para generar el hash de email de forma consistente con Angular
+    function generateEmailHash($email) {
+        $hash = 0;
+        for ($i = 0; $i < strlen($email); $i++) {
+            $hash = (($hash << 5) - $hash) + ord($email[$i]);
+            $hash = $hash & 0xFFFFFFFF; // Simular comportamiento de 32-bit JavaScript
+        }
+        return substr(abs($hash), 0, 4);
+    }
+
     // Configurar datos para los templates
-    $quoteNumber = 'Q' . date('Ymd') . '-' . substr(md5($quote['customerEmail']), 0, 4);
+    // Usar el número de quote generado en Angular, o generar uno como fallback
+    $quoteNumber = isset($quote['quoteNumber']) && !empty($quote['quoteNumber']) 
+        ? $quote['quoteNumber'] 
+        : 'Q' . date('Ymd') . '-' . generateEmailHash($quote['customerEmail']);
     
     $quoteData = [
         '´quoteNo´' => $quoteNumber,

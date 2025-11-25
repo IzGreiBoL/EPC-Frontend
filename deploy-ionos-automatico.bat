@@ -56,6 +56,14 @@ if %errorlevel% neq 0 (
     echo     config.php copiado
 )
 
+echo   - Copiando sistema PDF con Angular...
+copy "mail-backend\send-email-with-pdf.php" "deploy-ionos\mail-backend\" /Y
+if %errorlevel% neq 0 (
+    echo     Error copiando send-email-with-pdf.php
+) else (
+    echo     send-email-with-pdf.php copiado
+)
+
 echo   - Copiando templates originales...
 copy "mail-backend\quote-template.html" "deploy-ionos\mail-backend\" /Y
 copy "mail-backend\quote-template-pdf.html" "deploy-ionos\mail-backend\" /Y
@@ -68,7 +76,11 @@ if %errorlevel% neq 0 (
     echo     quote-template-email.html copiado
 )
 
-echo ✅ Sistema de email configurado
+echo   - Creando directorio temporal...
+if not exist "deploy-ionos\mail-backend\temp" mkdir "deploy-ionos\mail-backend\temp"
+echo     temp\ directorio creado
+
+echo ✅ Sistema de email con PDF desde Angular configurado
 
 echo.
 echo ==========================================

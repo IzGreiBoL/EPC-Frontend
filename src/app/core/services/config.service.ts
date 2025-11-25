@@ -89,10 +89,6 @@ export class ConfigService {
     return this.appConfig.getEmailSendUrl();
   }
 
-  get quotePdfUrl(): string {
-    return this.appConfig.getPdfUrl();
-  }
-
   // === PRICING ===
   get basicQuoteBasePrice(): number {
     return this.appConfig.pricing.basePerSqft.basic;
